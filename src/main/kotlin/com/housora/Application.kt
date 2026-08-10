@@ -174,8 +174,9 @@ object WebsiteConfig {
 }
 
 fun main() {
-    println("[Server] Starting Housora AI server on port 8082...")
-    embeddedServer(Netty, port = 8082, host = "0.0.0.0", module = Application::module)
+    val port = EnvConfig.get("PORT").toIntOrNull() ?: 8081
+    println("[Server] Starting Housora AI server on port $port...")
+    embeddedServer(Netty, port = port, host = "0.0.0.0", module = Application::module)
         .start(wait = true)
 }
 

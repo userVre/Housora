@@ -8,6 +8,7 @@ build/
 dist/
 *.jar
 *.class
+!gradle/wrapper/gradle-wrapper.jar
 
 # IDE / OS
 .idea/
@@ -20,9 +21,6 @@ Thumbs.db
 # Dependencies and local tooling
 node_modules/
 .gradle/
-gradle/
-gradlew
-gradlew.bat
 .claude/
 .agents/
 

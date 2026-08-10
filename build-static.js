@@ -95,14 +95,31 @@ const routes = [
   '/answers',
 ];
 
-function fetchPage(urlPath) {
+function fetchPage(urlPath, redirectCount = 0) {
   return new Promise((resolve, reject) => {
     const url = BASE_URL + urlPath;
     http.get(url, (res) => {
+      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+        res.resume();
+        if (redirectCount >= 5) {
+          reject(new Error(`Too many redirects while fetching ${urlPath}`));
+          return;
+        }
+        const nextUrl = new URL(res.headers.location, url);
+        const buildOrigin = new URL(BASE_URL);
+        if (nextUrl.origin !== buildOrigin.origin) {
+          reject(new Error(`Refusing cross-origin build redirect to ${nextUrl.origin}`));
+          return;
+        }
+        fetchPage(nextUrl.pathname + nextUrl.search, redirectCount + 1).then(resolve, reject);
+        return;
+      }
       let data = '';
       res.on('data', chunk => data += chunk);
       res.on('end', () => resolve({ status: res.statusCode, body: data }));
-    }).on('error', reject);
+    }).on('error', reject).setTimeout(15000, function() {
+      this.destroy(new Error(`Timed out while fetching ${urlPath}`));
+    });
   });
 }
 
@@ -311,6 +328,13 @@ async function build() {
   console.log(`\nUpload the "dist/" folder to Cloudflare Pages.`);
   console.log(`\nNOTE: Cloudflare Pages Functions are included for upload, image generation, and Whop checkout.`);
   console.log('Configure the required Pages secrets/bindings before using those features in production. Clerk auth and Convex work client-side.\n');
+
+  if (failed > 0) {
+    throw new Error(`Static build failed for ${failed} page${failed === 1 ? '' : 's'}.`);
+  }
 }
 
-build().catch(console.error);
+build().catch(error => {
+  console.error(error);
+  process.exitCode = 1;
+});

@@ -4,13 +4,22 @@ The Kotlin/Ktor application remains the source of truth. Cloudflare Pages cannot
 
 ## Build
 
-1. Start the Kotlin server locally:
+Run the complete cross-platform build:
 
-   `cmd /c gradlew.bat run`
+```bash
+npm run build
+```
 
-2. In another terminal, generate the deployable site:
+This compiles Ktor with the checked-in Gradle wrapper, starts a temporary
+local server, exports every public route, and stops the server. The output is
+written to `dist/`; the command exits non-zero if compilation or any page
+export fails.
 
-   `cmd /c npm run build:static`
+To run the website without exporting it:
+
+```bash
+npm start
+```
 
 The output is `dist/` and the build must finish with `0 failed` pages.
 

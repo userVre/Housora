@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "build": "node build-site.js",
+    "build:jvm": "node gradle-runner.js build",
+    "start": "node gradle-runner.js run",
     "dev": "npx convex dev",
     "deploy": "npx convex deploy",
     "build:static": "node build-static.js",
