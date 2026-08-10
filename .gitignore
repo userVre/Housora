@@ -5,31 +5,51 @@
 
 # Build output
 build/
+dist/
 *.jar
 *.class
 
-# IDE
+# IDE / OS
 .idea/
 *.iml
 .vscode/
 *.swp
-
-# OS
 .DS_Store
 Thumbs.db
 
-# Node
+# Dependencies and local tooling
 node_modules/
-package-lock.json
-
-# Convex
-convex/_generated/
-
-# Uploads (user-generated content)
-uploads/
-
-# Gradle
 .gradle/
 gradle/
 gradlew
 gradlew.bat
+.claude/
+.agents/
+
+# Generated vendor/static bundles. Keep the application-owned CSS and JS tracked.
+static/vendor/
+static/**/*.map
+static/**/*.bak
+static/css/*.bak
+static/**/*.ts
+static/**/*.mjs
+static/**/*.svg
+static/**/*.png
+static/**/*.webp
+static/**/*.jpg
+!static/css/
+!static/css/**
+!static/js/
+!static/js/main.js
+!static/js/i18n.js
+!static/js/clerk-bootstrap.js
+
+# Logs and local screenshots
+*.log
+screenshots/
+mywebsitescreenshoots/
+
+# Convex generated files and user uploads
+convex/_generated/
+uploads/
+.wrangler/tmp/
