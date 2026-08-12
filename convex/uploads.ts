@@ -1,99 +1,106 @@
 import { v } from "convex/values";
-import { query, mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
+import { requireUser } from "./lib/auth";
+import { boundedString, positiveSafeInteger } from "./lib/validation";
+import { uploadDocumentValidator } from "./lib/validators";
 
-/**
- * Helper: get the verified Clerk user ID from the Convex auth context.
- * Throws if not authenticated.
- */
-async function getVerifiedUserId(ctx: any): Promise<string> {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) {
-    throw new Error("Unauthorized: authentication required. Please sign in.");
-  }
-  return identity.subject;
-}
+const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;
+const MAX_UPLOADS_RETURNED = 100;
+const ALLOWED_IMAGE_TYPES = new Set([
+  "image/avif",
+  "image/gif",
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+]);
 
-/**
- * Helper: verify that the authenticated user owns the resource.
- */
-async function assertOwnership(ctx: any, clerkId: string): Promise<void> {
-  const verifiedId = await getVerifiedUserId(ctx);
-  if (verifiedId !== clerkId) {
-    throw new Error("Unauthorized: you can only access your own uploads");
-  }
-}
+export const generateUploadUrl = mutation({
+  args: {},
+  returns: v.string(),
+  handler: async (ctx) => {
+    await requireUser(ctx);
+    return await ctx.storage.generateUploadUrl();
+  },
+});
 
+/** Claims an uploaded blob for the current user after verifying its real metadata. */
 export const saveUpload = mutation({
   args: {
-    userId: v.string(),
-    storageId: v.string(),
+    storageId: v.id("_storage"),
     fileName: v.string(),
-    contentType: v.string(),
-    fileSize: v.number(),
   },
+  returns: v.id("uploads"),
   handler: async (ctx, args) => {
-    await assertOwnership(ctx, args.userId);
+    const { ownerId } = await requireUser(ctx);
+    const fileName = boundedString(args.fileName, "fileName", 1, 255);
+    const metadata = await ctx.db.system.get("_storage", args.storageId);
+    if (!metadata) throw new Error("Uploaded file not found");
+    if (!metadata.contentType || !ALLOWED_IMAGE_TYPES.has(metadata.contentType)) {
+      throw new Error("Only supported image uploads are allowed");
+    }
+    positiveSafeInteger(metadata.size, "fileSize", MAX_UPLOAD_BYTES);
+
+    const existing = await ctx.db
+      .query("uploads")
+      .withIndex("by_storageId", (q) => q.eq("storageId", args.storageId))
+      .unique();
+    if (existing) {
+      if (existing.userId !== ownerId) throw new Error("Uploaded file not found");
+      return existing._id;
+    }
 
     return await ctx.db.insert("uploads", {
-      userId: args.userId,
+      userId: ownerId,
       storageId: args.storageId,
-      fileName: args.fileName,
-      contentType: args.contentType,
-      fileSize: args.fileSize,
+      fileName,
+      contentType: metadata.contentType,
+      fileSize: metadata.size,
       createdAt: Date.now(),
     });
   },
 });
 
-export const generateUploadUrl = mutation({
-  args: {},
-  handler: async (ctx) => {
-    await getVerifiedUserId(ctx);
-    return await ctx.storage.generateUploadUrl();
-  },
-});
-
 export const getStorageUrl = query({
   args: { storageId: v.id("_storage") },
+  returns: v.union(v.string(), v.null()),
   handler: async (ctx, args) => {
-    await getVerifiedUserId(ctx);
+    const { ownerId } = await requireUser(ctx);
+    const upload = await ctx.db
+      .query("uploads")
+      .withIndex("by_storageId", (q) => q.eq("storageId", args.storageId))
+      .unique();
+    if (!upload || upload.userId !== ownerId) throw new Error("Uploaded file not found");
     return await ctx.storage.getUrl(args.storageId);
   },
 });
 
 export const getUserUploads = query({
-  args: { userId: v.string() },
-  handler: async (ctx, args) => {
-    await assertOwnership(ctx, args.userId);
-
+  args: {},
+  returns: v.array(uploadDocumentValidator),
+  handler: async (ctx) => {
+    const { ownerId } = await requireUser(ctx);
     return await ctx.db
       .query("uploads")
-      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+      .withIndex("by_userId", (q) => q.eq("userId", ownerId))
       .order("desc")
-      .collect();
+      .take(MAX_UPLOADS_RETURNED);
   },
 });
 
 export const deleteUpload = mutation({
-  args: {
-    uploadId: v.id("uploads"),
-    userId: v.string(),
-  },
+  args: { uploadId: v.id("uploads") },
+  returns: v.null(),
   handler: async (ctx, args) => {
-    const upload = await ctx.db.get(args.uploadId);
-    if (!upload) throw new Error("Upload not found");
+    const { ownerId } = await requireUser(ctx);
+    const upload = await ctx.db.get("uploads", args.uploadId);
+    if (!upload || upload.userId !== ownerId) throw new Error("Upload not found");
 
-    // Verify the authenticated user owns this upload
-    const verifiedId = await getVerifiedUserId(ctx);
-    if (upload.userId !== verifiedId) {
-      throw new Error("Unauthorized: you can only delete your own uploads");
-    }
-
-    // Double-check: userId arg must match authenticated user
-    if (args.userId !== verifiedId) {
-      throw new Error("Unauthorized: userId does not match authenticated user");
-    }
-
-    await ctx.db.delete(args.uploadId);
+    const storageId = ctx.db.system.normalizeId("_storage", upload.storageId);
+    const metadata = storageId
+      ? await ctx.db.system.get("_storage", storageId)
+      : null;
+    if (metadata && storageId) await ctx.storage.delete(storageId);
+    await ctx.db.delete("uploads", args.uploadId);
+    return null;
   },
 });

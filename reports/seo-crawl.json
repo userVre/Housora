@@ -1,0 +1,1144 @@
+{
+  "generatedAt": "2026-08-11T17:47:42.273Z",
+  "publicSiteUrl": "https://housora.app",
+  "routes": [
+    {
+      "route": "/",
+      "status": 200,
+      "canonical": "https://housora.app/",
+      "indexability": "index",
+      "title": "Housora - AI Room Design | Upload a Photo &amp; Redesign",
+      "description": "Explore practical AI design concepts for your home from a photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "Organization",
+        "SoftwareApplication"
+      ],
+      "og": {
+        "url": "https://housora.app/",
+        "title": "Housora - AI Room Design | Upload a Photo &amp; Redesign",
+        "description": "Explore practical AI design concepts for your home from a photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Housora - AI Room Design | Upload a Photo &amp; Redesign",
+        "description": "Explore practical AI design concepts for your home from a photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/design",
+      "status": 200,
+      "canonical": "https://housora.app/design",
+      "indexability": "noindex",
+      "title": "Housora - Workspace",
+      "description": "Use Housora to explore and manage AI-assisted home design concepts.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [],
+      "og": {
+        "url": "https://housora.app/design",
+        "title": "Housora - Workspace",
+        "description": "Use Housora to explore and manage AI-assisted home design concepts.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Housora - Workspace",
+        "description": "Use Housora to explore and manage AI-assisted home design concepts.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": false
+    },
+    {
+      "route": "/reference-style",
+      "status": 200,
+      "canonical": "https://housora.app/reference-style",
+      "indexability": "index",
+      "title": "Reference Style | Housora AI",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "SoftwareApplication"
+      ],
+      "og": {
+        "url": "https://housora.app/reference-style",
+        "title": "Reference Style | Housora AI",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Reference Style | Housora AI",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/pricing",
+      "status": 200,
+      "canonical": "https://housora.app/pricing",
+      "indexability": "index",
+      "title": "Pricing &amp; Plans | Housora",
+      "description": "See Housora plans, included image allowances, billing periods, and current checkout terms.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "SoftwareApplication"
+      ],
+      "og": {
+        "url": "https://housora.app/pricing",
+        "title": "Pricing &amp; Plans | Housora",
+        "description": "See Housora plans, included image allowances, billing periods, and current checkout terms.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Pricing &amp; Plans | Housora",
+        "description": "See Housora plans, included image allowances, billing periods, and current checkout terms.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/app/home",
+      "status": 200,
+      "canonical": "https://housora.app/app/home",
+      "indexability": "noindex",
+      "title": "Housora App | Home",
+      "description": "Use Housora to explore and manage AI-assisted home design concepts.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [],
+      "og": {
+        "url": "https://housora.app/app/home",
+        "title": "Housora App | Home",
+        "description": "Use Housora to explore and manage AI-assisted home design concepts.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Housora App | Home",
+        "description": "Use Housora to explore and manage AI-assisted home design concepts.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": false
+    },
+    {
+      "route": "/interior-design",
+      "status": 200,
+      "canonical": "https://housora.app/interior-design",
+      "indexability": "index",
+      "title": "AI Interior Design - Transform Any Room Instantly | Housora",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "SoftwareApplication"
+      ],
+      "og": {
+        "url": "https://housora.app/interior-design",
+        "title": "AI Interior Design - Transform Any Room Instantly | Housora",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "AI Interior Design - Transform Any Room Instantly | Housora",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/layout-boost",
+      "status": 200,
+      "canonical": "https://housora.app/layout-boost",
+      "indexability": "index",
+      "title": "Housora - AI Layout Boost",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "SoftwareApplication"
+      ],
+      "og": {
+        "url": "https://housora.app/layout-boost",
+        "title": "Housora - AI Layout Boost",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Housora - AI Layout Boost",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/exterior-design",
+      "status": 200,
+      "canonical": "https://housora.app/exterior-design",
+      "indexability": "index",
+      "title": "Housora - AI Exterior Design",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "SoftwareApplication"
+      ],
+      "og": {
+        "url": "https://housora.app/exterior-design",
+        "title": "Housora - AI Exterior Design",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Housora - AI Exterior Design",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/garden-design",
+      "status": 200,
+      "canonical": "https://housora.app/garden-design",
+      "indexability": "index",
+      "title": "Housora - AI Garden Design",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "SoftwareApplication"
+      ],
+      "og": {
+        "url": "https://housora.app/garden-design",
+        "title": "Housora - AI Garden Design",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Housora - AI Garden Design",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/floor-restyle",
+      "status": 200,
+      "canonical": "https://housora.app/floor-restyle",
+      "indexability": "index",
+      "title": "Housora - AI Floor Restyle",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "SoftwareApplication"
+      ],
+      "og": {
+        "url": "https://housora.app/floor-restyle",
+        "title": "Housora - AI Floor Restyle",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Housora - AI Floor Restyle",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/wall-texture",
+      "status": 200,
+      "canonical": "https://housora.app/wall-texture",
+      "indexability": "index",
+      "title": "Housora - AI Wall Texture",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "SoftwareApplication"
+      ],
+      "og": {
+        "url": "https://housora.app/wall-texture",
+        "title": "Housora - AI Wall Texture",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Housora - AI Wall Texture",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/video-walkthrough",
+      "status": 200,
+      "canonical": "https://housora.app/video-walkthrough",
+      "indexability": "index",
+      "title": "Housora - AI Video Walkthrough",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "SoftwareApplication"
+      ],
+      "og": {
+        "url": "https://housora.app/video-walkthrough",
+        "title": "Housora - AI Video Walkthrough",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Housora - AI Video Walkthrough",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/floorplan-to-3d",
+      "status": 200,
+      "canonical": "https://housora.app/floorplan-to-3d",
+      "indexability": "index",
+      "title": "Housora - AI Floorplan to 3D",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "SoftwareApplication"
+      ],
+      "og": {
+        "url": "https://housora.app/floorplan-to-3d",
+        "title": "Housora - AI Floorplan to 3D",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Housora - AI Floorplan to 3D",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/photo-to-render",
+      "status": 200,
+      "canonical": "https://housora.app/photo-to-render",
+      "indexability": "index",
+      "title": "Housora - AI Photo to Render",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "SoftwareApplication"
+      ],
+      "og": {
+        "url": "https://housora.app/photo-to-render",
+        "title": "Housora - AI Photo to Render",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Housora - AI Photo to Render",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/ai-stairs-design",
+      "status": 200,
+      "canonical": "https://housora.app/ai-stairs-design",
+      "indexability": "index",
+      "title": "Housora - AI Stairs Design",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "SoftwareApplication"
+      ],
+      "og": {
+        "url": "https://housora.app/ai-stairs-design",
+        "title": "Housora - AI Stairs Design",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Housora - AI Stairs Design",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/ai-doors-design",
+      "status": 200,
+      "canonical": "https://housora.app/ai-doors-design",
+      "indexability": "index",
+      "title": "Housora - AI Doors Design",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "SoftwareApplication"
+      ],
+      "og": {
+        "url": "https://housora.app/ai-doors-design",
+        "title": "Housora - AI Doors Design",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Housora - AI Doors Design",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/ai-windows-design",
+      "status": 200,
+      "canonical": "https://housora.app/ai-windows-design",
+      "indexability": "index",
+      "title": "Housora - AI Windows Design",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "SoftwareApplication"
+      ],
+      "og": {
+        "url": "https://housora.app/ai-windows-design",
+        "title": "Housora - AI Windows Design",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Housora - AI Windows Design",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/ai-kitchen-design",
+      "status": 200,
+      "canonical": "https://housora.app/ai-kitchen-design",
+      "indexability": "index",
+      "title": "Housora - AI Kitchen Design",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "SoftwareApplication"
+      ],
+      "og": {
+        "url": "https://housora.app/ai-kitchen-design",
+        "title": "Housora - AI Kitchen Design",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Housora - AI Kitchen Design",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/ai-bathroom-design",
+      "status": 200,
+      "canonical": "https://housora.app/ai-bathroom-design",
+      "indexability": "index",
+      "title": "Housora - AI Bathroom Design",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "SoftwareApplication"
+      ],
+      "og": {
+        "url": "https://housora.app/ai-bathroom-design",
+        "title": "Housora - AI Bathroom Design",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Housora - AI Bathroom Design",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/sign-in",
+      "status": 200,
+      "canonical": "https://housora.app/sign-in",
+      "indexability": "noindex",
+      "title": "Housora - Sign In",
+      "description": "Use Housora to explore and manage AI-assisted home design concepts.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [],
+      "og": {
+        "url": "https://housora.app/sign-in",
+        "title": "Housora - Sign In",
+        "description": "Use Housora to explore and manage AI-assisted home design concepts.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Housora - Sign In",
+        "description": "Use Housora to explore and manage AI-assisted home design concepts.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": false
+    },
+    {
+      "route": "/sign-up",
+      "status": 200,
+      "canonical": "https://housora.app/sign-up",
+      "indexability": "noindex",
+      "title": "Housora - Sign Up",
+      "description": "Use Housora to explore and manage AI-assisted home design concepts.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [],
+      "og": {
+        "url": "https://housora.app/sign-up",
+        "title": "Housora - Sign Up",
+        "description": "Use Housora to explore and manage AI-assisted home design concepts.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Housora - Sign Up",
+        "description": "Use Housora to explore and manage AI-assisted home design concepts.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": false
+    },
+    {
+      "route": "/sign-out",
+      "status": 200,
+      "canonical": "https://housora.app/sign-out",
+      "indexability": "noindex",
+      "title": "Housora - Signing Out",
+      "description": "Use Housora to explore and manage AI-assisted home design concepts.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [],
+      "og": {
+        "url": "https://housora.app/sign-out",
+        "title": "Housora - Signing Out",
+        "description": "Use Housora to explore and manage AI-assisted home design concepts.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Housora - Signing Out",
+        "description": "Use Housora to explore and manage AI-assisted home design concepts.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": false
+    },
+    {
+      "route": "/delete-account",
+      "status": 200,
+      "canonical": "https://housora.app/delete-account",
+      "indexability": "noindex",
+      "title": "Delete Account | Housora",
+      "description": "Use Housora to explore and manage AI-assisted home design concepts.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [],
+      "og": {
+        "url": "https://housora.app/delete-account",
+        "title": "Delete Account | Housora",
+        "description": "Use Housora to explore and manage AI-assisted home design concepts.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Delete Account | Housora",
+        "description": "Use Housora to explore and manage AI-assisted home design concepts.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": false
+    },
+    {
+      "route": "/blog",
+      "status": 200,
+      "canonical": "https://housora.app/blog",
+      "indexability": "index",
+      "title": "Blog | Housora AI Interior Design",
+      "description": "Practical ideas for planning rooms, materials, colour, layouts, and AI-assisted home design.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [],
+      "og": {
+        "url": "https://housora.app/blog",
+        "title": "Blog | Housora AI Interior Design",
+        "description": "Practical ideas for planning rooms, materials, colour, layouts, and AI-assisted home design.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Blog | Housora AI Interior Design",
+        "description": "Practical ideas for planning rooms, materials, colour, layouts, and AI-assisted home design.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/examples",
+      "status": 200,
+      "canonical": "https://housora.app/examples",
+      "indexability": "index",
+      "title": "Interior Design Examples | Housora AI",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [],
+      "og": {
+        "url": "https://housora.app/examples",
+        "title": "Interior Design Examples | Housora AI",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Interior Design Examples | Housora AI",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/faq",
+      "status": 200,
+      "canonical": "https://housora.app/faq",
+      "indexability": "index",
+      "title": "FAQ | Housora AI Interior Design",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [],
+      "og": {
+        "url": "https://housora.app/faq",
+        "title": "FAQ | Housora AI Interior Design",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "FAQ | Housora AI Interior Design",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/contact",
+      "status": 200,
+      "canonical": "https://housora.app/contact",
+      "indexability": "index",
+      "title": "Contact | Housora AI Interior Design",
+      "description": "Contact Housora for product, billing, privacy, and account support.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "Organization"
+      ],
+      "og": {
+        "url": "https://housora.app/contact",
+        "title": "Contact | Housora AI Interior Design",
+        "description": "Contact Housora for product, billing, privacy, and account support.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Contact | Housora AI Interior Design",
+        "description": "Contact Housora for product, billing, privacy, and account support.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/compare/housora-vs-reimaginehome",
+      "status": 200,
+      "canonical": "https://housora.app/compare/housora-vs-reimaginehome",
+      "indexability": "index",
+      "title": "Housora vs ReimagineHome | Housora AI",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [],
+      "og": {
+        "url": "https://housora.app/compare/housora-vs-reimaginehome",
+        "title": "Housora vs ReimagineHome | Housora AI",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Housora vs ReimagineHome | Housora AI",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/compare/housora-vs-homedesigns",
+      "status": 200,
+      "canonical": "https://housora.app/compare/housora-vs-homedesigns",
+      "indexability": "index",
+      "title": "Housora vs HomeDesigns AI | Housora AI",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [],
+      "og": {
+        "url": "https://housora.app/compare/housora-vs-homedesigns",
+        "title": "Housora vs HomeDesigns AI | Housora AI",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Housora vs HomeDesigns AI | Housora AI",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/compare/housora-vs-mnml",
+      "status": 200,
+      "canonical": "https://housora.app/compare/housora-vs-mnml",
+      "indexability": "index",
+      "title": "Housora vs mnml.ai | Housora AI",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [],
+      "og": {
+        "url": "https://housora.app/compare/housora-vs-mnml",
+        "title": "Housora vs mnml.ai | Housora AI",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Housora vs mnml.ai | Housora AI",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/compare/housora-vs-homestyler",
+      "status": 200,
+      "canonical": "https://housora.app/compare/housora-vs-homestyler",
+      "indexability": "index",
+      "title": "Housora vs Homestyler | Housora AI",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [],
+      "og": {
+        "url": "https://housora.app/compare/housora-vs-homestyler",
+        "title": "Housora vs Homestyler | Housora AI",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Housora vs Homestyler | Housora AI",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/compare/housora-vs-planner5d",
+      "status": 200,
+      "canonical": "https://housora.app/compare/housora-vs-planner5d",
+      "indexability": "index",
+      "title": "Housora vs Planner 5D | Housora AI",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [],
+      "og": {
+        "url": "https://housora.app/compare/housora-vs-planner5d",
+        "title": "Housora vs Planner 5D | Housora AI",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Housora vs Planner 5D | Housora AI",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/enterprise",
+      "status": 200,
+      "canonical": "https://housora.app/enterprise",
+      "indexability": "index",
+      "title": "Growth, Scale &amp; Unlimited Plans | Housora AI",
+      "description": "Higher image allowances and support options for teams exploring home design concepts.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "SoftwareApplication"
+      ],
+      "og": {
+        "url": "https://housora.app/enterprise",
+        "title": "Growth, Scale &amp; Unlimited Plans | Housora AI",
+        "description": "Higher image allowances and support options for teams exploring home design concepts.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Growth, Scale &amp; Unlimited Plans | Housora AI",
+        "description": "Higher image allowances and support options for teams exploring home design concepts.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/privacy",
+      "status": 200,
+      "canonical": "https://housora.app/privacy",
+      "indexability": "noindex",
+      "title": "Privacy Policy | Housora",
+      "description": "Housora",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [],
+      "og": {
+        "url": "https://housora.app/privacy",
+        "title": "Privacy Policy | Housora",
+        "description": "Housora",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Privacy Policy | Housora",
+        "description": "Housora",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": false
+    },
+    {
+      "route": "/terms",
+      "status": 200,
+      "canonical": "https://housora.app/terms",
+      "indexability": "noindex",
+      "title": "Terms &amp; Conditions | Housora",
+      "description": "Housora",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [],
+      "og": {
+        "url": "https://housora.app/terms",
+        "title": "Terms &amp; Conditions | Housora",
+        "description": "Housora",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Terms &amp; Conditions | Housora",
+        "description": "Housora",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": false
+    },
+    {
+      "route": "/refund-policy",
+      "status": 200,
+      "canonical": "https://housora.app/refund-policy",
+      "indexability": "noindex",
+      "title": "Refund Policy | Housora",
+      "description": "Housora",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [],
+      "og": {
+        "url": "https://housora.app/refund-policy",
+        "title": "Refund Policy | Housora",
+        "description": "Housora",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Refund Policy | Housora",
+        "description": "Housora",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": false
+    },
+    {
+      "route": "/cookies",
+      "status": 200,
+      "canonical": "https://housora.app/cookies",
+      "indexability": "noindex",
+      "title": "Cookie Policy | Housora",
+      "description": "Housora",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [],
+      "og": {
+        "url": "https://housora.app/cookies",
+        "title": "Cookie Policy | Housora",
+        "description": "Housora",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Cookie Policy | Housora",
+        "description": "Housora",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": false
+    },
+    {
+      "route": "/projects",
+      "status": 200,
+      "canonical": "https://housora.app/projects",
+      "indexability": "noindex",
+      "title": "My Projects | Housora",
+      "description": "Use Housora to explore and manage AI-assisted home design concepts.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [],
+      "og": {
+        "url": "https://housora.app/projects",
+        "title": "My Projects | Housora",
+        "description": "Use Housora to explore and manage AI-assisted home design concepts.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "My Projects | Housora",
+        "description": "Use Housora to explore and manage AI-assisted home design concepts.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": false
+    },
+    {
+      "route": "/blog/exterior-colour-palettes",
+      "status": 200,
+      "canonical": "https://housora.app/blog/exterior-colour-palettes",
+      "indexability": "index",
+      "title": "Exterior colour palettes that are easy to live with | Housora",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "Article"
+      ],
+      "og": {
+        "url": "https://housora.app/blog/exterior-colour-palettes",
+        "title": "Exterior colour palettes that are easy to live with | Housora",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Exterior colour palettes that are easy to live with | Housora",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/blog/planning-a-room-redesign",
+      "status": 200,
+      "canonical": "https://housora.app/blog/planning-a-room-redesign",
+      "indexability": "index",
+      "title": "How to plan a room redesign without losing your way | Housora",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "Article"
+      ],
+      "og": {
+        "url": "https://housora.app/blog/planning-a-room-redesign",
+        "title": "How to plan a room redesign without losing your way | Housora",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "How to plan a room redesign without losing your way | Housora",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/blog/photo-to-video-room-tour",
+      "status": 200,
+      "canonical": "https://housora.app/blog/photo-to-video-room-tour",
+      "indexability": "index",
+      "title": "Turning one room photo into a simple video tour | Housora",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "Article"
+      ],
+      "og": {
+        "url": "https://housora.app/blog/photo-to-video-room-tour",
+        "title": "Turning one room photo into a simple video tour | Housora",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Turning one room photo into a simple video tour | Housora",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/blog/architecture-prompt-basics",
+      "status": 200,
+      "canonical": "https://housora.app/blog/architecture-prompt-basics",
+      "indexability": "index",
+      "title": "A better way to write architecture prompts | Housora",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "Article"
+      ],
+      "og": {
+        "url": "https://housora.app/blog/architecture-prompt-basics",
+        "title": "A better way to write architecture prompts | Housora",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "A better way to write architecture prompts | Housora",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/blog/choosing-furniture-with-confidence",
+      "status": 200,
+      "canonical": "https://housora.app/blog/choosing-furniture-with-confidence",
+      "indexability": "index",
+      "title": "Choosing furniture with more confidence | Housora",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "Article"
+      ],
+      "og": {
+        "url": "https://housora.app/blog/choosing-furniture-with-confidence",
+        "title": "Choosing furniture with more confidence | Housora",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Choosing furniture with more confidence | Housora",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/blog/garden-design-brief",
+      "status": 200,
+      "canonical": "https://housora.app/blog/garden-design-brief",
+      "indexability": "index",
+      "title": "How to write a useful garden design brief | Housora",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "Article"
+      ],
+      "og": {
+        "url": "https://housora.app/blog/garden-design-brief",
+        "title": "How to write a useful garden design brief | Housora",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "How to write a useful garden design brief | Housora",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/blog/room-walkthrough-storytelling",
+      "status": 200,
+      "canonical": "https://housora.app/blog/room-walkthrough-storytelling",
+      "indexability": "index",
+      "title": "Making a room walkthrough tell a clearer story | Housora",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "Article"
+      ],
+      "og": {
+        "url": "https://housora.app/blog/room-walkthrough-storytelling",
+        "title": "Making a room walkthrough tell a clearer story | Housora",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Making a room walkthrough tell a clearer story | Housora",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/blog/comparing-ai-design-tools",
+      "status": 200,
+      "canonical": "https://housora.app/blog/comparing-ai-design-tools",
+      "indexability": "index",
+      "title": "How to compare AI design tools fairly | Housora",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "Article"
+      ],
+      "og": {
+        "url": "https://housora.app/blog/comparing-ai-design-tools",
+        "title": "How to compare AI design tools fairly | Housora",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "How to compare AI design tools fairly | Housora",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    },
+    {
+      "route": "/blog/black-doors-without-regret",
+      "status": 200,
+      "canonical": "https://housora.app/blog/black-doors-without-regret",
+      "indexability": "index",
+      "title": "Trying bold interior doors before you commit | Housora",
+      "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+      "h1Count": 1,
+      "lang": "en",
+      "structuredData": [
+        "Article"
+      ],
+      "og": {
+        "url": "https://housora.app/blog/black-doors-without-regret",
+        "title": "Trying bold interior doors before you commit | Housora",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "twitter": {
+        "title": "Trying bold interior doors before you commit | Housora",
+        "description": "Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.",
+        "image": "https://housora.app/og-image.png"
+      },
+      "sitemapMembership": true
+    }
+  ]
+}

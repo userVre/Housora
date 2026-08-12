@@ -5,7 +5,7 @@ import kotlinx.html.dom.*
 import com.housora.templates.baseLayout
 
 fun HTML.deleteAccountPage() {
-    baseLayout("Delete Account | Housora") {
+    baseLayout("Delete Account | Housora", bodyClass = "page-account", path = "/delete-account") {
         section(classes = "legal-section") {
             div(classes = "legal-inner") {
                 h1(classes = "legal-title") { +"Delete your Housora account" }

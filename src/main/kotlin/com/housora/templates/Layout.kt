@@ -10,6 +10,57 @@ import com.housora.PostHogConfig
 
 data class AITool(val name: String, val path: String)
 
+private data class SeoDefaults(
+    val description: String,
+    val image: String = "/og-image.png",
+    val indexable: Boolean = true,
+    val organizationSchema: Boolean = false,
+    val softwareSchema: Boolean = false
+)
+
+private fun inferredPath(title: String): String = when {
+    title.startsWith("Housora - AI Room Design") -> "/"
+    title.startsWith("FAQ") -> "/faq"
+    title.startsWith("Contact") -> "/contact"
+    title.contains("AI Interior Design") && !title.contains("Examples") -> "/interior-design"
+    title.contains("AI Layout Boost") -> "/layout-boost"
+    title.contains("AI Exterior Design") -> "/exterior-design"
+    title.contains("AI Garden Design") -> "/garden-design"
+    title.contains("AI Wall Texture") -> "/wall-texture"
+    title.contains("AI Floor Restyle") -> "/floor-restyle"
+    title.contains("AI Stairs Design") -> "/ai-stairs-design"
+    title.contains("AI Doors Design") -> "/ai-doors-design"
+    title.contains("AI Windows Design") -> "/ai-windows-design"
+    title.contains("AI Kitchen Design") -> "/ai-kitchen-design"
+    title.contains("AI Bathroom Design") -> "/ai-bathroom-design"
+    title.contains("AI Video Walkthrough") -> "/video-walkthrough"
+    title.contains("AI Floorplan to 3D") -> "/floorplan-to-3d"
+    title.contains("AI Photo to Render") -> "/photo-to-render"
+    title.contains("Reference Style") -> "/reference-style"
+    title.contains("Examples") -> "/examples"
+    title.startsWith("Growth,") -> "/enterprise"
+    title.startsWith("Housora App") -> "/app/home"
+    title.startsWith("Housora - Sign In") -> "/sign-in"
+    title.startsWith("Housora - Sign Up") -> "/sign-up"
+    title.startsWith("Housora - Signing Out") -> "/sign-out"
+    title.startsWith("Article Not Found") -> "/404"
+    title.startsWith("Blog |") -> "/blog"
+    title.startsWith("My Projects") -> "/projects"
+    else -> "/"
+}
+
+private fun seoFor(path: String): SeoDefaults = when (path) {
+    "/" -> SeoDefaults("Explore practical AI design concepts for your home from a photo.", organizationSchema = true, softwareSchema = true)
+    "/pricing" -> SeoDefaults("See Housora plans, included image allowances, billing periods, and current checkout terms.", softwareSchema = true)
+    "/app/home", "/design", "/projects", "/sign-in", "/sign-up", "/sign-out", "/delete-account" -> SeoDefaults("Use Housora to explore and manage AI-assisted home design concepts.", indexable = false)
+    "/blog" -> SeoDefaults("Practical ideas for planning rooms, materials, colour, layouts, and AI-assisted home design.")
+    in setOf("/interior-design", "/layout-boost", "/exterior-design", "/garden-design", "/floor-restyle", "/wall-texture", "/video-walkthrough", "/floorplan-to-3d", "/photo-to-render", "/ai-stairs-design", "/ai-doors-design", "/ai-windows-design", "/ai-kitchen-design", "/ai-bathroom-design", "/reference-style") -> SeoDefaults("Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.", softwareSchema = true)
+    "/enterprise" -> SeoDefaults("Higher image allowances and support options for teams exploring home design concepts.", softwareSchema = true)
+    "/contact" -> SeoDefaults("Contact Housora for product, billing, privacy, and account support.", organizationSchema = true)
+    "/privacy", "/terms", "/refund-policy", "/cookies" -> SeoDefaults("Housora's current policy and account information.", indexable = false)
+    else -> SeoDefaults("Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.")
+}
+
 private val aiTools = listOf(
     AITool("AI Interior Design", "/interior-design"),
     AITool("AI Layout Boost", "/layout-boost"),
@@ -28,38 +79,44 @@ private val aiTools = listOf(
     AITool("Reference Style", "/reference-style")
 )
 
-fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "/", content: DIV.() -> Unit) {
+fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", structuredData: String? = null, content: DIV.() -> Unit) {
+    val canonicalPath = if (path.isBlank()) inferredPath(title) else path
+    val seo = seoFor(canonicalPath)
+    val canonicalUrl = WebsiteConfig.resolveUrl(canonicalPath)
+    attributes["lang"] = "en"
     head {
         meta(charset = "utf-8")
         meta(name = "viewport", content = "width=device-width, initial-scale=1.0")
         title { +title }
-        meta(name = "description", content = "Housora helps you explore fresh interiors, exteriors, gardens, and layouts from a single photo with practical AI design concepts.")
+        meta(name = "description", content = seo.description)
         meta(name = "keywords", content = "Housora, AI home design, AI room makeover, interior design ideas, virtual staging, exterior design, garden design")
-        link(rel = "canonical", href = WebsiteConfig.resolveUrl(path))
-        unsafe { +"""<meta property="og:title" content="Housora AI Home Design | Reimagine Your Space">""" }
-        unsafe { +"""<meta property="og:description" content="Turn a photo of your space into a clear, inspiring design concept with Housora.">""" }
-        unsafe { +"""<meta property="og:url" content="${WebsiteConfig.resolveUrl(path)}">""" }
-        unsafe { +"""<meta property="og:image" content="${WebsiteConfig.resolveUrl("/og-image.png")}">""" }
+        if (!seo.indexable) meta(name = "robots", content = "noindex, nofollow")
+        link(rel = "canonical", href = canonicalUrl)
+        link(rel = "icon", type = "image/svg+xml", href = "/favicon.svg")
+        link(rel = "icon", type = "image/x-icon", href = "/favicon.ico")
+        link(rel = "apple-touch-icon", href = "/apple-touch-icon.png")
+        meta { attributes["property"] = "og:title"; attributes["content"] = title }
+        meta { attributes["property"] = "og:description"; attributes["content"] = seo.description }
+        meta { attributes["property"] = "og:url"; attributes["content"] = canonicalUrl }
+        meta { attributes["property"] = "og:image"; attributes["content"] = WebsiteConfig.resolveUrl(seo.image) }
+        meta { attributes["property"] = "og:image:alt"; attributes["content"] = "Housora home design concepts" }
         unsafe { +"""<meta property="og:type" content="website">""" }
         unsafe { +"""<meta property="og:site_name" content="Housora">""" }
         meta(name = "twitter:card", content = "summary_large_image")
-        meta(name = "twitter:site", content = "@Housora_AI")
-        meta(name = "twitter:title", content = "Housora AI Home Design | Reimagine Your Space")
-        meta(name = "twitter:description", content = "Turn a photo of your space into a clear, inspiring design concept with Housora.")
-        meta(name = "twitter:image", content = WebsiteConfig.resolveUrl("/og-image.png"))
+        meta(name = "twitter:title", content = title)
+        meta(name = "twitter:description", content = seo.description)
+        meta(name = "twitter:image", content = WebsiteConfig.resolveUrl(seo.image))
+        meta(name = "twitter:image:alt", content = "Housora home design concepts")
         meta(name = "theme-color", content = "#000000")
         meta(name = "clerk-publishable-key", content = ClerkConfig.publishableKey)
         meta(name = "convex-url", content = ConvexConfig.url)
-        script(type = "application/ld+json") {
-            unsafe {
-                +"""{"@context":"https://schema.org","@type":"Organization","name":"Housora","url":"${WebsiteConfig.resolveUrl()}","logo":"${WebsiteConfig.resolveUrl("/og-image.png")}","sameAs":["https://www.instagram.com/housora_ai/","https://www.facebook.com/profile.php?id=61590655134529","https://www.youtube.com/@Housora_AI"]}"""
-            }
+        if (seo.organizationSchema) script(type = "application/ld+json") {
+            unsafe { +"""{"@context":"https://schema.org","@type":"Organization","name":"Housora","url":"${WebsiteConfig.resolveUrl()}","logo":"${WebsiteConfig.resolveUrl("/og-image.png")}"}""" }
         }
-        script(type = "application/ld+json") {
-            unsafe {
-                +"""{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Housora AI: Home Design","applicationCategory":"DesignApplication","operatingSystem":"Web","offers":{"@type":"AggregateOffer","lowPrice":"14","priceCurrency":"EUR","offerCount":"5"}}"""
-            }
+        if (seo.softwareSchema) script(type = "application/ld+json") {
+            unsafe { +"""{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Housora AI Home Design","applicationCategory":"DesignApplication","operatingSystem":"Web","url":"$canonicalUrl"}""" }
         }
+        structuredData?.let { schema -> script(type = "application/ld+json") { unsafe { +schema } } }
         script {
             unsafe {
                 +"""
@@ -105,25 +162,13 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "/", c
             unsafe {
                 +"""
                 document.addEventListener('DOMContentLoaded', function() {
-                    // Keep canonical and share URLs accurate for pages that use the
-                    // shared layout without an explicit server-side path.
-                    const canonicalUrl = window.location.origin + window.location.pathname;
-                    const canonical = document.querySelector('link[rel="canonical"]');
-                    const ogUrl = document.querySelector('meta[property="og:url"]');
-                    const ogTitle = document.querySelector('meta[property="og:title"]');
-                    const twitterTitle = document.querySelector('meta[name="twitter:title"]');
-                    if (canonical) canonical.href = canonicalUrl;
-                    if (ogUrl) ogUrl.content = canonicalUrl;
-                    if (ogTitle) ogTitle.content = document.title;
-                    if (twitterTitle) twitterTitle.content = document.title;
-
-                    // Missing marketing assets should degrade to a quiet placeholder,
-                    // never a broken-image icon and filename.
+                    // Keep meaningful alternative text when media is unavailable.
+                    // The visible fallback is styled as a neutral media placeholder.
                     document.querySelectorAll('img').forEach(function(img) {
                         function markMissing() {
                             img.classList.add('media-unavailable');
-                            img.removeAttribute('alt');
-                            img.setAttribute('aria-hidden', 'true');
+                            img.dataset.mediaUnavailable = 'true';
+                            if (!img.hasAttribute('alt')) img.alt = 'Image unavailable';
                             const slideshow = img.closest('.hero-desktop-slideshow');
                             if (slideshow) {
                                 const slides = Array.from(slideshow.querySelectorAll('.hero-desktop-slide'));
@@ -140,11 +185,20 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "/", c
                     aiToolsBtn?.addEventListener('click', function(e) {
                         e.preventDefault();
                         e.stopPropagation();
-                        aiToolsDropdown?.classList.toggle('open');
+                        const isOpen = aiToolsDropdown?.classList.toggle('open') === true;
+                        aiToolsBtn.setAttribute('aria-expanded', String(isOpen));
                     });
                     document.addEventListener('click', function(e) {
                         if (!aiToolsBtn?.contains(e.target) && !aiToolsDropdown?.contains(e.target)) {
                             aiToolsDropdown?.classList.remove('open');
+                            aiToolsBtn?.setAttribute('aria-expanded', 'false');
+                        }
+                    });
+                    aiToolsBtn?.addEventListener('keydown', function(e) {
+                        if (e.key === 'Escape') {
+                            aiToolsDropdown?.classList.remove('open');
+                            aiToolsBtn.setAttribute('aria-expanded', 'false');
+                            aiToolsBtn.focus();
                         }
                     });
                     // Mobile header + icon navigates to /design
@@ -176,6 +230,7 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "/", c
                             heroLine.style.width = Math.ceil(maxWidth) + 'px';
                             heroLine.style.display = 'inline-block';
                         }
+                        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
                         let wordIdx = 0;
                         setInterval(function() {
                             words[wordIdx].classList.remove('active');
@@ -189,6 +244,7 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "/", c
         }
     }
     body(classes = bodyClass) {
+        a(href = "#main-content", classes = "skip-link") { +"Skip to main content" }
         // Clerk loading overlay (hidden by default, shown by JS during init)
         if (ClerkConfig.isConfigured) {
             div(classes = "clerk-loading-overlay") {
@@ -225,8 +281,11 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "/", c
                     a(href = "/pricing", classes = "desktop-nav-link") { +"Pricing" }
                     a(href = "/sign-in", classes = "desktop-nav-link") { +"Sign in" }
                     div(classes = "ai-tools-dropdown-wrapper") {
-                        span(classes = "desktop-nav-link ai-tools-trigger") {
+                        button(classes = "desktop-nav-link ai-tools-trigger") {
                             attributes["id"] = "ai-tools-btn"
+                            attributes["type"] = "button"
+                            attributes["aria-expanded"] = "false"
+                            attributes["aria-controls"] = "ai-tools-dropdown"
                             +"AI Tools"
                             unsafe { +"""<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>""" }
                         }
@@ -257,6 +316,8 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "/", c
         // Sidebar Navigation
         nav(classes = "sidebar-nav") {
             attributes["id"] = "sidebar"
+            attributes["aria-label"] = "Main navigation"
+            attributes["tabindex"] = "-1"
             div(classes = "sidebar-header") {
                 span(classes = "sidebar-logo") { +"HOUSORA" }
                 button(classes = "sidebar-close-btn") {
@@ -278,7 +339,7 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "/", c
                 }
             }
             div(classes = "sidebar-section") {
-                a(href = "/create", classes = "sidebar-link") { +"New Design" }
+                a(href = "/design", classes = "sidebar-link") { +"New Design" }
                 a(href = "/projects", classes = "sidebar-link") { +"My Projects" }
             }
             div(classes = "sidebar-section") {
@@ -308,6 +369,8 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "/", c
         // Main Content
         div(classes = "content-wrapper") {
             main(classes = if (path == "/projects") "brand-kits-main layout-initial" else "create-main layout-initial") {
+                attributes["id"] = "main-content"
+                attributes["tabindex"] = "-1"
                 div {
                     content()
                 }
@@ -320,7 +383,7 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "/", c
                 div(classes = "footer-columns") {
                     // Column 1: AI Tools
                     div(classes = "footer-col") {
-                        h4(classes = "footer-col-title") { +"AI Tools" }
+                        h2(classes = "footer-col-title") { +"AI Tools" }
                         ul(classes = "footer-links") {
                             aiTools.take(6).forEach { tool ->
                                 li { a(href = tool.path) { +tool.name } }
@@ -330,7 +393,7 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "/", c
                     }
                     // Column 2: Business
                     div(classes = "footer-col") {
-                        h4(classes = "footer-col-title") { +"Business" }
+                        h2(classes = "footer-col-title") { +"Business" }
                         ul(classes = "footer-links") {
                             li { a(href = "/enterprise") { +"Enterprise plans" } }
                             li { a(href = "/contact") { +"Work with Housora" } }
@@ -338,7 +401,7 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "/", c
                     }
                     // Column 3: Information
                     div(classes = "footer-col") {
-                        h4(classes = "footer-col-title") { +"Information" }
+                        h2(classes = "footer-col-title") { +"Information" }
                         ul(classes = "footer-links") {
                             li { a(href = "/blog") { +"Blog" } }
                             li { a(href = "/examples") { +"Design Examples" } }
@@ -353,7 +416,7 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "/", c
                     }
                     // Column 4: Support
                     div(classes = "footer-col") {
-                        h4(classes = "footer-col-title") { +"Support" }
+                        h2(classes = "footer-col-title") { +"Support" }
                         ul(classes = "footer-links") {
                             li { a(href = "/contact") { +"Contact" } }
                             li { a(href = "/faq") { +"FAQ" } }
@@ -412,7 +475,7 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "/", c
                             +"Cookie settings"
                         }
                     }
-                    span(classes = "footer-copy") { +"© 2026 Housora s.r.o." }
+                    span(classes = "footer-copy") { +"© 2026 Housora" }
                 }
             }
         }
@@ -465,8 +528,15 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "/", c
                         var el = document.createElement('div');
                         el.id = 'clerk-error';
                         el.className = 'clerk-error-message';
-                        el.innerHTML = '<span class="clerk-error-text">' + msg + '</span>' +
-                            '<button class="clerk-error-retry" onclick="window.location.reload()">Retry</button>';
+                        var errorText = document.createElement('span');
+                        errorText.className = 'clerk-error-text';
+                        errorText.textContent = String(msg || 'Authentication could not be loaded.');
+                        var retry = document.createElement('button');
+                        retry.className = 'clerk-error-retry';
+                        retry.type = 'button';
+                        retry.textContent = 'Retry';
+                        retry.addEventListener('click', function() { window.location.reload(); });
+                        el.append(errorText, retry);
                         document.body.appendChild(el);
                     }
 
@@ -555,14 +625,31 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "/", c
                                 if (nameEl) nameEl.textContent = window.HousoraUser.name;
                                 if (emailEl) emailEl.textContent = window.HousoraUser.email;
                                 if (avatarEl && window.HousoraUser.imageUrl) {
-                                    avatarEl.innerHTML = '<img src="' + window.HousoraUser.imageUrl + '" alt="Avatar" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">';
+                                    var avatarImage = document.createElement('img');
+                                    avatarImage.src = window.HousoraUser.imageUrl;
+                                    avatarImage.alt = '';
+                                    avatarImage.width = 36;
+                                    avatarImage.height = 36;
+                                    avatarImage.className = 'sidebar-avatar-image';
+                                    avatarEl.replaceChildren(avatarImage);
                                 } else if (avatarEl) {
-                                    avatarEl.innerHTML = '<span style="display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:#1a1a1a;color:#fff;font-size:14px;font-weight:600;">' + (window.HousoraUser.name.charAt(0).toUpperCase()) + '</span>';
+                                    var avatarInitial = document.createElement('span');
+                                    avatarInitial.className = 'sidebar-avatar-initial';
+                                    avatarInitial.setAttribute('aria-hidden', 'true');
+                                    avatarInitial.textContent = window.HousoraUser.name.charAt(0).toUpperCase();
+                                    avatarEl.replaceChildren(avatarInitial);
                                 }
                             }
                             // Replace sign-in/up links with sign-out
                             if (authSection) {
-                                authSection.innerHTML = '<a href="/pricing#billing-help" class="sidebar-link sidebar-manage-plan-link">Manage Plan &amp; Refunds</a><a href="/sign-out" class="sidebar-link sidebar-signout-link">Sign Out</a><a href="/delete-account" class="sidebar-link sidebar-delete-account-link">Delete Account</a>';
+                                authSection.replaceChildren();
+                                [['/pricing#billing-help', 'Manage Plan & Refunds', 'sidebar-manage-plan-link'], ['/sign-out', 'Sign Out', 'sidebar-signout-link'], ['/delete-account', 'Delete Account', 'sidebar-delete-account-link']].forEach(function(item) {
+                                    var link = document.createElement('a');
+                                    link.href = item[0];
+                                    link.className = 'sidebar-link ' + item[2];
+                                    link.textContent = item[1];
+                                    authSection.appendChild(link);
+                                });
                             }
                         } else {
                             if (window.HousoraAnalytics) window.HousoraAnalytics.reset();
@@ -570,7 +657,14 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "/", c
                             if (userInfo) userInfo.style.display = 'none';
                             // Show sign-in/up links
                             if (authSection) {
-                                authSection.innerHTML = '<a href="/sign-in" class="sidebar-link sidebar-signin-link">Sign In</a><a href="/sign-up" class="sidebar-link sidebar-signup-link">Create Account</a>';
+                                authSection.replaceChildren();
+                                [['/sign-in', 'Sign In', 'sidebar-signin-link'], ['/sign-up', 'Create Account', 'sidebar-signup-link']].forEach(function(item) {
+                                    var link = document.createElement('a');
+                                    link.href = item[0];
+                                    link.className = 'sidebar-link ' + item[2];
+                                    link.textContent = item[1];
+                                    authSection.appendChild(link);
+                                });
                             }
                         }
                     }
@@ -581,23 +675,33 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "/", c
         script(src = "/static/js/i18n.js") {}
         script(src = "/static/js/main.js") {}
 
-        // Cookiebot-style consent panel
+        // First-party consent panel. Optional analytics is disabled by default.
         div(classes = "cookiebot-panel") {
             attributes["id"] = "cookiebot-panel"
+            attributes["role"] = "region"
+            attributes["aria-labelledby"] = "cookie-consent-title"
+            attributes["aria-describedby"] = "cookie-consent-message"
             div(classes = "cookiebot-desktop") {
                 div(classes = "cookiebot-content") {
-                    h4(classes = "cookiebot-title") { attributes["data-i18n"] = "cookie.title"; +"This website uses cookies" }
+                    h4(classes = "cookiebot-title") {
+                        id = "cookie-consent-title"
+                        attributes["data-i18n"] = "cookie.title"
+                        +"Your privacy choices"
+                    }
                     p(classes = "cookiebot-message") {
+                        id = "cookie-consent-message"
                         attributes["data-i18n"] = "cookie.message"
-                        +"We use cookies to ensure our website works effectively for you, enhancing your browsing experience without tracking your personal information."
+                        +"Housora uses necessary storage for security and your choices. With permission, PostHog measures page visits and product events. Analytics is off by default and never includes your uploaded images or prompts. You can change this later in the footer."
                     }
                     div(classes = "cookiebot-toggles") {
-                        attributes["style"] = "display:none"
                         div(classes = "cookiebot-toggle-row") {
-                            span(classes = "cookiebot-toggle-label") {
-                                id = "cookie-label-necessary"
-                                attributes["data-i18n"] = "cookie.necessary"
-                                +"Necessary"
+                            div(classes = "cookiebot-toggle-copy") {
+                                span(classes = "cookiebot-toggle-label") {
+                                    id = "cookie-label-necessary"
+                                    attributes["data-i18n"] = "cookie.necessary"
+                                    +"Necessary"
+                                }
+                                span(classes = "cookiebot-toggle-description") { +"Security, sign-in, privacy choices, and features you request" }
                             }
                             label(classes = "cookiebot-toggle") {
                                 unsafe { +"""<input type="checkbox" class="cookiebot-checkbox" name="necessary" aria-labelledby="cookie-label-necessary" checked disabled>""" }
@@ -605,53 +709,31 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "/", c
                             }
                         }
                         div(classes = "cookiebot-toggle-row") {
-                            span(classes = "cookiebot-toggle-label") {
-                                id = "cookie-label-preferences"
-                                attributes["data-i18n"] = "cookie.preferences"
-                                +"Preferences"
-                            }
-                            label(classes = "cookiebot-toggle") {
-                                unsafe { +"""<input type="checkbox" class="cookiebot-checkbox" name="preferences" aria-labelledby="cookie-label-preferences">""" }
-                                span(classes = "cookiebot-toggle-slider") {}
-                            }
-                        }
-                        div(classes = "cookiebot-toggle-row") {
-                            span(classes = "cookiebot-toggle-label") {
-                                id = "cookie-label-analytics"
-                                attributes["data-i18n"] = "cookie.analytics"
-                                +"Analytics"
+                            div(classes = "cookiebot-toggle-copy") {
+                                span(classes = "cookiebot-toggle-label") {
+                                    id = "cookie-label-analytics"
+                                    attributes["data-i18n"] = "cookie.analytics"
+                                    +"Analytics"
+                                }
+                                span(classes = "cookiebot-toggle-description") { +"Optional PostHog page paths and product events" }
                             }
                             label(classes = "cookiebot-toggle") {
                                 unsafe { +"""<input type="checkbox" class="cookiebot-checkbox" name="analytics" aria-labelledby="cookie-label-analytics">""" }
                                 span(classes = "cookiebot-toggle-slider") {}
                             }
                         }
-                        div(classes = "cookiebot-toggle-row") {
-                            span(classes = "cookiebot-toggle-label") {
-                                id = "cookie-label-marketing"
-                                attributes["data-i18n"] = "cookie.marketing"
-                                +"Marketing"
-                            }
-                            label(classes = "cookiebot-toggle") {
-                                unsafe { +"""<input type="checkbox" class="cookiebot-checkbox" name="marketing" aria-labelledby="cookie-label-marketing">""" }
-                                span(classes = "cookiebot-toggle-slider") {}
-                            }
-                        }
-                        button(classes = "cookiebot-details-link") {
-                            attributes["id"] = "cookiebot-details-btn"
-                            attributes["type"] = "button"
+                        a(href = "/cookies", classes = "cookiebot-details-link") {
                             attributes["data-i18n"] = "cookie.show_details"
-                            attributes["aria-expanded"] = "false"
-                            +"Show details \u203A"
+                            +"Read the Cookie & Storage Policy"
                         }
                     }
                 }
                 div(classes = "cookiebot-actions") {
-                    button(classes = "cookiebot-btn-secondary") {
+                    button(classes = "cookiebot-btn-choice") {
                         attributes["id"] = "cookiebot-necessary-btn"
                         attributes["type"] = "button"
                         attributes["data-i18n"] = "cookie.necessary_only"
-                        +"Necessary only"
+                        +"Reject analytics"
                     }
                     button(classes = "cookiebot-btn-secondary") {
                         attributes["id"] = "cookiebot-save-btn"
@@ -659,11 +741,11 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "/", c
                         attributes["data-i18n"] = "cookie.save_choices"
                         +"Save choices"
                     }
-                    button(classes = "cookiebot-btn-ok") {
+                    button(classes = "cookiebot-btn-choice") {
                         attributes["id"] = "cookiebot-ok-btn"
                         attributes["type"] = "button"
                         attributes["data-i18n"] = "cookie.accept_all"
-                        +"Accept all"
+                        +"Allow analytics"
                     }
                 }
             }

@@ -1,0 +1,7728 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-11T18:15:51.631Z",
+  "scope": {
+    "source": [
+      "src/main/kotlin/**/*.kt",
+      "static/**/*.css",
+      "static/**/*.js"
+    ],
+    "rendered": "dist/**/*.html",
+    "note": "Rendered references are concrete HTML src/href/poster/content URLs. Dynamic source templates are reported separately."
+  },
+  "summary": {
+    "source": {
+      "referenced": 157,
+      "present": 157,
+      "missing": 0,
+      "placeholders": 145
+    },
+    "renderedStatic": {
+      "referenced": 152,
+      "present": 152,
+      "missing": 0,
+      "placeholders": 145
+    },
+    "renderedRoot": {
+      "referenced": 4,
+      "present": 4,
+      "missing": 0,
+      "placeholders": 0
+    },
+    "renderedAll": {
+      "referenced": 156,
+      "present": 156,
+      "missing": 0,
+      "placeholders": 145
+    },
+    "dynamicSourcePatterns": 2
+  },
+  "sourceReferences": [
+    {
+      "path": "/apple-touch-icon.png",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/templates/Layout.kt",
+          "line": 97
+        }
+      ],
+      "file": "static/meta/apple-touch-icon.png",
+      "present": true,
+      "placeholder": false
+    },
+    {
+      "path": "/favicon.ico",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/templates/Layout.kt",
+          "line": 96
+        },
+        {
+          "origin": "static/vendor/clerk-js/coinbase-wallet-sdk_clerk.browser_438929_6.25.7.js",
+          "line": 3
+        }
+      ],
+      "file": "static/meta/favicon.ico",
+      "present": true,
+      "placeholder": false
+    },
+    {
+      "path": "/favicon.svg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/templates/Layout.kt",
+          "line": 95
+        }
+      ],
+      "file": "static/meta/favicon.svg",
+      "present": true,
+      "placeholder": false
+    },
+    {
+      "path": "/og-image.png",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/templates/Layout.kt",
+          "line": 15
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/templates/Layout.kt",
+          "line": 114
+        }
+      ],
+      "file": "static/meta/og-image.png",
+      "present": true,
+      "placeholder": false
+    },
+    {
+      "path": "/static/assets/responsive-images.json",
+      "origins": [
+        {
+          "origin": "static/js/main.js",
+          "line": 2004
+        }
+      ],
+      "file": "static/assets/responsive-images.json",
+      "present": true,
+      "placeholder": false
+    },
+    {
+      "path": "/static/css/style.css",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/plugins/Routing.kt",
+          "line": 514
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/templates/Layout.kt",
+          "line": 138
+        }
+      ],
+      "file": "static/css/style.css",
+      "present": true,
+      "placeholder": false
+    },
+    {
+      "path": "/static/images/bathroom-after.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/BathroomDesignPage.kt",
+          "line": 15
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/BlogPage.kt",
+          "line": 39
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreationsPage.kt",
+          "line": 23
+        }
+      ],
+      "file": "static/images/bathroom-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/bathroom-minimalist.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/BathroomDesignPage.kt",
+          "line": 23
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 44
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 161
+        },
+        {
+          "origin": "static/js/main.js",
+          "line": 647
+        }
+      ],
+      "file": "static/images/bathroom-minimalist.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/before-after-comparison.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/SignInPage.kt",
+          "line": 75
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/SignUpPage.kt",
+          "line": 80
+        }
+      ],
+      "file": "static/images/before-after-comparison.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/door-arched.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/DoorsDesignPage.kt",
+          "line": 33
+        }
+      ],
+      "file": "static/images/door-arched.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/door-black-crittall.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/BlogPage.kt",
+          "line": 59
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/DoorsDesignPage.kt",
+          "line": 18
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/DoorsDesignPage.kt",
+          "line": 30
+        }
+      ],
+      "file": "static/images/door-black-crittall.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/door-classic-panelled.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/DoorsDesignPage.kt",
+          "line": 28
+        }
+      ],
+      "file": "static/images/door-classic-panelled.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/door-french-glass.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/DoorsDesignPage.kt",
+          "line": 17
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/DoorsDesignPage.kt",
+          "line": 29
+        }
+      ],
+      "file": "static/images/door-french-glass.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/door-modern-flush.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/DoorsDesignPage.kt",
+          "line": 16
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/DoorsDesignPage.kt",
+          "line": 26
+        }
+      ],
+      "file": "static/images/door-modern-flush.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/door-pivot.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/DoorsDesignPage.kt",
+          "line": 19
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/DoorsDesignPage.kt",
+          "line": 32
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/DoorsDesignPage.kt",
+          "line": 46
+        }
+      ],
+      "file": "static/images/door-pivot.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/door-shaker.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/DoorsDesignPage.kt",
+          "line": 27
+        }
+      ],
+      "file": "static/images/door-shaker.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/door-sliding-barn.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/DoorsDesignPage.kt",
+          "line": 31
+        }
+      ],
+      "file": "static/images/door-sliding-barn.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/exterior-after.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/BlogPage.kt",
+          "line": 19
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreationsPage.kt",
+          "line": 24
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 15
+        }
+      ],
+      "file": "static/images/exterior-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/floor-after.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StyleQuizPage.kt",
+          "line": 57
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StyleQuizPage.kt",
+          "line": 93
+        }
+      ],
+      "file": "static/images/floor-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/floor-restyle-after.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/FloorRestylePage.kt",
+          "line": 17
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 70
+        }
+      ],
+      "file": "static/images/floor-restyle-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/floorplan-after.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 613
+        }
+      ],
+      "file": "static/images/floorplan-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-barn.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 15
+        }
+      ],
+      "file": "static/images/gallery-barn.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-black-frame.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WindowsDesignPage.kt",
+          "line": 15
+        }
+      ],
+      "file": "static/images/gallery-black-frame.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-colonial.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 15
+        }
+      ],
+      "file": "static/images/gallery-colonial.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-cottage.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 133
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/GardenDesignPage.kt",
+          "line": 15
+        }
+      ],
+      "file": "static/images/gallery-cottage.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-crittall.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WindowsDesignPage.kt",
+          "line": 15
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WindowsDesignPage.kt",
+          "line": 41
+        }
+      ],
+      "file": "static/images/gallery-crittall.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-exposed-brick.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WallTexturePage.kt",
+          "line": 16
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WallTexturePage.kt",
+          "line": 41
+        }
+      ],
+      "file": "static/images/gallery-exposed-brick.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-floating.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StairsDesignPage.kt",
+          "line": 15
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StairsDesignPage.kt",
+          "line": 39
+        }
+      ],
+      "file": "static/images/gallery-floating.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-french-glass.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WindowsDesignPage.kt",
+          "line": 15
+        }
+      ],
+      "file": "static/images/gallery-french-glass.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-glass-railing.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StairsDesignPage.kt",
+          "line": 15
+        }
+      ],
+      "file": "static/images/gallery-glass-railing.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-handleless.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/KitchenDesignPage.kt",
+          "line": 15
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/KitchenDesignPage.kt",
+          "line": 41
+        }
+      ],
+      "file": "static/images/gallery-handleless.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-japanese.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/GardenDesignPage.kt",
+          "line": 59
+        }
+      ],
+      "file": "static/images/gallery-japanese.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-modern-oak.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/KitchenDesignPage.kt",
+          "line": 15
+        }
+      ],
+      "file": "static/images/gallery-modern-oak.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-modern-spa.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/BathroomDesignPage.kt",
+          "line": 15
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/BathroomDesignPage.kt",
+          "line": 15
+        }
+      ],
+      "file": "static/images/gallery-modern-spa.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-modern.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 136
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 15
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 65
+        }
+      ],
+      "file": "static/images/gallery-modern.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-natural.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/GardenDesignPage.kt",
+          "line": 15
+        }
+      ],
+      "file": "static/images/gallery-natural.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-oak-chevron.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/FloorRestylePage.kt",
+          "line": 17
+        }
+      ],
+      "file": "static/images/gallery-oak-chevron.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-oak-herringbone.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/FloorRestylePage.kt",
+          "line": 17
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/FloorRestylePage.kt",
+          "line": 42
+        }
+      ],
+      "file": "static/images/gallery-oak-herringbone.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-photorealistic.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/FloorplanTo3DPage.kt",
+          "line": 35
+        }
+      ],
+      "file": "static/images/gallery-photorealistic.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-polished-concrete.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/FloorRestylePage.kt",
+          "line": 17
+        }
+      ],
+      "file": "static/images/gallery-polished-concrete.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-sage-shaker.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/KitchenDesignPage.kt",
+          "line": 15
+        }
+      ],
+      "file": "static/images/gallery-sage-shaker.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-sage.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/BathroomDesignPage.kt",
+          "line": 39
+        }
+      ],
+      "file": "static/images/gallery-sage.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-scandinavian.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/LayoutBoostPage.kt",
+          "line": 44
+        }
+      ],
+      "file": "static/images/gallery-scandinavian.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-stone.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WallTexturePage.kt",
+          "line": 16
+        }
+      ],
+      "file": "static/images/gallery-stone.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-tropical.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/GardenDesignPage.kt",
+          "line": 15
+        }
+      ],
+      "file": "static/images/gallery-tropical.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-walkthrough.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/VideoWalkthroughPage.kt",
+          "line": 37
+        }
+      ],
+      "file": "static/images/gallery-walkthrough.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-warm-render.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/PhotoToRenderPage.kt",
+          "line": 36
+        }
+      ],
+      "file": "static/images/gallery-warm-render.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-white-marble.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/BathroomDesignPage.kt",
+          "line": 15
+        }
+      ],
+      "file": "static/images/gallery-white-marble.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-wood-paneling.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WallTexturePage.kt",
+          "line": 16
+        }
+      ],
+      "file": "static/images/gallery-wood-paneling.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-wood.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StairsDesignPage.kt",
+          "line": 15
+        }
+      ],
+      "file": "static/images/gallery-wood.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/garden-after.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/BlogPage.kt",
+          "line": 44
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreationsPage.kt",
+          "line": 25
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreationsPage.kt",
+          "line": 30
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/GardenDesignPage.kt",
+          "line": 15
+        }
+      ],
+      "file": "static/images/garden-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/hero-after.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 129
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 273
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 22
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StyleQuizPage.kt",
+          "line": 69
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StyleQuizPage.kt",
+          "line": 90
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StyleQuizPage.kt",
+          "line": 99
+        },
+        {
+          "origin": "static/css/style.css",
+          "line": 250
+        }
+      ],
+      "file": "static/images/hero-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/hero-slide-1.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/templates/ToolPageTemplate.kt",
+          "line": 167
+        }
+      ],
+      "file": "static/images/hero-slide-1.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/hero-slide-2.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/templates/ToolPageTemplate.kt",
+          "line": 168
+        }
+      ],
+      "file": "static/images/hero-slide-2.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/hero-slide-3.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/templates/ToolPageTemplate.kt",
+          "line": 169
+        }
+      ],
+      "file": "static/images/hero-slide-3.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/hero-slide-4.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/templates/ToolPageTemplate.kt",
+          "line": 170
+        }
+      ],
+      "file": "static/images/hero-slide-4.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/interior-after.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/BlogPage.kt",
+          "line": 24
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 127
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 274
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreationsPage.kt",
+          "line": 20
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreationsPage.kt",
+          "line": 31
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExamplesPage.kt",
+          "line": 57
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExamplesPage.kt",
+          "line": 60
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExamplesPage.kt",
+          "line": 64
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExamplesPage.kt",
+          "line": 65
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 21
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 31
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 45
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StyleQuizPage.kt",
+          "line": 39
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StyleQuizPage.kt",
+          "line": 87
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StyleQuizPage.kt",
+          "line": 94
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StyleQuizPage.kt",
+          "line": 98
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StyleQuizPage.kt",
+          "line": 129
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 65
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 162
+        },
+        {
+          "origin": "static/js/main.js",
+          "line": 631
+        },
+        {
+          "origin": "static/js/main.js",
+          "line": 637
+        },
+        {
+          "origin": "static/js/main.js",
+          "line": 644
+        },
+        {
+          "origin": "static/js/main.js",
+          "line": 648
+        }
+      ],
+      "file": "static/images/interior-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/interior-balcony.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 47
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 164
+        }
+      ],
+      "file": "static/images/interior-balcony.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/interior-before.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreationsPage.kt",
+          "line": 28
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 67
+        },
+        {
+          "origin": "static/js/main.js",
+          "line": 631
+        }
+      ],
+      "file": "static/images/interior-before.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/interior-coastal.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExamplesPage.kt",
+          "line": 62
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 53
+        }
+      ],
+      "file": "static/images/interior-coastal.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/interior-industrial.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExamplesPage.kt",
+          "line": 59
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 34
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 56
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 206
+        },
+        {
+          "origin": "static/js/main.js",
+          "line": 639
+        }
+      ],
+      "file": "static/images/interior-industrial.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/kitchen-after.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/BlogPage.kt",
+          "line": 34
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 134
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 276
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreationsPage.kt",
+          "line": 22
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreationsPage.kt",
+          "line": 29
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExamplesPage.kt",
+          "line": 63
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 24
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 43
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/KitchenDesignPage.kt",
+          "line": 15
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StyleQuizPage.kt",
+          "line": 145
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 63
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 71
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 160
+        },
+        {
+          "origin": "static/js/main.js",
+          "line": 646
+        }
+      ],
+      "file": "static/images/kitchen-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/kitchen-before.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 64
+        }
+      ],
+      "file": "static/images/kitchen-before.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/layout-after.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/BlogPage.kt",
+          "line": 49
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreationsPage.kt",
+          "line": 26
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExamplesPage.kt",
+          "line": 58
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExamplesPage.kt",
+          "line": 66
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StyleQuizPage.kt",
+          "line": 51
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StyleQuizPage.kt",
+          "line": 88
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StyleQuizPage.kt",
+          "line": 96
+        },
+        {
+          "origin": "static/js/main.js",
+          "line": 635
+        }
+      ],
+      "file": "static/images/layout-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/render-after.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StyleQuizPage.kt",
+          "line": 92
+        }
+      ],
+      "file": "static/images/render-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/room-after.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/AppHomePage.kt",
+          "line": 24
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/BlogPage.kt",
+          "line": 29
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 128
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 275
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 418
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 634
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreationsPage.kt",
+          "line": 21
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExamplesPage.kt",
+          "line": 56
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExamplesPage.kt",
+          "line": 61
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 23
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StyleQuizPage.kt",
+          "line": 45
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StyleQuizPage.kt",
+          "line": 86
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StyleQuizPage.kt",
+          "line": 95
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StyleQuizPage.kt",
+          "line": 137
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 66
+        },
+        {
+          "origin": "static/js/main.js",
+          "line": 630
+        },
+        {
+          "origin": "static/js/main.js",
+          "line": 636
+        },
+        {
+          "origin": "static/js/main.js",
+          "line": 643
+        },
+        {
+          "origin": "static/js/main.js",
+          "line": 1826
+        }
+      ],
+      "file": "static/images/room-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/room-bedroom.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 131
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 132
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 41
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 46
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 142
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 163
+        },
+        {
+          "origin": "static/js/main.js",
+          "line": 1262
+        }
+      ],
+      "file": "static/images/room-bedroom.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/room-before.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 98
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 126
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 428
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 626
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 49
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 69
+        },
+        {
+          "origin": "static/js/main.js",
+          "line": 630
+        }
+      ],
+      "file": "static/images/room-before.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/room-dining.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 135
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 42
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 152
+        },
+        {
+          "origin": "static/js/main.js",
+          "line": 1262
+        }
+      ],
+      "file": "static/images/room-dining.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/room-living.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 40
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 48
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 131
+        },
+        {
+          "origin": "static/js/main.js",
+          "line": 1262
+        }
+      ],
+      "file": "static/images/room-living.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/room-preview-1.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/templates/ToolPageTemplate.kt",
+          "line": 230
+        }
+      ],
+      "file": "static/images/room-preview-1.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/room-preview-2.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/templates/ToolPageTemplate.kt",
+          "line": 231
+        }
+      ],
+      "file": "static/images/room-preview-2.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/room-preview-3.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/templates/ToolPageTemplate.kt",
+          "line": 232
+        }
+      ],
+      "file": "static/images/room-preview-3.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-aerial.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/VideoWalkthroughPage.kt",
+          "line": 21
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/VideoWalkthroughPage.kt",
+          "line": 27
+        }
+      ],
+      "file": "static/images/s-aerial.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-airy.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 48
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/PhotoToRenderPage.kt",
+          "line": 27
+        }
+      ],
+      "file": "static/images/s-airy.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-arched-win.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WindowsDesignPage.kt",
+          "line": 26
+        }
+      ],
+      "file": "static/images/s-arched-win.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-art-deco.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/BathroomDesignPage.kt",
+          "line": 25
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 38
+        }
+      ],
+      "file": "static/images/s-art-deco.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-bay.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WindowsDesignPage.kt",
+          "line": 27
+        }
+      ],
+      "file": "static/images/s-bay.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-black-frame.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WindowsDesignPage.kt",
+          "line": 21
+        }
+      ],
+      "file": "static/images/s-black-frame.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-brick.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WallTexturePage.kt",
+          "line": 22
+        }
+      ],
+      "file": "static/images/s-brick.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-chevron.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/FloorRestylePage.kt",
+          "line": 28
+        }
+      ],
+      "file": "static/images/s-chevron.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-cinematic.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/VideoWalkthroughPage.kt",
+          "line": 21
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/VideoWalkthroughPage.kt",
+          "line": 24
+        }
+      ],
+      "file": "static/images/s-cinematic.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-classic-marble.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/BathroomDesignPage.kt",
+          "line": 22
+        }
+      ],
+      "file": "static/images/s-classic-marble.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-colonial.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 26
+        }
+      ],
+      "file": "static/images/s-colonial.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-concrete.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 35
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 39
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/FloorRestylePage.kt",
+          "line": 25
+        }
+      ],
+      "file": "static/images/s-concrete.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-cool-render.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/PhotoToRenderPage.kt",
+          "line": 21
+        }
+      ],
+      "file": "static/images/s-cool-render.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-cottage.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/GardenDesignPage.kt",
+          "line": 23
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/GardenDesignPage.kt",
+          "line": 34
+        }
+      ],
+      "file": "static/images/s-cottage.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-crittall-steel.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WindowsDesignPage.kt",
+          "line": 22
+        }
+      ],
+      "file": "static/images/s-crittall-steel.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-day-night.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 50
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/VideoWalkthroughPage.kt",
+          "line": 21
+        }
+      ],
+      "file": "static/images/s-day-night.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-dramatic-render.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 51
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/PhotoToRenderPage.kt",
+          "line": 21
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/PhotoToRenderPage.kt",
+          "line": 25
+        }
+      ],
+      "file": "static/images/s-dramatic-render.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-farmhouse-kit.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/KitchenDesignPage.kt",
+          "line": 24
+        }
+      ],
+      "file": "static/images/s-farmhouse-kit.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-farmhouse.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 25
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 43
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/GardenDesignPage.kt",
+          "line": 37
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 58
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StairsDesignPage.kt",
+          "line": 24
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 208
+        }
+      ],
+      "file": "static/images/s-farmhouse.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-floating.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StairsDesignPage.kt",
+          "line": 22
+        }
+      ],
+      "file": "static/images/s-floating.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-floor-ceiling.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WindowsDesignPage.kt",
+          "line": 28
+        }
+      ],
+      "file": "static/images/s-floor-ceiling.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-georgian.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WindowsDesignPage.kt",
+          "line": 23
+        }
+      ],
+      "file": "static/images/s-georgian.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-glass.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StairsDesignPage.kt",
+          "line": 23
+        }
+      ],
+      "file": "static/images/s-glass.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-handleless.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/KitchenDesignPage.kt",
+          "line": 21
+        }
+      ],
+      "file": "static/images/s-handleless.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-herringbone.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/FloorRestylePage.kt",
+          "line": 23
+        }
+      ],
+      "file": "static/images/s-herringbone.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-industrial-3d.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/FloorplanTo3DPage.kt",
+          "line": 20
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/FloorplanTo3DPage.kt",
+          "line": 25
+        }
+      ],
+      "file": "static/images/s-industrial-3d.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-industrial-kit.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/KitchenDesignPage.kt",
+          "line": 25
+        }
+      ],
+      "file": "static/images/s-industrial-kit.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-industrial.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 32
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StairsDesignPage.kt",
+          "line": 25
+        }
+      ],
+      "file": "static/images/s-industrial.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-japanese.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 40
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/GardenDesignPage.kt",
+          "line": 22
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/GardenDesignPage.kt",
+          "line": 33
+        }
+      ],
+      "file": "static/images/s-japanese.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-lightoak.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/FloorRestylePage.kt",
+          "line": 27
+        }
+      ],
+      "file": "static/images/s-lightoak.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-luxury-3d.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/FloorplanTo3DPage.kt",
+          "line": 20
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/FloorplanTo3DPage.kt",
+          "line": 28
+        }
+      ],
+      "file": "static/images/s-luxury-3d.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-luxury-render.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 33
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 57
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/PhotoToRenderPage.kt",
+          "line": 21
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 207
+        },
+        {
+          "origin": "static/js/main.js",
+          "line": 640
+        }
+      ],
+      "file": "static/images/s-luxury-render.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-marble.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/FloorRestylePage.kt",
+          "line": 24
+        }
+      ],
+      "file": "static/images/s-marble.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-mediterranean.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 24
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 42
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/GardenDesignPage.kt",
+          "line": 24
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/GardenDesignPage.kt",
+          "line": 35
+        }
+      ],
+      "file": "static/images/s-mediterranean.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-minimalist.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 23
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 44
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/GardenDesignPage.kt",
+          "line": 26
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/GardenDesignPage.kt",
+          "line": 36
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 33
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 55
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 205
+        }
+      ],
+      "file": "static/images/s-minimalist.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-modern-3d.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/FloorplanTo3DPage.kt",
+          "line": 20
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/FloorplanTo3DPage.kt",
+          "line": 24
+        }
+      ],
+      "file": "static/images/s-modern-3d.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-modern-flush.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 34
+        }
+      ],
+      "file": "static/images/s-modern-flush.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-modern-spa.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/BathroomDesignPage.kt",
+          "line": 21
+        }
+      ],
+      "file": "static/images/s-modern-spa.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-modern.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 21
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 30
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 41
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/GardenDesignPage.kt",
+          "line": 21
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/GardenDesignPage.kt",
+          "line": 31
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 52
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/PhotoToRenderPage.kt",
+          "line": 28
+        }
+      ],
+      "file": "static/images/s-modern.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-modernoak.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StairsDesignPage.kt",
+          "line": 21
+        }
+      ],
+      "file": "static/images/s-modernoak.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-natural-render.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/PhotoToRenderPage.kt",
+          "line": 21
+        }
+      ],
+      "file": "static/images/s-natural-render.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-navy.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WallTexturePage.kt",
+          "line": 26
+        }
+      ],
+      "file": "static/images/s-navy.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-photo-real.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/FloorplanTo3DPage.kt",
+          "line": 20
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/FloorplanTo3DPage.kt",
+          "line": 23
+        }
+      ],
+      "file": "static/images/s-photo-real.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-photo-render.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/PhotoToRenderPage.kt",
+          "line": 21
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/PhotoToRenderPage.kt",
+          "line": 24
+        }
+      ],
+      "file": "static/images/s-photo-render.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-picture.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WindowsDesignPage.kt",
+          "line": 24
+        }
+      ],
+      "file": "static/images/s-picture.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-rustic-bath.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/BathroomDesignPage.kt",
+          "line": 24
+        }
+      ],
+      "file": "static/images/s-rustic-bath.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-sage-shaker.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/KitchenDesignPage.kt",
+          "line": 23
+        }
+      ],
+      "file": "static/images/s-sage-shaker.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-sage.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WallTexturePage.kt",
+          "line": 27
+        }
+      ],
+      "file": "static/images/s-sage.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-scandi-3d.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/FloorplanTo3DPage.kt",
+          "line": 20
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/FloorplanTo3DPage.kt",
+          "line": 27
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 32
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 51
+        }
+      ],
+      "file": "static/images/s-scandi-3d.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-scandi-bath.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/BathroomDesignPage.kt",
+          "line": 26
+        }
+      ],
+      "file": "static/images/s-scandi-bath.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-scandi-kit.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/KitchenDesignPage.kt",
+          "line": 22
+        }
+      ],
+      "file": "static/images/s-scandi-kit.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-slow-zoom.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/VideoWalkthroughPage.kt",
+          "line": 21
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/VideoWalkthroughPage.kt",
+          "line": 26
+        }
+      ],
+      "file": "static/images/s-slow-zoom.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-smooth-pan.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/VideoWalkthroughPage.kt",
+          "line": 21
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/VideoWalkthroughPage.kt",
+          "line": 25
+        }
+      ],
+      "file": "static/images/s-smooth-pan.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-spiral.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StairsDesignPage.kt",
+          "line": 26
+        }
+      ],
+      "file": "static/images/s-spiral.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-stone.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WallTexturePage.kt",
+          "line": 25
+        }
+      ],
+      "file": "static/images/s-stone.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-subway.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WallTexturePage.kt",
+          "line": 23
+        }
+      ],
+      "file": "static/images/s-subway.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-timeless-white.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/KitchenDesignPage.kt",
+          "line": 28
+        }
+      ],
+      "file": "static/images/s-timeless-white.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-traditional.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 22
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 31
+        }
+      ],
+      "file": "static/images/s-traditional.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-tropical.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 45
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/GardenDesignPage.kt",
+          "line": 25
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/GardenDesignPage.kt",
+          "line": 30
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/GardenDesignPage.kt",
+          "line": 32
+        }
+      ],
+      "file": "static/images/s-tropical.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-two-tone.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/KitchenDesignPage.kt",
+          "line": 27
+        }
+      ],
+      "file": "static/images/s-two-tone.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-walkthrough.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/VideoWalkthroughPage.kt",
+          "line": 21
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/VideoWalkthroughPage.kt",
+          "line": 28
+        }
+      ],
+      "file": "static/images/s-walkthrough.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-walnut.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/FloorRestylePage.kt",
+          "line": 26
+        }
+      ],
+      "file": "static/images/s-walnut.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-warm-3d.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/FloorplanTo3DPage.kt",
+          "line": 20
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/FloorplanTo3DPage.kt",
+          "line": 26
+        }
+      ],
+      "file": "static/images/s-warm-3d.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-warm-min.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 35
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 54
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/KitchenDesignPage.kt",
+          "line": 26
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 204
+        },
+        {
+          "origin": "static/js/main.js",
+          "line": 638
+        }
+      ],
+      "file": "static/images/s-warm-min.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-warm-render.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/PhotoToRenderPage.kt",
+          "line": 21
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/PhotoToRenderPage.kt",
+          "line": 26
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/PhotoToRenderPage.kt",
+          "line": 29
+        }
+      ],
+      "file": "static/images/s-warm-render.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-warm.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExteriorDesignPage.kt",
+          "line": 49
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/InteriorDesignPage.kt",
+          "line": 36
+        }
+      ],
+      "file": "static/images/s-warm.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-wood-frame.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WindowsDesignPage.kt",
+          "line": 25
+        }
+      ],
+      "file": "static/images/s-wood-frame.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-wood.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WallTexturePage.kt",
+          "line": 24
+        }
+      ],
+      "file": "static/images/s-wood.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/stairs-after.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StairsDesignPage.kt",
+          "line": 15
+        }
+      ],
+      "file": "static/images/stairs-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/style-coastal.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 196
+        },
+        {
+          "origin": "static/js/main.js",
+          "line": 1265
+        }
+      ],
+      "file": "static/images/style-coastal.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/style-modern.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 186
+        },
+        {
+          "origin": "static/js/main.js",
+          "line": 1265
+        }
+      ],
+      "file": "static/images/style-modern.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/style-scandi.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 130
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 175
+        },
+        {
+          "origin": "static/js/main.js",
+          "line": 1265
+        }
+      ],
+      "file": "static/images/style-scandi.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/tools/interior-design-hero.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 107
+        }
+      ],
+      "file": "static/images/tools/interior-design-hero.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/try-after.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 277
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 447
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StyleQuizPage.kt",
+          "line": 91
+        },
+        {
+          "origin": "static/js/main.js",
+          "line": 632
+        },
+        {
+          "origin": "static/js/main.js",
+          "line": 645
+        }
+      ],
+      "file": "static/images/try-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/try-before.jpg",
+      "origins": [
+        {
+          "origin": "static/js/main.js",
+          "line": 632
+        }
+      ],
+      "file": "static/images/try-before.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/wall-after.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WallTexturePage.kt",
+          "line": 16
+        }
+      ],
+      "file": "static/images/wall-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/walls-texture-after.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/BlogPage.kt",
+          "line": 54
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreationsPage.kt",
+          "line": 27
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/ExamplesPage.kt",
+          "line": 67
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StyleQuizPage.kt",
+          "line": 63
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StyleQuizPage.kt",
+          "line": 89
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StyleQuizPage.kt",
+          "line": 97
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/StyleQuizPage.kt",
+          "line": 153
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WorkspacePage.kt",
+          "line": 68
+        }
+      ],
+      "file": "static/images/walls-texture-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/windows-before.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/WindowsDesignPage.kt",
+          "line": 15
+        }
+      ],
+      "file": "static/images/windows-before.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/js/clerk-bootstrap.js",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/templates/Layout.kt",
+          "line": 495
+        }
+      ],
+      "file": "static/js/clerk-bootstrap.js",
+      "present": true,
+      "placeholder": false
+    },
+    {
+      "path": "/static/js/i18n.js",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/templates/Layout.kt",
+          "line": 675
+        }
+      ],
+      "file": "static/js/i18n.js",
+      "present": true,
+      "placeholder": false
+    },
+    {
+      "path": "/static/js/main.js",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/templates/Layout.kt",
+          "line": 676
+        }
+      ],
+      "file": "static/js/main.js",
+      "present": true,
+      "placeholder": false
+    },
+    {
+      "path": "/static/vendor/clerk-js/clerk.browser.js",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/templates/Layout.kt",
+          "line": 489
+        }
+      ],
+      "file": "static/vendor/clerk-js/clerk.browser.js",
+      "present": true,
+      "placeholder": false
+    },
+    {
+      "path": "/static/vendor/clerk-ui/ui.browser.js",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/templates/Layout.kt",
+          "line": 486
+        }
+      ],
+      "file": "static/vendor/clerk-ui/ui.browser.js",
+      "present": true,
+      "placeholder": false
+    },
+    {
+      "path": "/static/vendor/posthog/posthog.js",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/templates/Layout.kt",
+          "line": 498
+        }
+      ],
+      "file": "static/vendor/posthog/posthog.js",
+      "present": true,
+      "placeholder": false
+    }
+  ],
+  "dynamicReferences": [
+    {
+      "path": "/static/images/tools/${imgKey}-hero.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/templates/ToolPageTemplate.kt",
+          "line": 499
+        }
+      ]
+    },
+    {
+      "path": "/static/images/tools/${tool.imgKey}-hero.jpg",
+      "origins": [
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 546
+        },
+        {
+          "origin": "src/main/kotlin/com/housora/pages/CreatePage.kt",
+          "line": 552
+        }
+      ]
+    }
+  ],
+  "renderedReferences": [
+    {
+      "path": "/apple-touch-icon.png",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/app/home.html",
+          "line": 13
+        },
+        {
+          "origin": "dist/blog.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/blog/architecture-prompt-basics.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/blog/black-doors-without-regret.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/blog/choosing-furniture-with-confidence.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/blog/comparing-ai-design-tools.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/blog/exterior-colour-palettes.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/blog/garden-design-brief.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/blog/photo-to-video-room-tour.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/blog/planning-a-room-redesign.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/blog/room-walkthrough-storytelling.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/compare/housora-vs-homedesigns.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/compare/housora-vs-homestyler.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/compare/housora-vs-mnml.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/compare/housora-vs-planner5d.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/compare/housora-vs-reimaginehome.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/contact.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/cookies.html",
+          "line": 13
+        },
+        {
+          "origin": "dist/delete-account.html",
+          "line": 13
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 13
+        },
+        {
+          "origin": "dist/enterprise.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/faq.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/layout-boost.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/pricing.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/privacy.html",
+          "line": 13
+        },
+        {
+          "origin": "dist/projects.html",
+          "line": 13
+        },
+        {
+          "origin": "dist/reference-style.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/refund-policy.html",
+          "line": 13
+        },
+        {
+          "origin": "dist/sign-in.html",
+          "line": 13
+        },
+        {
+          "origin": "dist/sign-out.html",
+          "line": 13
+        },
+        {
+          "origin": "dist/sign-up.html",
+          "line": 13
+        },
+        {
+          "origin": "dist/terms.html",
+          "line": 13
+        },
+        {
+          "origin": "dist/video-walkthrough.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 12
+        }
+      ],
+      "file": "dist/apple-touch-icon.png",
+      "present": true,
+      "placeholder": false
+    },
+    {
+      "path": "/favicon.ico",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/app/home.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/blog.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/blog/architecture-prompt-basics.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/blog/black-doors-without-regret.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/blog/choosing-furniture-with-confidence.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/blog/comparing-ai-design-tools.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/blog/exterior-colour-palettes.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/blog/garden-design-brief.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/blog/photo-to-video-room-tour.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/blog/planning-a-room-redesign.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/blog/room-walkthrough-storytelling.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/compare/housora-vs-homedesigns.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/compare/housora-vs-homestyler.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/compare/housora-vs-mnml.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/compare/housora-vs-planner5d.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/compare/housora-vs-reimaginehome.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/contact.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/cookies.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/delete-account.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/enterprise.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/faq.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/layout-boost.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/pricing.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/privacy.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/projects.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/reference-style.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/refund-policy.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/sign-in.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/sign-out.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/sign-up.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/terms.html",
+          "line": 12
+        },
+        {
+          "origin": "dist/video-walkthrough.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 11
+        }
+      ],
+      "file": "dist/favicon.ico",
+      "present": true,
+      "placeholder": false
+    },
+    {
+      "path": "/favicon.svg",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/app/home.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/blog.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/blog/architecture-prompt-basics.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/blog/black-doors-without-regret.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/blog/choosing-furniture-with-confidence.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/blog/comparing-ai-design-tools.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/blog/exterior-colour-palettes.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/blog/garden-design-brief.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/blog/photo-to-video-room-tour.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/blog/planning-a-room-redesign.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/blog/room-walkthrough-storytelling.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/compare/housora-vs-homedesigns.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/compare/housora-vs-homestyler.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/compare/housora-vs-mnml.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/compare/housora-vs-planner5d.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/compare/housora-vs-reimaginehome.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/contact.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/cookies.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/delete-account.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/enterprise.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/faq.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/layout-boost.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/pricing.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/privacy.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/projects.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/reference-style.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/refund-policy.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/sign-in.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/sign-out.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/sign-up.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/terms.html",
+          "line": 11
+        },
+        {
+          "origin": "dist/video-walkthrough.html",
+          "line": 10
+        },
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 10
+        }
+      ],
+      "file": "dist/favicon.svg",
+      "present": true,
+      "placeholder": false
+    },
+    {
+      "path": "/og-image.png",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/app/home.html",
+          "line": 17
+        },
+        {
+          "origin": "dist/app/home.html",
+          "line": 22
+        },
+        {
+          "origin": "dist/blog.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/blog.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/blog/architecture-prompt-basics.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/blog/architecture-prompt-basics.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/blog/black-doors-without-regret.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/blog/black-doors-without-regret.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/blog/choosing-furniture-with-confidence.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/blog/choosing-furniture-with-confidence.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/blog/comparing-ai-design-tools.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/blog/comparing-ai-design-tools.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/blog/exterior-colour-palettes.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/blog/exterior-colour-palettes.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/blog/garden-design-brief.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/blog/garden-design-brief.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/blog/photo-to-video-room-tour.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/blog/photo-to-video-room-tour.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/blog/planning-a-room-redesign.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/blog/planning-a-room-redesign.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/blog/room-walkthrough-storytelling.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/blog/room-walkthrough-storytelling.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/compare/housora-vs-homedesigns.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/compare/housora-vs-homedesigns.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/compare/housora-vs-homestyler.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/compare/housora-vs-homestyler.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/compare/housora-vs-mnml.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/compare/housora-vs-mnml.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/compare/housora-vs-planner5d.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/compare/housora-vs-planner5d.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/compare/housora-vs-reimaginehome.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/compare/housora-vs-reimaginehome.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/contact.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/contact.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/cookies.html",
+          "line": 17
+        },
+        {
+          "origin": "dist/cookies.html",
+          "line": 22
+        },
+        {
+          "origin": "dist/delete-account.html",
+          "line": 17
+        },
+        {
+          "origin": "dist/delete-account.html",
+          "line": 22
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 17
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 22
+        },
+        {
+          "origin": "dist/enterprise.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/enterprise.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/faq.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/faq.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/layout-boost.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/layout-boost.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/pricing.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/pricing.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/privacy.html",
+          "line": 17
+        },
+        {
+          "origin": "dist/privacy.html",
+          "line": 22
+        },
+        {
+          "origin": "dist/projects.html",
+          "line": 17
+        },
+        {
+          "origin": "dist/projects.html",
+          "line": 22
+        },
+        {
+          "origin": "dist/reference-style.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/reference-style.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/refund-policy.html",
+          "line": 17
+        },
+        {
+          "origin": "dist/refund-policy.html",
+          "line": 22
+        },
+        {
+          "origin": "dist/sign-in.html",
+          "line": 17
+        },
+        {
+          "origin": "dist/sign-in.html",
+          "line": 22
+        },
+        {
+          "origin": "dist/sign-out.html",
+          "line": 17
+        },
+        {
+          "origin": "dist/sign-out.html",
+          "line": 22
+        },
+        {
+          "origin": "dist/sign-up.html",
+          "line": 17
+        },
+        {
+          "origin": "dist/sign-up.html",
+          "line": 22
+        },
+        {
+          "origin": "dist/terms.html",
+          "line": 17
+        },
+        {
+          "origin": "dist/terms.html",
+          "line": 22
+        },
+        {
+          "origin": "dist/video-walkthrough.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/video-walkthrough.html",
+          "line": 21
+        },
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 16
+        },
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 21
+        }
+      ],
+      "file": "dist/og-image.png",
+      "present": true,
+      "placeholder": false
+    },
+    {
+      "path": "/static/css/style.css",
+      "origins": [
+        {
+          "origin": "dist/404.html",
+          "line": 5
+        },
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/app/home.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/blog.html",
+          "line": 40
+        },
+        {
+          "origin": "dist/blog/architecture-prompt-basics.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/blog/black-doors-without-regret.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/blog/choosing-furniture-with-confidence.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/blog/comparing-ai-design-tools.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/blog/exterior-colour-palettes.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/blog/garden-design-brief.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/blog/photo-to-video-room-tour.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/blog/planning-a-room-redesign.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/blog/room-walkthrough-storytelling.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/compare/housora-vs-homedesigns.html",
+          "line": 40
+        },
+        {
+          "origin": "dist/compare/housora-vs-homestyler.html",
+          "line": 40
+        },
+        {
+          "origin": "dist/compare/housora-vs-mnml.html",
+          "line": 40
+        },
+        {
+          "origin": "dist/compare/housora-vs-planner5d.html",
+          "line": 40
+        },
+        {
+          "origin": "dist/compare/housora-vs-reimaginehome.html",
+          "line": 40
+        },
+        {
+          "origin": "dist/contact.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/cookies.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/delete-account.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/enterprise.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 40
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/faq.html",
+          "line": 40
+        },
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 42
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/layout-boost.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/pricing.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/privacy.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/projects.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/reference-style.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/refund-policy.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/sign-in.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/sign-out.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/sign-up.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/terms.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/video-walkthrough.html",
+          "line": 41
+        },
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 41
+        }
+      ],
+      "file": "dist/static/css/style.css",
+      "present": true,
+      "placeholder": false
+    },
+    {
+      "path": "/static/images/bathroom-after.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 186
+        },
+        {
+          "origin": "dist/blog.html",
+          "line": 207
+        },
+        {
+          "origin": "dist/blog/choosing-furniture-with-confidence.html",
+          "line": 175
+        }
+      ],
+      "file": "dist/static/images/bathroom-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/bathroom-minimalist.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 218
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 218
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 221
+        }
+      ],
+      "file": "dist/static/images/bathroom-minimalist.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/before-after-comparison.jpg",
+      "origins": [
+        {
+          "origin": "dist/sign-in.html",
+          "line": 189
+        },
+        {
+          "origin": "dist/sign-up.html",
+          "line": 190
+        }
+      ],
+      "file": "dist/static/images/before-after-comparison.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/door-arched.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/door-arched.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/door-black-crittall.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 186
+        },
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 218
+        },
+        {
+          "origin": "dist/blog.html",
+          "line": 235
+        },
+        {
+          "origin": "dist/blog/black-doors-without-regret.html",
+          "line": 175
+        }
+      ],
+      "file": "dist/static/images/door-black-crittall.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/door-classic-panelled.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/door-classic-panelled.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/door-french-glass.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 186
+        },
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/door-french-glass.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/door-modern-flush.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 186
+        },
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/door-modern-flush.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/door-pivot.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 186
+        },
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/door-pivot.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/door-shaker.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/door-shaker.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/door-sliding-barn.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/door-sliding-barn.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/exterior-after.jpg",
+      "origins": [
+        {
+          "origin": "dist/blog.html",
+          "line": 179
+        },
+        {
+          "origin": "dist/blog/exterior-colour-palettes.html",
+          "line": 175
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 186
+        }
+      ],
+      "file": "dist/static/images/exterior-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/floor-restyle-after.jpg",
+      "origins": [
+        {
+          "origin": "dist/design.html",
+          "line": 197
+        },
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 187
+        }
+      ],
+      "file": "dist/static/images/floor-restyle-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/floorplan-after.jpg",
+      "origins": [
+        {
+          "origin": "dist/index.html",
+          "line": 411
+        }
+      ],
+      "file": "dist/static/images/floorplan-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-barn.jpg",
+      "origins": [
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 186
+        }
+      ],
+      "file": "dist/static/images/gallery-barn.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-black-frame.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 186
+        }
+      ],
+      "file": "dist/static/images/gallery-black-frame.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-colonial.jpg",
+      "origins": [
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 186
+        }
+      ],
+      "file": "dist/static/images/gallery-colonial.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-cottage.jpg",
+      "origins": [
+        {
+          "origin": "dist/garden-design.html",
+          "line": 186
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 198
+        }
+      ],
+      "file": "dist/static/images/gallery-cottage.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-crittall.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 186
+        }
+      ],
+      "file": "dist/static/images/gallery-crittall.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-exposed-brick.jpg",
+      "origins": [
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 186
+        }
+      ],
+      "file": "dist/static/images/gallery-exposed-brick.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-floating.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 186
+        }
+      ],
+      "file": "dist/static/images/gallery-floating.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-french-glass.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 186
+        }
+      ],
+      "file": "dist/static/images/gallery-french-glass.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-glass-railing.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 186
+        }
+      ],
+      "file": "dist/static/images/gallery-glass-railing.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-handleless.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 186
+        }
+      ],
+      "file": "dist/static/images/gallery-handleless.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-modern-oak.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 186
+        }
+      ],
+      "file": "dist/static/images/gallery-modern-oak.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-modern-spa.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 186
+        },
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 186
+        }
+      ],
+      "file": "dist/static/images/gallery-modern-spa.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-modern.jpg",
+      "origins": [
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 186
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 198
+        }
+      ],
+      "file": "dist/static/images/gallery-modern.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-natural.jpg",
+      "origins": [
+        {
+          "origin": "dist/garden-design.html",
+          "line": 186
+        }
+      ],
+      "file": "dist/static/images/gallery-natural.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-oak-chevron.jpg",
+      "origins": [
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 187
+        }
+      ],
+      "file": "dist/static/images/gallery-oak-chevron.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-oak-herringbone.jpg",
+      "origins": [
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 187
+        }
+      ],
+      "file": "dist/static/images/gallery-oak-herringbone.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-polished-concrete.jpg",
+      "origins": [
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 187
+        }
+      ],
+      "file": "dist/static/images/gallery-polished-concrete.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-sage-shaker.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 186
+        }
+      ],
+      "file": "dist/static/images/gallery-sage-shaker.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-stone.jpg",
+      "origins": [
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 186
+        }
+      ],
+      "file": "dist/static/images/gallery-stone.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-tropical.jpg",
+      "origins": [
+        {
+          "origin": "dist/garden-design.html",
+          "line": 186
+        }
+      ],
+      "file": "dist/static/images/gallery-tropical.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-white-marble.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 186
+        }
+      ],
+      "file": "dist/static/images/gallery-white-marble.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-wood-paneling.jpg",
+      "origins": [
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 186
+        }
+      ],
+      "file": "dist/static/images/gallery-wood-paneling.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/gallery-wood.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 186
+        }
+      ],
+      "file": "dist/static/images/gallery-wood.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/garden-after.jpg",
+      "origins": [
+        {
+          "origin": "dist/blog.html",
+          "line": 214
+        },
+        {
+          "origin": "dist/blog/garden-design-brief.html",
+          "line": 175
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 186
+        }
+      ],
+      "file": "dist/static/images/garden-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/hero-after.jpg",
+      "origins": [
+        {
+          "origin": "dist/index.html",
+          "line": 198
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 233
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 189
+        }
+      ],
+      "file": "dist/static/images/hero-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/hero-slide-1.jpg",
+      "origins": [
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 186
+        },
+        {
+          "origin": "dist/layout-boost.html",
+          "line": 186
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 187
+        },
+        {
+          "origin": "dist/video-walkthrough.html",
+          "line": 187
+        }
+      ],
+      "file": "dist/static/images/hero-slide-1.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/hero-slide-2.jpg",
+      "origins": [
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 186
+        },
+        {
+          "origin": "dist/layout-boost.html",
+          "line": 186
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 187
+        },
+        {
+          "origin": "dist/video-walkthrough.html",
+          "line": 187
+        }
+      ],
+      "file": "dist/static/images/hero-slide-2.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/hero-slide-3.jpg",
+      "origins": [
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 186
+        },
+        {
+          "origin": "dist/layout-boost.html",
+          "line": 186
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 187
+        },
+        {
+          "origin": "dist/video-walkthrough.html",
+          "line": 187
+        }
+      ],
+      "file": "dist/static/images/hero-slide-3.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/hero-slide-4.jpg",
+      "origins": [
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 186
+        },
+        {
+          "origin": "dist/layout-boost.html",
+          "line": 186
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 187
+        },
+        {
+          "origin": "dist/video-walkthrough.html",
+          "line": 187
+        }
+      ],
+      "file": "dist/static/images/hero-slide-4.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/interior-after.jpg",
+      "origins": [
+        {
+          "origin": "dist/blog.html",
+          "line": 186
+        },
+        {
+          "origin": "dist/blog/planning-a-room-redesign.html",
+          "line": 175
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 192
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 219
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 222
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 226
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 249
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 253
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 285
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 289
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 294
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 298
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 198
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 233
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 189
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 221
+        }
+      ],
+      "file": "dist/static/images/interior-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/interior-balcony.jpg",
+      "origins": [
+        {
+          "origin": "dist/design.html",
+          "line": 221
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 221
+        }
+      ],
+      "file": "dist/static/images/interior-balcony.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/interior-before.jpg",
+      "origins": [
+        {
+          "origin": "dist/design.html",
+          "line": 194
+        }
+      ],
+      "file": "dist/static/images/interior-before.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/interior-coastal.jpg",
+      "origins": [
+        {
+          "origin": "dist/examples.html",
+          "line": 267
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 271
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 225
+        }
+      ],
+      "file": "dist/static/images/interior-coastal.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/interior-industrial.jpg",
+      "origins": [
+        {
+          "origin": "dist/design.html",
+          "line": 232
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 240
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 244
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 225
+        }
+      ],
+      "file": "dist/static/images/interior-industrial.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/kitchen-after.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 186
+        },
+        {
+          "origin": "dist/blog.html",
+          "line": 200
+        },
+        {
+          "origin": "dist/blog/architecture-prompt-basics.html",
+          "line": 175
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 190
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 198
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 217
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 276
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 280
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 198
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 233
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 189
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 221
+        }
+      ],
+      "file": "dist/static/images/kitchen-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/kitchen-before.jpg",
+      "origins": [
+        {
+          "origin": "dist/design.html",
+          "line": 191
+        }
+      ],
+      "file": "dist/static/images/kitchen-before.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/layout-after.jpg",
+      "origins": [
+        {
+          "origin": "dist/blog.html",
+          "line": 221
+        },
+        {
+          "origin": "dist/blog/room-walkthrough-storytelling.html",
+          "line": 175
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 231
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 235
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 303
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 307
+        }
+      ],
+      "file": "dist/static/images/layout-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/room-after.jpg",
+      "origins": [
+        {
+          "origin": "dist/app/home.html",
+          "line": 183
+        },
+        {
+          "origin": "dist/blog.html",
+          "line": 193
+        },
+        {
+          "origin": "dist/blog/photo-to-video-room-tour.html",
+          "line": 175
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 193
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 213
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 217
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 258
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 262
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 198
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 233
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 276
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 417
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 189
+        }
+      ],
+      "file": "dist/static/images/room-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/room-bedroom.jpg",
+      "origins": [
+        {
+          "origin": "dist/design.html",
+          "line": 215
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 220
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 198
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 198
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 221
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 221
+        }
+      ],
+      "file": "dist/static/images/room-bedroom.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/room-before.jpg",
+      "origins": [
+        {
+          "origin": "dist/design.html",
+          "line": 184
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 196
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 192
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 198
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 277
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 416
+        }
+      ],
+      "file": "dist/static/images/room-before.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/room-dining.jpg",
+      "origins": [
+        {
+          "origin": "dist/design.html",
+          "line": 216
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 198
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 221
+        }
+      ],
+      "file": "dist/static/images/room-dining.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/room-living.jpg",
+      "origins": [
+        {
+          "origin": "dist/design.html",
+          "line": 214
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 221
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 221
+        }
+      ],
+      "file": "dist/static/images/room-living.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/room-preview-1.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 211
+        },
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 213
+        },
+        {
+          "origin": "dist/layout-boost.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 211
+        },
+        {
+          "origin": "dist/video-walkthrough.html",
+          "line": 211
+        },
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 210
+        }
+      ],
+      "file": "dist/static/images/room-preview-1.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/room-preview-2.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 211
+        },
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 213
+        },
+        {
+          "origin": "dist/layout-boost.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 211
+        },
+        {
+          "origin": "dist/video-walkthrough.html",
+          "line": 211
+        },
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 210
+        }
+      ],
+      "file": "dist/static/images/room-preview-2.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/room-preview-3.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 211
+        },
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 213
+        },
+        {
+          "origin": "dist/layout-boost.html",
+          "line": 210
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 211
+        },
+        {
+          "origin": "dist/video-walkthrough.html",
+          "line": 211
+        },
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 210
+        }
+      ],
+      "file": "dist/static/images/room-preview-3.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-airy.jpg",
+      "origins": [
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 226
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 219
+        }
+      ],
+      "file": "dist/static/images/s-airy.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-arched-win.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-arched-win.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-art-deco.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 218
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 222
+        }
+      ],
+      "file": "dist/static/images/s-art-deco.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-bay.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-bay.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-black-frame.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-black-frame.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-brick.jpg",
+      "origins": [
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-brick.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-chevron.jpg",
+      "origins": [
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 219
+        }
+      ],
+      "file": "dist/static/images/s-chevron.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-classic-marble.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-classic-marble.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-concrete.jpg",
+      "origins": [
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 218
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 222
+        },
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 219
+        }
+      ],
+      "file": "dist/static/images/s-concrete.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-cottage.jpg",
+      "origins": [
+        {
+          "origin": "dist/garden-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-cottage.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-crittall-steel.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-crittall-steel.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-day-night.jpg",
+      "origins": [
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 226
+        }
+      ],
+      "file": "dist/static/images/s-day-night.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-dramatic-render.jpg",
+      "origins": [
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 226
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 219
+        }
+      ],
+      "file": "dist/static/images/s-dramatic-render.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-farmhouse-kit.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-farmhouse-kit.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-farmhouse.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 218
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 234
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 222
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 218
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 225
+        }
+      ],
+      "file": "dist/static/images/s-farmhouse.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-floating.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-floating.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-floor-ceiling.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-floor-ceiling.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-georgian.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-georgian.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-glass.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-glass.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-handleless.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-handleless.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-herringbone.jpg",
+      "origins": [
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 219
+        }
+      ],
+      "file": "dist/static/images/s-herringbone.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-industrial-3d.jpg",
+      "origins": [
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-industrial-3d.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-industrial-kit.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-industrial-kit.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-industrial.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 218
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-industrial.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-japanese.jpg",
+      "origins": [
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 222
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-japanese.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-lightoak.jpg",
+      "origins": [
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 219
+        }
+      ],
+      "file": "dist/static/images/s-lightoak.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-luxury-3d.jpg",
+      "origins": [
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-luxury-3d.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-luxury-render.jpg",
+      "origins": [
+        {
+          "origin": "dist/design.html",
+          "line": 233
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 218
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 225
+        }
+      ],
+      "file": "dist/static/images/s-luxury-render.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-marble.jpg",
+      "origins": [
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 219
+        }
+      ],
+      "file": "dist/static/images/s-marble.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-mediterranean.jpg",
+      "origins": [
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 222
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-mediterranean.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-minimalist.jpg",
+      "origins": [
+        {
+          "origin": "dist/design.html",
+          "line": 231
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 222
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 218
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 225
+        }
+      ],
+      "file": "dist/static/images/s-minimalist.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-modern-3d.jpg",
+      "origins": [
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-modern-3d.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-modern-flush.jpg",
+      "origins": [
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-modern-flush.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-modern-spa.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-modern-spa.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-modern.jpg",
+      "origins": [
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 218
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 222
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 218
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 225
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 219
+        }
+      ],
+      "file": "dist/static/images/s-modern.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-modernoak.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-modernoak.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-navy.jpg",
+      "origins": [
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-navy.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-photo-real.jpg",
+      "origins": [
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-photo-real.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-photo-render.jpg",
+      "origins": [
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 219
+        }
+      ],
+      "file": "dist/static/images/s-photo-render.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-picture.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-picture.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-rustic-bath.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-rustic-bath.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-sage-shaker.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-sage-shaker.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-sage.jpg",
+      "origins": [
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-sage.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-scandi-3d.jpg",
+      "origins": [
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 218
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 225
+        }
+      ],
+      "file": "dist/static/images/s-scandi-3d.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-scandi-bath.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-scandi-bath.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-scandi-kit.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-scandi-kit.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-spiral.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-spiral.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-stone.jpg",
+      "origins": [
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-stone.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-subway.jpg",
+      "origins": [
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-subway.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-timeless-white.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-timeless-white.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-traditional.jpg",
+      "origins": [
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-traditional.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-tropical.jpg",
+      "origins": [
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 222
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 218
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-tropical.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-two-tone.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-two-tone.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-walnut.jpg",
+      "origins": [
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 219
+        }
+      ],
+      "file": "dist/static/images/s-walnut.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-warm-3d.jpg",
+      "origins": [
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-warm-3d.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-warm-min.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 218
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 230
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 225
+        }
+      ],
+      "file": "dist/static/images/s-warm-min.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-warm-render.jpg",
+      "origins": [
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 219
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 219
+        }
+      ],
+      "file": "dist/static/images/s-warm-render.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-warm.jpg",
+      "origins": [
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 226
+        }
+      ],
+      "file": "dist/static/images/s-warm.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-wood-frame.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-wood-frame.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/s-wood.jpg",
+      "origins": [
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 218
+        }
+      ],
+      "file": "dist/static/images/s-wood.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/stairs-after.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 186
+        }
+      ],
+      "file": "dist/static/images/stairs-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/step1.jpg",
+      "origins": [
+        {
+          "origin": "dist/index.html",
+          "line": 377
+        }
+      ],
+      "file": "dist/static/images/step1.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/step2.jpg",
+      "origins": [
+        {
+          "origin": "dist/index.html",
+          "line": 384
+        }
+      ],
+      "file": "dist/static/images/step2.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/step3.jpg",
+      "origins": [
+        {
+          "origin": "dist/index.html",
+          "line": 391
+        }
+      ],
+      "file": "dist/static/images/step3.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/style-coastal.jpg",
+      "origins": [
+        {
+          "origin": "dist/design.html",
+          "line": 229
+        }
+      ],
+      "file": "dist/static/images/style-coastal.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/style-modern.jpg",
+      "origins": [
+        {
+          "origin": "dist/design.html",
+          "line": 228
+        }
+      ],
+      "file": "dist/static/images/style-modern.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/style-scandi.jpg",
+      "origins": [
+        {
+          "origin": "dist/design.html",
+          "line": 227
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 198
+        }
+      ],
+      "file": "dist/static/images/style-scandi.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/tools/bathroom-design-hero.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 309
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 343
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 286
+        }
+      ],
+      "file": "dist/static/images/tools/bathroom-design-hero.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/tools/doors-design-hero.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 295
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 328
+        }
+      ],
+      "file": "dist/static/images/tools/doors-design-hero.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/tools/exterior-design-hero.jpg",
+      "origins": [
+        {
+          "origin": "dist/garden-design.html",
+          "line": 307
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 348
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 287
+        }
+      ],
+      "file": "dist/static/images/tools/exterior-design-hero.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/tools/floor-restyle-hero.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 295
+        },
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 310
+        },
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 303
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 313
+        },
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 296
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 308
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 318
+        },
+        {
+          "origin": "dist/layout-boost.html",
+          "line": 316
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 297
+        },
+        {
+          "origin": "dist/video-walkthrough.html",
+          "line": 302
+        },
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 306
+        }
+      ],
+      "file": "dist/static/images/tools/floor-restyle-hero.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/tools/floorplan-to-3d-hero.jpg",
+      "origins": [
+        {
+          "origin": "dist/index.html",
+          "line": 365
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 295
+        },
+        {
+          "origin": "dist/video-walkthrough.html",
+          "line": 300
+        }
+      ],
+      "file": "dist/static/images/tools/floorplan-to-3d-hero.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/tools/garden-design-hero.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 305
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 311
+        },
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 309
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 353
+        },
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 308
+        }
+      ],
+      "file": "dist/static/images/tools/garden-design-hero.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/tools/interior-design-hero.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 293
+        },
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 293
+        },
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 308
+        },
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 302
+        },
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 293
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 207
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 310
+        },
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 306
+        },
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 293
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 306
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 308
+        },
+        {
+          "origin": "dist/layout-boost.html",
+          "line": 314
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 294
+        },
+        {
+          "origin": "dist/video-walkthrough.html",
+          "line": 299
+        },
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 305
+        }
+      ],
+      "file": "dist/static/images/tools/interior-design-hero.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/tools/kitchen-design-hero.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 294
+        },
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 294
+        },
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 294
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 338
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 285
+        }
+      ],
+      "file": "dist/static/images/tools/kitchen-design-hero.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/tools/layout-boost-hero.jpg",
+      "origins": [
+        {
+          "origin": "dist/index.html",
+          "line": 358
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 288
+        }
+      ],
+      "file": "dist/static/images/tools/layout-boost-hero.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/tools/photo-to-render-hero.jpg",
+      "origins": [
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 294
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 368
+        },
+        {
+          "origin": "dist/video-walkthrough.html",
+          "line": 301
+        }
+      ],
+      "file": "dist/static/images/tools/photo-to-render-hero.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/tools/stairs-design-hero.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 296
+        },
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 296
+        },
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 308
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 323
+        },
+        {
+          "origin": "dist/layout-boost.html",
+          "line": 317
+        },
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 307
+        }
+      ],
+      "file": "dist/static/images/tools/stairs-design-hero.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/tools/video-walkthrough-hero.jpg",
+      "origins": [
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 295
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 362
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 296
+        }
+      ],
+      "file": "dist/static/images/tools/video-walkthrough-hero.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/tools/wall-texture-hero.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 296
+        },
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 311
+        },
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 304
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 312
+        },
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 307
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 309
+        },
+        {
+          "origin": "dist/layout-boost.html",
+          "line": 315
+        }
+      ],
+      "file": "dist/static/images/tools/wall-texture-hero.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/tools/walls-texture-hero.jpg",
+      "origins": [
+        {
+          "origin": "dist/index.html",
+          "line": 313
+        }
+      ],
+      "file": "dist/static/images/tools/walls-texture-hero.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/tools/windows-design-hero.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 295
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 333
+        }
+      ],
+      "file": "dist/static/images/tools/windows-design-hero.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/try-after.jpg",
+      "origins": [
+        {
+          "origin": "dist/index.html",
+          "line": 233
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 281
+        }
+      ],
+      "file": "dist/static/images/try-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/wall-after.jpg",
+      "origins": [
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 186
+        }
+      ],
+      "file": "dist/static/images/wall-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/walls-texture-after.jpg",
+      "origins": [
+        {
+          "origin": "dist/blog.html",
+          "line": 228
+        },
+        {
+          "origin": "dist/blog/comparing-ai-design-tools.html",
+          "line": 175
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 195
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 312
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 316
+        }
+      ],
+      "file": "dist/static/images/walls-texture-after.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/images/windows-before.jpg",
+      "origins": [
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 186
+        }
+      ],
+      "file": "dist/static/images/windows-before.jpg",
+      "present": true,
+      "placeholder": true
+    },
+    {
+      "path": "/static/js/clerk-bootstrap.js",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 432
+        },
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 432
+        },
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 447
+        },
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 441
+        },
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 432
+        },
+        {
+          "origin": "dist/app/home.html",
+          "line": 248
+        },
+        {
+          "origin": "dist/blog.html",
+          "line": 304
+        },
+        {
+          "origin": "dist/blog/architecture-prompt-basics.html",
+          "line": 236
+        },
+        {
+          "origin": "dist/blog/black-doors-without-regret.html",
+          "line": 236
+        },
+        {
+          "origin": "dist/blog/choosing-furniture-with-confidence.html",
+          "line": 236
+        },
+        {
+          "origin": "dist/blog/comparing-ai-design-tools.html",
+          "line": 236
+        },
+        {
+          "origin": "dist/blog/exterior-colour-palettes.html",
+          "line": 236
+        },
+        {
+          "origin": "dist/blog/garden-design-brief.html",
+          "line": 236
+        },
+        {
+          "origin": "dist/blog/photo-to-video-room-tour.html",
+          "line": 236
+        },
+        {
+          "origin": "dist/blog/planning-a-room-redesign.html",
+          "line": 236
+        },
+        {
+          "origin": "dist/blog/room-walkthrough-storytelling.html",
+          "line": 236
+        },
+        {
+          "origin": "dist/compare/housora-vs-homedesigns.html",
+          "line": 294
+        },
+        {
+          "origin": "dist/compare/housora-vs-homestyler.html",
+          "line": 294
+        },
+        {
+          "origin": "dist/compare/housora-vs-mnml.html",
+          "line": 294
+        },
+        {
+          "origin": "dist/compare/housora-vs-planner5d.html",
+          "line": 294
+        },
+        {
+          "origin": "dist/compare/housora-vs-reimaginehome.html",
+          "line": 294
+        },
+        {
+          "origin": "dist/contact.html",
+          "line": 262
+        },
+        {
+          "origin": "dist/cookies.html",
+          "line": 247
+        },
+        {
+          "origin": "dist/delete-account.html",
+          "line": 268
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 344
+        },
+        {
+          "origin": "dist/enterprise.html",
+          "line": 271
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 375
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 449
+        },
+        {
+          "origin": "dist/faq.html",
+          "line": 298
+        },
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 445
+        },
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 432
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 445
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 682
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 424
+        },
+        {
+          "origin": "dist/layout-boost.html",
+          "line": 388
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 433
+        },
+        {
+          "origin": "dist/pricing.html",
+          "line": 284
+        },
+        {
+          "origin": "dist/privacy.html",
+          "line": 267
+        },
+        {
+          "origin": "dist/projects.html",
+          "line": 249
+        },
+        {
+          "origin": "dist/reference-style.html",
+          "line": 246
+        },
+        {
+          "origin": "dist/refund-policy.html",
+          "line": 241
+        },
+        {
+          "origin": "dist/sign-in.html",
+          "line": 326
+        },
+        {
+          "origin": "dist/sign-out.html",
+          "line": 255
+        },
+        {
+          "origin": "dist/sign-up.html",
+          "line": 324
+        },
+        {
+          "origin": "dist/terms.html",
+          "line": 260
+        },
+        {
+          "origin": "dist/video-walkthrough.html",
+          "line": 438
+        },
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 444
+        }
+      ],
+      "file": "dist/static/js/clerk-bootstrap.js",
+      "present": true,
+      "placeholder": false
+    },
+    {
+      "path": "/static/js/i18n.js",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 601
+        },
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 601
+        },
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 616
+        },
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 610
+        },
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 601
+        },
+        {
+          "origin": "dist/app/home.html",
+          "line": 417
+        },
+        {
+          "origin": "dist/blog.html",
+          "line": 473
+        },
+        {
+          "origin": "dist/blog/architecture-prompt-basics.html",
+          "line": 405
+        },
+        {
+          "origin": "dist/blog/black-doors-without-regret.html",
+          "line": 405
+        },
+        {
+          "origin": "dist/blog/choosing-furniture-with-confidence.html",
+          "line": 405
+        },
+        {
+          "origin": "dist/blog/comparing-ai-design-tools.html",
+          "line": 405
+        },
+        {
+          "origin": "dist/blog/exterior-colour-palettes.html",
+          "line": 405
+        },
+        {
+          "origin": "dist/blog/garden-design-brief.html",
+          "line": 405
+        },
+        {
+          "origin": "dist/blog/photo-to-video-room-tour.html",
+          "line": 405
+        },
+        {
+          "origin": "dist/blog/planning-a-room-redesign.html",
+          "line": 405
+        },
+        {
+          "origin": "dist/blog/room-walkthrough-storytelling.html",
+          "line": 405
+        },
+        {
+          "origin": "dist/compare/housora-vs-homedesigns.html",
+          "line": 463
+        },
+        {
+          "origin": "dist/compare/housora-vs-homestyler.html",
+          "line": 463
+        },
+        {
+          "origin": "dist/compare/housora-vs-mnml.html",
+          "line": 463
+        },
+        {
+          "origin": "dist/compare/housora-vs-planner5d.html",
+          "line": 463
+        },
+        {
+          "origin": "dist/compare/housora-vs-reimaginehome.html",
+          "line": 463
+        },
+        {
+          "origin": "dist/contact.html",
+          "line": 431
+        },
+        {
+          "origin": "dist/cookies.html",
+          "line": 416
+        },
+        {
+          "origin": "dist/delete-account.html",
+          "line": 437
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 513
+        },
+        {
+          "origin": "dist/enterprise.html",
+          "line": 440
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 544
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 618
+        },
+        {
+          "origin": "dist/faq.html",
+          "line": 467
+        },
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 614
+        },
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 601
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 614
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 851
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 593
+        },
+        {
+          "origin": "dist/layout-boost.html",
+          "line": 557
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 602
+        },
+        {
+          "origin": "dist/pricing.html",
+          "line": 453
+        },
+        {
+          "origin": "dist/privacy.html",
+          "line": 436
+        },
+        {
+          "origin": "dist/projects.html",
+          "line": 418
+        },
+        {
+          "origin": "dist/reference-style.html",
+          "line": 415
+        },
+        {
+          "origin": "dist/refund-policy.html",
+          "line": 410
+        },
+        {
+          "origin": "dist/sign-in.html",
+          "line": 495
+        },
+        {
+          "origin": "dist/sign-out.html",
+          "line": 424
+        },
+        {
+          "origin": "dist/sign-up.html",
+          "line": 493
+        },
+        {
+          "origin": "dist/terms.html",
+          "line": 429
+        },
+        {
+          "origin": "dist/video-walkthrough.html",
+          "line": 607
+        },
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 613
+        }
+      ],
+      "file": "dist/static/js/i18n.js",
+      "present": true,
+      "placeholder": false
+    },
+    {
+      "path": "/static/js/main.js",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 602
+        },
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 602
+        },
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 617
+        },
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 611
+        },
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 602
+        },
+        {
+          "origin": "dist/app/home.html",
+          "line": 418
+        },
+        {
+          "origin": "dist/blog.html",
+          "line": 474
+        },
+        {
+          "origin": "dist/blog/architecture-prompt-basics.html",
+          "line": 406
+        },
+        {
+          "origin": "dist/blog/black-doors-without-regret.html",
+          "line": 406
+        },
+        {
+          "origin": "dist/blog/choosing-furniture-with-confidence.html",
+          "line": 406
+        },
+        {
+          "origin": "dist/blog/comparing-ai-design-tools.html",
+          "line": 406
+        },
+        {
+          "origin": "dist/blog/exterior-colour-palettes.html",
+          "line": 406
+        },
+        {
+          "origin": "dist/blog/garden-design-brief.html",
+          "line": 406
+        },
+        {
+          "origin": "dist/blog/photo-to-video-room-tour.html",
+          "line": 406
+        },
+        {
+          "origin": "dist/blog/planning-a-room-redesign.html",
+          "line": 406
+        },
+        {
+          "origin": "dist/blog/room-walkthrough-storytelling.html",
+          "line": 406
+        },
+        {
+          "origin": "dist/compare/housora-vs-homedesigns.html",
+          "line": 464
+        },
+        {
+          "origin": "dist/compare/housora-vs-homestyler.html",
+          "line": 464
+        },
+        {
+          "origin": "dist/compare/housora-vs-mnml.html",
+          "line": 464
+        },
+        {
+          "origin": "dist/compare/housora-vs-planner5d.html",
+          "line": 464
+        },
+        {
+          "origin": "dist/compare/housora-vs-reimaginehome.html",
+          "line": 464
+        },
+        {
+          "origin": "dist/contact.html",
+          "line": 432
+        },
+        {
+          "origin": "dist/cookies.html",
+          "line": 417
+        },
+        {
+          "origin": "dist/delete-account.html",
+          "line": 438
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 514
+        },
+        {
+          "origin": "dist/enterprise.html",
+          "line": 441
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 545
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 619
+        },
+        {
+          "origin": "dist/faq.html",
+          "line": 468
+        },
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 615
+        },
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 602
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 615
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 852
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 594
+        },
+        {
+          "origin": "dist/layout-boost.html",
+          "line": 558
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 603
+        },
+        {
+          "origin": "dist/pricing.html",
+          "line": 454
+        },
+        {
+          "origin": "dist/privacy.html",
+          "line": 437
+        },
+        {
+          "origin": "dist/projects.html",
+          "line": 419
+        },
+        {
+          "origin": "dist/reference-style.html",
+          "line": 416
+        },
+        {
+          "origin": "dist/refund-policy.html",
+          "line": 411
+        },
+        {
+          "origin": "dist/sign-in.html",
+          "line": 496
+        },
+        {
+          "origin": "dist/sign-out.html",
+          "line": 425
+        },
+        {
+          "origin": "dist/sign-up.html",
+          "line": 494
+        },
+        {
+          "origin": "dist/terms.html",
+          "line": 430
+        },
+        {
+          "origin": "dist/video-walkthrough.html",
+          "line": 608
+        },
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 614
+        }
+      ],
+      "file": "dist/static/js/main.js",
+      "present": true,
+      "placeholder": false
+    },
+    {
+      "path": "/static/vendor/clerk-js/clerk.browser.js",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 431
+        },
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 431
+        },
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 446
+        },
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 440
+        },
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 431
+        },
+        {
+          "origin": "dist/app/home.html",
+          "line": 247
+        },
+        {
+          "origin": "dist/blog.html",
+          "line": 303
+        },
+        {
+          "origin": "dist/blog/architecture-prompt-basics.html",
+          "line": 235
+        },
+        {
+          "origin": "dist/blog/black-doors-without-regret.html",
+          "line": 235
+        },
+        {
+          "origin": "dist/blog/choosing-furniture-with-confidence.html",
+          "line": 235
+        },
+        {
+          "origin": "dist/blog/comparing-ai-design-tools.html",
+          "line": 235
+        },
+        {
+          "origin": "dist/blog/exterior-colour-palettes.html",
+          "line": 235
+        },
+        {
+          "origin": "dist/blog/garden-design-brief.html",
+          "line": 235
+        },
+        {
+          "origin": "dist/blog/photo-to-video-room-tour.html",
+          "line": 235
+        },
+        {
+          "origin": "dist/blog/planning-a-room-redesign.html",
+          "line": 235
+        },
+        {
+          "origin": "dist/blog/room-walkthrough-storytelling.html",
+          "line": 235
+        },
+        {
+          "origin": "dist/compare/housora-vs-homedesigns.html",
+          "line": 293
+        },
+        {
+          "origin": "dist/compare/housora-vs-homestyler.html",
+          "line": 293
+        },
+        {
+          "origin": "dist/compare/housora-vs-mnml.html",
+          "line": 293
+        },
+        {
+          "origin": "dist/compare/housora-vs-planner5d.html",
+          "line": 293
+        },
+        {
+          "origin": "dist/compare/housora-vs-reimaginehome.html",
+          "line": 293
+        },
+        {
+          "origin": "dist/contact.html",
+          "line": 261
+        },
+        {
+          "origin": "dist/cookies.html",
+          "line": 246
+        },
+        {
+          "origin": "dist/delete-account.html",
+          "line": 267
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 343
+        },
+        {
+          "origin": "dist/enterprise.html",
+          "line": 270
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 374
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 448
+        },
+        {
+          "origin": "dist/faq.html",
+          "line": 297
+        },
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 444
+        },
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 431
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 444
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 681
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 423
+        },
+        {
+          "origin": "dist/layout-boost.html",
+          "line": 387
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 432
+        },
+        {
+          "origin": "dist/pricing.html",
+          "line": 283
+        },
+        {
+          "origin": "dist/privacy.html",
+          "line": 266
+        },
+        {
+          "origin": "dist/projects.html",
+          "line": 248
+        },
+        {
+          "origin": "dist/reference-style.html",
+          "line": 245
+        },
+        {
+          "origin": "dist/refund-policy.html",
+          "line": 240
+        },
+        {
+          "origin": "dist/sign-in.html",
+          "line": 325
+        },
+        {
+          "origin": "dist/sign-out.html",
+          "line": 254
+        },
+        {
+          "origin": "dist/sign-up.html",
+          "line": 323
+        },
+        {
+          "origin": "dist/terms.html",
+          "line": 259
+        },
+        {
+          "origin": "dist/video-walkthrough.html",
+          "line": 437
+        },
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 443
+        }
+      ],
+      "file": "dist/static/vendor/clerk-js/clerk.browser.js",
+      "present": true,
+      "placeholder": false
+    },
+    {
+      "path": "/static/vendor/clerk-ui/ui.browser.js",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 430
+        },
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 430
+        },
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 445
+        },
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 439
+        },
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 430
+        },
+        {
+          "origin": "dist/app/home.html",
+          "line": 246
+        },
+        {
+          "origin": "dist/blog.html",
+          "line": 302
+        },
+        {
+          "origin": "dist/blog/architecture-prompt-basics.html",
+          "line": 234
+        },
+        {
+          "origin": "dist/blog/black-doors-without-regret.html",
+          "line": 234
+        },
+        {
+          "origin": "dist/blog/choosing-furniture-with-confidence.html",
+          "line": 234
+        },
+        {
+          "origin": "dist/blog/comparing-ai-design-tools.html",
+          "line": 234
+        },
+        {
+          "origin": "dist/blog/exterior-colour-palettes.html",
+          "line": 234
+        },
+        {
+          "origin": "dist/blog/garden-design-brief.html",
+          "line": 234
+        },
+        {
+          "origin": "dist/blog/photo-to-video-room-tour.html",
+          "line": 234
+        },
+        {
+          "origin": "dist/blog/planning-a-room-redesign.html",
+          "line": 234
+        },
+        {
+          "origin": "dist/blog/room-walkthrough-storytelling.html",
+          "line": 234
+        },
+        {
+          "origin": "dist/compare/housora-vs-homedesigns.html",
+          "line": 292
+        },
+        {
+          "origin": "dist/compare/housora-vs-homestyler.html",
+          "line": 292
+        },
+        {
+          "origin": "dist/compare/housora-vs-mnml.html",
+          "line": 292
+        },
+        {
+          "origin": "dist/compare/housora-vs-planner5d.html",
+          "line": 292
+        },
+        {
+          "origin": "dist/compare/housora-vs-reimaginehome.html",
+          "line": 292
+        },
+        {
+          "origin": "dist/contact.html",
+          "line": 260
+        },
+        {
+          "origin": "dist/cookies.html",
+          "line": 245
+        },
+        {
+          "origin": "dist/delete-account.html",
+          "line": 266
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 342
+        },
+        {
+          "origin": "dist/enterprise.html",
+          "line": 269
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 373
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 447
+        },
+        {
+          "origin": "dist/faq.html",
+          "line": 296
+        },
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 443
+        },
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 430
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 443
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 680
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 422
+        },
+        {
+          "origin": "dist/layout-boost.html",
+          "line": 386
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 431
+        },
+        {
+          "origin": "dist/pricing.html",
+          "line": 282
+        },
+        {
+          "origin": "dist/privacy.html",
+          "line": 265
+        },
+        {
+          "origin": "dist/projects.html",
+          "line": 247
+        },
+        {
+          "origin": "dist/reference-style.html",
+          "line": 244
+        },
+        {
+          "origin": "dist/refund-policy.html",
+          "line": 239
+        },
+        {
+          "origin": "dist/sign-in.html",
+          "line": 324
+        },
+        {
+          "origin": "dist/sign-out.html",
+          "line": 253
+        },
+        {
+          "origin": "dist/sign-up.html",
+          "line": 322
+        },
+        {
+          "origin": "dist/terms.html",
+          "line": 258
+        },
+        {
+          "origin": "dist/video-walkthrough.html",
+          "line": 436
+        },
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 442
+        }
+      ],
+      "file": "dist/static/vendor/clerk-ui/ui.browser.js",
+      "present": true,
+      "placeholder": false
+    },
+    {
+      "path": "/static/vendor/posthog/posthog.js",
+      "origins": [
+        {
+          "origin": "dist/ai-bathroom-design.html",
+          "line": 433
+        },
+        {
+          "origin": "dist/ai-doors-design.html",
+          "line": 433
+        },
+        {
+          "origin": "dist/ai-kitchen-design.html",
+          "line": 448
+        },
+        {
+          "origin": "dist/ai-stairs-design.html",
+          "line": 442
+        },
+        {
+          "origin": "dist/ai-windows-design.html",
+          "line": 433
+        },
+        {
+          "origin": "dist/app/home.html",
+          "line": 249
+        },
+        {
+          "origin": "dist/blog.html",
+          "line": 305
+        },
+        {
+          "origin": "dist/blog/architecture-prompt-basics.html",
+          "line": 237
+        },
+        {
+          "origin": "dist/blog/black-doors-without-regret.html",
+          "line": 237
+        },
+        {
+          "origin": "dist/blog/choosing-furniture-with-confidence.html",
+          "line": 237
+        },
+        {
+          "origin": "dist/blog/comparing-ai-design-tools.html",
+          "line": 237
+        },
+        {
+          "origin": "dist/blog/exterior-colour-palettes.html",
+          "line": 237
+        },
+        {
+          "origin": "dist/blog/garden-design-brief.html",
+          "line": 237
+        },
+        {
+          "origin": "dist/blog/photo-to-video-room-tour.html",
+          "line": 237
+        },
+        {
+          "origin": "dist/blog/planning-a-room-redesign.html",
+          "line": 237
+        },
+        {
+          "origin": "dist/blog/room-walkthrough-storytelling.html",
+          "line": 237
+        },
+        {
+          "origin": "dist/compare/housora-vs-homedesigns.html",
+          "line": 295
+        },
+        {
+          "origin": "dist/compare/housora-vs-homestyler.html",
+          "line": 295
+        },
+        {
+          "origin": "dist/compare/housora-vs-mnml.html",
+          "line": 295
+        },
+        {
+          "origin": "dist/compare/housora-vs-planner5d.html",
+          "line": 295
+        },
+        {
+          "origin": "dist/compare/housora-vs-reimaginehome.html",
+          "line": 295
+        },
+        {
+          "origin": "dist/contact.html",
+          "line": 263
+        },
+        {
+          "origin": "dist/cookies.html",
+          "line": 248
+        },
+        {
+          "origin": "dist/delete-account.html",
+          "line": 269
+        },
+        {
+          "origin": "dist/design.html",
+          "line": 345
+        },
+        {
+          "origin": "dist/enterprise.html",
+          "line": 272
+        },
+        {
+          "origin": "dist/examples.html",
+          "line": 376
+        },
+        {
+          "origin": "dist/exterior-design.html",
+          "line": 450
+        },
+        {
+          "origin": "dist/faq.html",
+          "line": 299
+        },
+        {
+          "origin": "dist/floor-restyle.html",
+          "line": 446
+        },
+        {
+          "origin": "dist/floorplan-to-3d.html",
+          "line": 433
+        },
+        {
+          "origin": "dist/garden-design.html",
+          "line": 446
+        },
+        {
+          "origin": "dist/index.html",
+          "line": 683
+        },
+        {
+          "origin": "dist/interior-design.html",
+          "line": 425
+        },
+        {
+          "origin": "dist/layout-boost.html",
+          "line": 389
+        },
+        {
+          "origin": "dist/photo-to-render.html",
+          "line": 434
+        },
+        {
+          "origin": "dist/pricing.html",
+          "line": 285
+        },
+        {
+          "origin": "dist/privacy.html",
+          "line": 268
+        },
+        {
+          "origin": "dist/projects.html",
+          "line": 250
+        },
+        {
+          "origin": "dist/reference-style.html",
+          "line": 247
+        },
+        {
+          "origin": "dist/refund-policy.html",
+          "line": 242
+        },
+        {
+          "origin": "dist/sign-in.html",
+          "line": 327
+        },
+        {
+          "origin": "dist/sign-out.html",
+          "line": 256
+        },
+        {
+          "origin": "dist/sign-up.html",
+          "line": 325
+        },
+        {
+          "origin": "dist/terms.html",
+          "line": 261
+        },
+        {
+          "origin": "dist/video-walkthrough.html",
+          "line": 439
+        },
+        {
+          "origin": "dist/wall-texture.html",
+          "line": 445
+        }
+      ],
+      "file": "dist/static/vendor/posthog/posthog.js",
+      "present": true,
+      "placeholder": false
+    }
+  ]
+}

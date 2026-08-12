@@ -3,28 +3,74 @@
     var analytics = window.HousoraAnalytics = window.HousoraAnalytics || {};
     var initialized = false;
     var identifiedUserId = null;
+    var CONSENT_KEY = 'housora-consent-v2';
+    var CONSENT_VERSION = 2;
     function consent() {
         try {
-            var value = JSON.parse(localStorage.getItem('housora-consent-v1') || 'null');
-            if (value) return value;
-            var legacy = JSON.parse(localStorage.getItem('cookiebot-consent') || 'null');
-            if (legacy) return { necessary: true, preferences: !!legacy.preferences, analytics: !!legacy.statistics, marketing: !!legacy.marketing };
+            var value = JSON.parse(localStorage.getItem(CONSENT_KEY) || 'null');
+            if (!value || value.version !== CONSENT_VERSION || !value.expiresAt || value.expiresAt <= Date.now()) return null;
+            return value;
         } catch (_) { return null; }
-        return null;
     }
     analytics.isAllowed = function() { var value = consent(); return !!(value && value.analytics === true); };
+    analytics.consentHeader = function() {
+        var value = consent();
+        return value && value.analytics === true ? 'v2;analytics=1;timestamp=' + value.timestamp : 'v2;analytics=0';
+    };
     analytics.init = function() {
-        if (initialized || !analytics.isAllowed() || !window.posthog || !window.HousoraPostHog || !window.HousoraPostHog.key) return;
-        initialized = true;
-        window.posthog.init(window.HousoraPostHog.key, {
-            api_host: window.HousoraPostHog.host,
-            autocapture: true, capture_pageview: true, capture_pageleave: true,
-            disable_session_recording: false,
-            session_recording: { maskAllInputs: true, blockClass: 'ph-no-capture' },
-            persistence: 'localStorage+cookie', person_profiles: 'identified_only'
-        });
-        analytics.track('analytics_consent_granted');
+        if (!analytics.isAllowed() || !window.posthog || !window.HousoraPostHog || !window.HousoraPostHog.key || !window.HousoraPostHog.host) return;
+        if (!initialized) {
+            initialized = true;
+            window.posthog.init(window.HousoraPostHog.key, {
+                api_host: window.HousoraPostHog.host,
+                autocapture: false,
+                capture_pageview: false,
+                capture_pageleave: false,
+                capture_dead_clicks: false,
+                capture_exceptions: false,
+                capture_heatmaps: false,
+                capture_performance: false,
+                disable_session_recording: true,
+                disable_surveys: true,
+                advanced_disable_feature_flags_on_first_load: true,
+                opt_out_capturing_by_default: true,
+                opt_out_capturing_persistence_type: 'local_storage',
+                persistence: 'localStorage',
+                person_profiles: 'identified_only',
+                respect_dnt: true,
+                before_send: function(event) {
+                    if (!event || !event.properties) return event;
+                    ['$current_url', '$referrer'].forEach(function(key) {
+                        if (!event.properties[key]) return;
+                        try {
+                            var url = new URL(event.properties[key], window.location.origin);
+                            event.properties[key] = url.origin + url.pathname;
+                        } catch (_) { delete event.properties[key]; }
+                    });
+                    delete event.properties.$search_engine;
+                    delete event.properties.$search_keyword;
+                    return event;
+                }
+            });
+        }
+        try {
+            window.posthog.opt_in_capturing();
+            window.posthog.capture('$pageview', { $current_url: window.location.origin + window.location.pathname });
+        } catch (_) {}
         if (window.Clerk && window.Clerk.user) analytics.identify(window.Clerk.user);
+    };
+    analytics.applyConsent = function(isAllowed) {
+        if (isAllowed) {
+            analytics.init();
+            return;
+        }
+        identifiedUserId = null;
+        if (!initialized || !window.posthog) return;
+        try { if (window.posthog.stopSessionRecording) window.posthog.stopSessionRecording(); } catch (_) {}
+        try { window.posthog.reset(); } catch (_) {}
+        try { window.posthog.opt_out_capturing({ clear_persistence: true }); } catch (_) {
+            try { window.posthog.opt_out_capturing(); } catch (_) {}
+        }
     };
     analytics.track = function(name, properties) {
         if (!initialized || !window.posthog || !analytics.isAllowed()) return;
@@ -37,10 +83,18 @@
     };
     analytics.reset = function() { identifiedUserId = null; if (window.posthog && initialized) { try { window.posthog.reset(); } catch (_) {} } };
     window.addEventListener('clerk:ready', function(e) {
-        analytics.init();
+        if (analytics.isAllowed()) analytics.init();
         if (e.detail && e.detail.clerk) analytics.identify(e.detail.clerk.user);
     });
 })();
+
+function prefersReducedMotion() {
+    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+}
+
+function scrollBehavior() {
+    return prefersReducedMotion() ? 'auto' : 'smooth';
+}
 
 // ===== BEFORE/AFTER SLIDER =====
 function initSliders() {
@@ -52,11 +106,20 @@ function initSliders() {
 
         var isDragging = false;
 
+        handle.setAttribute('role', 'slider');
+        handle.setAttribute('tabindex', '0');
+        handle.setAttribute('aria-label', 'Before and after comparison');
+        handle.setAttribute('aria-orientation', 'horizontal');
+        handle.setAttribute('aria-valuemin', '5');
+        handle.setAttribute('aria-valuemax', '95');
+
         function updateSlider(pct) {
             pct = Math.max(5, Math.min(95, pct));
             handle.style.left = pct + '%';
             if (divider) divider.style.left = pct + '%';
             beforeLayer.style.clipPath = 'inset(0 ' + (100 - pct) + '% 0 0)';
+            handle.setAttribute('aria-valuenow', String(Math.round(pct)));
+            handle.setAttribute('aria-valuetext', Math.round(pct) + '% before image visible');
         }
 
         function getPct(clientX) {
@@ -100,6 +163,20 @@ function initSliders() {
             updateSlider(getPct(e.clientX));
         });
 
+        handle.addEventListener('keydown', function(e) {
+            var current = Number(handle.getAttribute('aria-valuenow')) || 15;
+            var next = current;
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') next -= 5;
+            else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') next += 5;
+            else if (e.key === 'PageDown') next -= 10;
+            else if (e.key === 'PageUp') next += 10;
+            else if (e.key === 'Home') next = 5;
+            else if (e.key === 'End') next = 95;
+            else return;
+            e.preventDefault();
+            updateSlider(next);
+        });
+
         // Set initial state (15% from left = 15% of image is "before")
         updateSlider(15);
     });
@@ -117,7 +194,7 @@ function initHeroSlideshow() {
     // CreatePage slideshow only so two timers do not animate the same images.
     if (document.body.classList.contains('page-tool')) return;
     var slides = document.querySelectorAll('.hero-desktop-slide');
-    if (slides.length <= 1) return;
+    if (slides.length <= 1 || prefersReducedMotion()) return;
     var current = 0;
     var mainInterval = null;
     function startSlideshow() {
@@ -142,7 +219,7 @@ function initHeroSlideshow() {
 function initMobileHeroSlideshow() {
     if (document.body.classList.contains('page-tool')) return;
     var slides = document.querySelectorAll('.hero-slide');
-    if (slides.length <= 1) return;
+    if (slides.length <= 1 || prefersReducedMotion()) return;
     var current = 0;
     setInterval(function() {
         slides[current].classList.remove('hero-slide--active');
@@ -166,20 +243,12 @@ function fileToBase64(file) {
 
 async function generateImage(prompt, file) {
     if (!file) throw new Error('Please upload a room image first.');
-    var reservation = null;
-    var signedIn = window.convexClient && window.Clerk && window.Clerk.user && window.Housora && (window.Housora.deductImages || window.Housora.deductCredits);
-    if (!signedIn) {
-        var guestUsed = false;
-        try { guestUsed = localStorage.getItem('housora_guest_generation_used') === '1'; } catch (_) {}
-        if (guestUsed) {
-            if (window.housoraOpenAuth) window.housoraOpenAuth('signup', { redirect: window.location.pathname + window.location.search });
-            throw new Error('Your free design has been used. Sign up or sign in to create another image.');
-        }
+    if (!window.Clerk || !window.Clerk.user || !window.Clerk.session) {
+        if (window.housoraOpenAuth) window.housoraOpenAuth('signup', { redirect: window.location.pathname + window.location.search });
+        throw new Error('Sign up or sign in to create a design.');
     }
-    if (signedIn) {
-        reservation = await (window.Housora.deductImages || window.Housora.deductCredits)(1);
-        if (!reservation) throw new Error('You do not have any image generations remaining on your plan.');
-    }
+    var sessionToken = await window.Clerk.session.getToken();
+    if (!sessionToken) throw new Error('Could not verify your session. Please sign in again.');
     var image = await fileToBase64(file);
     var endpoint = '/api/generate';
     var startedAt = Date.now();
@@ -187,12 +256,16 @@ async function generateImage(prompt, file) {
     try {
         var response = await fetch(endpoint, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + sessionToken,
+                'X-Housora-Analytics-Consent': window.HousoraAnalytics.consentHeader()
+            },
             body: JSON.stringify({ prompt: String(prompt || '').trim(), image: image })
         });
         if (!response.ok) {
             var payload = await response.json().catch(function() { return {}; });
-            throw new Error(payload.error || 'Generation failed.');
+            throw new Error((payload.error && payload.error.message) || 'Generation failed.');
         }
         var blob = await response.blob();
         if (!blob.size || !blob.type.startsWith('image/')) throw new Error('Image provider did not return an image.');
@@ -202,18 +275,9 @@ async function generateImage(prompt, file) {
             reader.onerror = function() { reject(new Error('Could not prepare the generated image.')); };
             reader.readAsDataURL(blob);
         });
-        if (reservation && reservation.generationId) {
-            await window.convexClient.mutation('users:completeGeneration', { generationId: reservation.generationId, outputImageUrl: resultUrl });
-        }
-        if (!signedIn) {
-            try { localStorage.setItem('housora_guest_generation_used', '1'); } catch (_) {}
-        }
         window.HousoraAnalytics.track('generation_succeeded', { duration_ms: Date.now() - startedAt });
         return resultUrl;
     } catch (error) {
-        if (reservation && reservation.generationId && window.convexClient) {
-            await window.convexClient.mutation('users:failGeneration', { generationId: reservation.generationId }).catch(function() {});
-        }
         window.HousoraAnalytics.track('generation_failed', { duration_ms: Date.now() - startedAt, error_code: error && error.message ? String(error.message).slice(0, 80) : 'unknown' });
         throw error;
     }
@@ -235,6 +299,21 @@ function initReferenceStyleTool() {
     var generateBtn = document.getElementById('referenceGenerateBtn');
     var referenceFile = null;
     var roomFile = null;
+    var errorEl = document.createElement('p');
+    errorEl.className = 'reference-field-error';
+    errorEl.setAttribute('role', 'alert');
+    errorEl.setAttribute('aria-live', 'polite');
+    if (generateBtn && generateBtn.parentElement) generateBtn.parentElement.appendChild(errorEl);
+
+    function showReferenceError(message, target) {
+        errorEl.textContent = message;
+        if (target) { target.setAttribute('aria-invalid', 'true'); target.focus(); }
+    }
+    function clearReferenceError() {
+        errorEl.textContent = '';
+        referenceZone.removeAttribute('aria-invalid');
+        roomZone.removeAttribute('aria-invalid');
+    }
 
     function preview(file, zone, image, emptyText) {
         if (!file) return;
@@ -246,7 +325,7 @@ function initReferenceStyleTool() {
     function bind(input, zone, image, setter, emptyText) {
         zone.addEventListener('click', function() { input.click(); });
         zone.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); } });
-        input.addEventListener('change', function() { if (this.files && this.files[0]) { setter(this.files[0]); preview(this.files[0], zone, image, emptyText); } });
+        input.addEventListener('change', function() { if (this.files && this.files[0]) { clearReferenceError(); setter(this.files[0]); preview(this.files[0], zone, image, emptyText); } });
     }
     bind(referenceInput, referenceZone, referencePreview, function(file) { referenceFile = file; }, 'Reference image');
     bind(roomInput, roomZone, roomPreview, function(file) { roomFile = file; }, 'Room image');
@@ -254,15 +333,16 @@ function initReferenceStyleTool() {
     var preloaded = page.getAttribute('data-reference-src');
     if (preloaded && referencePreview) { referencePreview.src = preloaded; referencePreview.hidden = false; referenceZone.querySelector('span').hidden = true; }
     generateBtn.addEventListener('click', function() {
-        if (!referenceFile && !preloaded) { alert('Please upload a reference image first.'); return; }
-        if (!roomFile) { alert('Please upload your room photo first.'); return; }
+        clearReferenceError();
+        if (!referenceFile && !preloaded) { showReferenceError('Please upload a reference image first.', referenceZone); return; }
+        if (!roomFile) { showReferenceError('Please upload your room photo first.', roomZone); return; }
         var room = document.getElementById('referenceRoomType')?.value || 'Living Room';
         var style = document.getElementById('referenceStyleSelect')?.value || 'the reference image style';
         var palette = document.getElementById('referencePalette')?.value || 'natural';
         var prompt = 'Redesign the uploaded room photo using the visual style, materials, colors, furniture language, lighting mood, and composition cues from the uploaded reference image. Preserve the room photo architecture, camera angle, windows, doors, proportions, and perspective. Room type: ' + room + '. Style direction: ' + style + '. Color palette: ' + palette + '. Return one photorealistic result with no text, watermark, collage, or extra rooms.';
         var original = generateBtn.innerHTML;
         generateBtn.disabled = true; generateBtn.setAttribute('aria-busy', 'true'); generateBtn.innerHTML = 'Generating...';
-        requestHousoraGeneration(prompt, roomFile).then(showGeneratedHousoraImage).catch(function(error) { alert(error.message || 'Generation failed. Please try again.'); }).finally(function() { generateBtn.disabled = false; generateBtn.removeAttribute('aria-busy'); generateBtn.innerHTML = original; });
+        requestHousoraGeneration(prompt, roomFile).then(showGeneratedHousoraImage).catch(function(error) { showReferenceError(error.message || 'Generation failed. Please try again.'); }).finally(function() { generateBtn.disabled = false; generateBtn.removeAttribute('aria-busy'); generateBtn.innerHTML = original; });
     });
 }
 
@@ -276,7 +356,17 @@ function showGeneratedHousoraImage(imageUrl) {
     if (!result) {
         result = document.createElement('div');
         result.className = 'generated-result ph-no-capture';
-        result.innerHTML = '<p class="generated-result-label">YOUR AI DESIGN</p><img alt="AI-generated room redesign"><a class="btn-primary" download="housora-design.png">DOWNLOAD DESIGN</a>';
+        result.setAttribute('tabindex', '-1');
+        var label = document.createElement('p');
+        label.className = 'generated-result-label';
+        label.textContent = 'YOUR AI DESIGN';
+        var resultImage = document.createElement('img');
+        resultImage.alt = 'AI-generated room redesign';
+        var download = document.createElement('a');
+        download.className = 'btn-primary';
+        download.download = 'housora-design.png';
+        download.textContent = 'DOWNLOAD DESIGN';
+        result.append(label, resultImage, download);
         var host = document.querySelector('.id-configure-section, .create-page') || document.body;
         host.appendChild(result);
     }
@@ -289,7 +379,8 @@ function showGeneratedHousoraImage(imageUrl) {
     if (currentProject && window.convexClient && window.Clerk && window.Clerk.user) {
         persistGeneratedProjectImage(currentProject, imageUrl);
     }
-    result.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    result.scrollIntoView({ behavior: scrollBehavior(), block: 'center' });
+    result.focus({ preventScroll: true });
 }
 
 async function persistGeneratedProjectImage(projectId, dataUrl) {
@@ -299,9 +390,8 @@ async function persistGeneratedProjectImage(projectId, dataUrl) {
         var uploadResponse = await fetch(uploadUrl, { method: 'POST', headers: { 'Content-Type': blob.type || 'image/png' }, body: blob });
         if (!uploadResponse.ok) throw new Error('Image upload failed');
         var storageId = (await uploadResponse.json()).storageId;
-        var permanentUrl = await window.convexClient.query('uploads:getStorageUrl', { storageId: storageId });
-        if (!permanentUrl) throw new Error('Image URL was not created');
-        await window.convexClient.mutation('projects:updateProject', { projectId: projectId, afterImageUrl: permanentUrl });
+        await window.convexClient.mutation('uploads:saveUpload', { storageId: storageId, fileName: 'generated-design.png' });
+        await window.convexClient.mutation('projects:updateProject', { projectId: projectId, afterImageStorageId: storageId });
     } catch (error) {
         console.warn('[Projects] Could not save generated image:', error);
     }
@@ -339,11 +429,13 @@ function initHeroBar() {
         errorEl.style.display = 'none';
         errorEl.removeAttribute('role');
         errorEl.removeAttribute('aria-live');
+        promptInput.removeAttribute('aria-invalid');
+        uploadBtn.removeAttribute('aria-invalid');
     }
     function updateSubmitState() {
         var hasPrompt = promptInput.value.trim().length > 0;
         var hasImage = selectedFile !== null;
-        var enabled = hasPrompt || hasImage;
+        var enabled = hasPrompt && hasImage;
         submitBtn.disabled = !enabled;
         if (enabled) {
             submitBtn.style.opacity = '1';
@@ -377,7 +469,7 @@ function initHeroBar() {
     uploadBtn.addEventListener('click', function() {
         clearError();
         var studio = document.getElementById('designStudio');
-        if (studio) studio.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (studio) studio.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
         var demoBtn = document.getElementById('demoPhotoBtn');
         if (demoBtn) window.setTimeout(function() { demoBtn.focus(); }, 450);
     });
@@ -387,7 +479,7 @@ function initHeroBar() {
         if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
             var studio = document.getElementById('designStudio');
-            if (studio) studio.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            if (studio) studio.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
         }
     });
 
@@ -447,19 +539,23 @@ function initHeroBar() {
         var hasImage = selectedFile !== null;
 
         if (!prompt && !hasImage) {
-            showError('Please enter a design prompt or upload a photo of your room.');
+            showError('Upload a room photo and describe the design you want.');
+            promptInput.setAttribute('aria-invalid', 'true');
+            uploadBtn.setAttribute('aria-invalid', 'true');
             promptInput.focus();
             return;
         }
 
         if (!prompt) {
             showError('Please describe what you want (e.g. "Make it modern Scandinavian").');
+            promptInput.setAttribute('aria-invalid', 'true');
             promptInput.focus();
             return;
         }
 
         if (!hasImage) {
             showError('Please upload a photo of your room to redesign.');
+            uploadBtn.setAttribute('aria-invalid', 'true');
             uploadBtn.focus();
             return;
         }
@@ -482,11 +578,6 @@ function initHeroBar() {
         });
     });
 
-    // ---- Focus management: focus-visible for keyboard users ----
-    submitBtn.addEventListener('focus', function() {
-        if (this.disabled) this.blur();
-    });
-
     // Initial state
     updateSubmitState();
 }
@@ -497,16 +588,33 @@ function initHeroBarMobile() {
     var fileInput = document.getElementById('heroFileInputMobile');
     var uploadBtn = document.getElementById('heroUploadBtnMobile');
     var submitBtn = document.getElementById('heroSubmitBtnMobile');
+    var errorEl = document.getElementById('heroBarError');
     if (!promptInput || !fileInput || !uploadBtn || !submitBtn) return;
 
     var ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
     var MAX_SIZE = 10 * 1024 * 1024;
     var selectedFile = null;
 
+    function showError(message, target) {
+        if (errorEl) {
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+            errorEl.setAttribute('role', 'alert');
+            errorEl.setAttribute('aria-live', 'assertive');
+        }
+        if (target) target.setAttribute('aria-invalid', 'true');
+    }
+
+    function clearError() {
+        if (errorEl) { errorEl.textContent = ''; errorEl.style.display = 'none'; }
+        promptInput.removeAttribute('aria-invalid');
+        uploadBtn.removeAttribute('aria-invalid');
+    }
+
     function updateSubmitState() {
         var hasPrompt = promptInput.value.trim().length > 0;
         var hasImage = selectedFile !== null;
-        var enabled = hasPrompt || hasImage;
+        var enabled = hasPrompt && hasImage;
         submitBtn.disabled = !enabled;
         submitBtn.style.opacity = enabled ? '1' : '0.45';
         submitBtn.style.cursor = enabled ? 'pointer' : 'not-allowed';
@@ -514,7 +622,8 @@ function initHeroBarMobile() {
 
     uploadBtn.addEventListener('click', function() {
         var studio = document.getElementById('designStudio');
-        if (studio) studio.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        clearError();
+        if (studio) studio.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
         var demoBtn = document.getElementById('demoPhotoBtn');
         if (demoBtn) window.setTimeout(function() { demoBtn.focus(); }, 450);
     });
@@ -525,13 +634,14 @@ function initHeroBarMobile() {
     fileInput.addEventListener('change', function() {
         if (!this.files || !this.files.length) return;
         var file = this.files[0];
-        if (ALLOWED_TYPES.indexOf(file.type) === -1) { this.value = ''; return; }
-        if (file.size > MAX_SIZE) { this.value = ''; return; }
+        clearError();
+        if (ALLOWED_TYPES.indexOf(file.type) === -1) { this.value = ''; showError('Upload a JPG, PNG, or WebP image.', uploadBtn); uploadBtn.focus(); return; }
+        if (file.size > MAX_SIZE) { this.value = ''; showError('The room photo must be 10 MB or smaller.', uploadBtn); uploadBtn.focus(); return; }
         selectedFile = file;
         updateSubmitState();
     });
 
-    promptInput.addEventListener('input', function() { updateSubmitState(); });
+    promptInput.addEventListener('input', function() { clearError(); updateSubmitState(); });
     promptInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (!submitBtn.disabled) submitBtn.click(); }
     });
@@ -539,7 +649,12 @@ function initHeroBarMobile() {
     submitBtn.addEventListener('click', function() {
         var prompt = promptInput.value.trim();
         var hasImage = selectedFile !== null;
-        if (!prompt && !hasImage) return;
+        clearError();
+        if (!prompt || !hasImage) {
+            showError(!hasImage ? 'Upload a room photo before generating.' : 'Describe the design you want.', !hasImage ? uploadBtn : promptInput);
+            (!hasImage ? uploadBtn : promptInput).focus();
+            return;
+        }
 
         submitBtn.disabled = true;
         submitBtn.style.opacity = '0.6';
@@ -548,8 +663,7 @@ function initHeroBarMobile() {
         requestHousoraGeneration(prompt, selectedFile).then(function(imageUrl) {
             showGeneratedHousoraImage(imageUrl);
         }).catch(function(error) {
-            var errorEl = document.getElementById('heroBarError');
-            if (errorEl) { errorEl.textContent = error.message; errorEl.style.display = 'block'; }
+            showError(error.message || 'Generation failed. Please try again.');
         }).finally(function() {
             submitBtn.disabled = false;
             submitBtn.style.opacity = '1';
@@ -798,6 +912,12 @@ function initUpload() {
         if (e.target && e.target.closest && e.target.closest('.upload-remove')) return;
         fileInput.click();
     });
+    uploadZone.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            fileInput.click();
+        }
+    });
     uploadZone.addEventListener('dragover', function(e) { e.preventDefault(); this.classList.add('dragover'); });
     uploadZone.addEventListener('dragleave', function() { this.classList.remove('dragover'); });
     uploadZone.addEventListener('drop', function(e) {
@@ -811,10 +931,12 @@ function initUpload() {
         if (existing) existing.remove();
         var el = document.createElement('div');
         el.className = 'upload-error';
-        el.style.cssText = 'color:#c53030;font-size:12px;margin-top:8px;text-align:center;';
+        el.setAttribute('role', 'alert');
         el.textContent = msg;
         uploadZone.appendChild(el);
-        setTimeout(function() { el.remove(); }, 5000);
+        uploadZone.setAttribute('aria-invalid', 'true');
+        var templateError = document.getElementById('toolUploadError');
+        if (templateError) templateError.textContent = msg;
     }
 
     function showUploadProgress(percent) {
@@ -822,8 +944,15 @@ function initUpload() {
         if (existing) existing.remove();
         var el = document.createElement('div');
         el.className = 'upload-progress';
-        el.style.cssText = 'margin-top:8px;text-align:center;';
-        el.innerHTML = '<div style="background:#e5e5e5;border-radius:4px;height:6px;overflow:hidden;"><div style="background:#1a1a1a;height:100%;width:' + percent + '%;transition:width 0.3s;"></div></div><p style="font-size:11px;color:#999;margin-top:4px;">Uploading... ' + percent + '%</p>';
+        var track = document.createElement('div');
+        track.className = 'upload-progress-track';
+        var fill = document.createElement('div');
+        fill.className = 'upload-progress-fill';
+        fill.style.width = Math.max(0, Math.min(100, Number(percent) || 0)) + '%';
+        var text = document.createElement('p');
+        text.textContent = 'Uploading… ' + Math.round(Number(percent) || 0) + '%';
+        track.appendChild(fill);
+        el.append(track, text);
         uploadZone.appendChild(el);
     }
 
@@ -840,6 +969,9 @@ function initUpload() {
         }
 
         window.__HousoraToolFile = file;
+        uploadZone.removeAttribute('aria-invalid');
+        var uploadError = document.getElementById('toolUploadError');
+        if (uploadError) uploadError.textContent = '';
 
         // Show preview immediately using FileReader. The user's image must keep
         // its natural aspect ratio; generated demo crops are handled separately.
@@ -878,11 +1010,20 @@ function initUpload() {
             uploadZone.appendChild(preview);
         }
         preview.classList.add('ph-no-capture');
-        preview.innerHTML = '<img id="uploadPreviewImg" alt="Uploaded room photo"><p>Photo ready — click to replace.</p><button type="button" class="upload-remove">Remove photo</button>';
-        var img = preview.querySelector('#uploadPreviewImg');
+        preview.replaceChildren();
+        var img = document.createElement('img');
+        img.id = 'uploadPreviewImg';
+        img.alt = 'Uploaded room photo preview';
+        var readyText = document.createElement('p');
+        readyText.textContent = 'Photo ready — activate the upload area to replace it.';
+        var removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.className = 'upload-remove';
+        removeButton.textContent = 'Remove photo';
+        preview.append(img, readyText, removeButton);
         img.src = dataUrl;
         img.title = fileName || 'Uploaded room photo';
-        preview.querySelector('.upload-remove').addEventListener('click', function(e) {
+        removeButton.addEventListener('click', function(e) {
             e.stopPropagation();
             window.__HousoraToolFile = null;
             fileInput.value = '';
@@ -895,6 +1036,7 @@ function initUpload() {
             if (generateBtn) generateBtn.disabled = true;
             uploadZone.dispatchEvent(new CustomEvent('housora:file-cleared'));
             window.HousoraAnalytics.track('image_upload_removed');
+            uploadZone.focus();
         });
     }
 }
@@ -938,28 +1080,58 @@ function initSidebar() {
     const sidebarNav = document.getElementById('sidebar');
     const sidebarOverlay = document.getElementById('sidebar-overlay');
     const sidebarClose = document.getElementById('sidebar-close');
+    var returnFocus = null;
+    if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
+    if (sidebarNav) { sidebarNav.setAttribute('aria-hidden', 'true'); sidebarNav.inert = true; }
     function openSidebar() {
+        returnFocus = document.activeElement;
         if (sidebarNav) sidebarNav.classList.add('open');
         if (sidebarOverlay) sidebarOverlay.classList.add('open');
+        if (sidebarNav) { sidebarNav.setAttribute('aria-hidden', 'false'); sidebarNav.inert = false; }
+        if (menuToggle) menuToggle.setAttribute('aria-expanded', 'true');
         document.body.style.overflow = 'hidden';
+        if (sidebarClose) sidebarClose.focus();
     }
     function closeSidebar() {
         if (sidebarNav) sidebarNav.classList.remove('open');
         if (sidebarOverlay) sidebarOverlay.classList.remove('open');
+        if (sidebarNav) { sidebarNav.setAttribute('aria-hidden', 'true'); sidebarNav.inert = true; }
+        if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
         document.body.style.overflow = '';
+        if (returnFocus && returnFocus.focus) returnFocus.focus();
     }
     if (menuToggle) menuToggle.addEventListener('click', openSidebar);
     if (sidebarClose) sidebarClose.addEventListener('click', closeSidebar);
     if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
     document.querySelectorAll('.sidebar-section-header').forEach(function(header) {
-        header.addEventListener('click', function() {
+        header.setAttribute('role', 'button');
+        header.setAttribute('tabindex', '0');
+        header.setAttribute('aria-expanded', 'false');
+        function toggleSection() {
             const links = this.nextElementSibling;
             if (links && links.classList.contains('sidebar-links')) {
-                links.classList.toggle('open');
+                var isOpen = links.classList.toggle('open');
+                this.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
                 const arrow = this.querySelector('.chevron');
-                if (arrow) arrow.classList.toggle('rotated');
+                if (arrow) arrow.classList.toggle('rotated', isOpen);
             }
+        }
+        header.addEventListener('click', function() {
+            toggleSection.call(this);
         });
+        header.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggleSection.call(this); }
+        });
+    });
+    if (sidebarNav) sidebarNav.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') { event.preventDefault(); closeSidebar(); return; }
+        if (event.key !== 'Tab') return;
+        var focusable = Array.from(sidebarNav.querySelectorAll('a[href], button, [tabindex="0"]')).filter(function(el) { return !el.disabled && el.offsetParent !== null; });
+        if (!focusable.length) return;
+        var first = focusable[0];
+        var last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
     });
 }
 
@@ -975,7 +1147,7 @@ function initStartDesignFocus() {
     if (window.location.hash !== '#heroUploadBtn' && window.location.hash !== '#try-it-now') return;
     window.setTimeout(function() {
         var target = document.getElementById(window.location.hash.slice(1));
-        if (target) { target.scrollIntoView({ behavior: 'smooth', block: 'center' }); if (window.location.hash === '#heroUploadBtn') target.focus(); }
+        if (target) { target.scrollIntoView({ behavior: scrollBehavior(), block: 'center' }); target.focus({ preventScroll: true }); }
     }, 80);
 }
 
@@ -996,6 +1168,17 @@ function initToolConfigurator() {
     var generateBtn = document.getElementById('generateBtn');
     var uploadZone = document.getElementById('uploadZone');
     if (!generateBtn || !uploadZone) return;
+    var error = document.getElementById('toolGenerationError');
+
+    function showToolError(message, target) {
+        if (error) error.textContent = message;
+        if (target) { target.setAttribute('aria-invalid', 'true'); target.focus(); }
+    }
+
+    function clearToolError() {
+        if (error) error.textContent = '';
+        uploadZone.removeAttribute('aria-invalid');
+    }
 
     function selectedOptions() {
         return Array.from(document.querySelectorAll('.id-config-section')).map(function(section) {
@@ -1026,10 +1209,12 @@ function initToolConfigurator() {
         return prompt;
     }
 
-    uploadZone.addEventListener('housora:file-cleared', function() { generateBtn.disabled = true; });
+    uploadZone.addEventListener('housora:file-selected', clearToolError);
+    uploadZone.addEventListener('housora:file-cleared', function() { generateBtn.disabled = true; clearToolError(); });
     generateBtn.addEventListener('click', function() {
         var file = window.__HousoraToolFile;
-        if (!file) { alert('Please upload a photo first.'); return; }
+        clearToolError();
+        if (!file) { showToolError('Please upload a photo first.', uploadZone); return; }
         var original = generateBtn.innerHTML;
         var status = generateBtn.parentElement.querySelector('.id-generation-status');
         if (!status) {
@@ -1048,11 +1233,11 @@ function initToolConfigurator() {
         }, 3500);
         generateBtn.disabled = true;
         generateBtn.setAttribute('aria-busy', 'true');
-        generateBtn.innerHTML = 'Generating...';
+        generateBtn.textContent = 'Generating…';
         requestHousoraGeneration(buildPrompt(), file).then(function(imageUrl) {
             showGeneratedHousoraImage(imageUrl);
         }).catch(function(error) {
-            alert(error.message || 'Generation failed. Please try again.');
+            showToolError(error.message || 'Generation failed. Please try again.', generateBtn);
         }).finally(function() {
             window.clearInterval(statusTimer);
             status.textContent = '';
@@ -1065,18 +1250,50 @@ function initToolConfigurator() {
 
 // ===== WORKSPACE SIDEBAR OPTIONS =====
 function initWorkspaceOptions() {
+    document.querySelectorAll('.room-type-grid, .style-grid, .palette-grid').forEach(function(grid) {
+        grid.setAttribute('role', 'radiogroup');
+        var section = grid.closest('.sidebar-section');
+        var label = section && section.querySelector('.sidebar-label');
+        if (label) grid.setAttribute('aria-label', label.textContent.trim());
+    });
     document.querySelectorAll('.room-option, .style-option, .palette-option').forEach(function(opt) {
-        opt.addEventListener('click', function() {
+        opt.setAttribute('role', 'radio');
+        opt.setAttribute('tabindex', opt.classList.contains('active') ? '0' : '-1');
+        opt.setAttribute('aria-checked', opt.classList.contains('active') ? 'true' : 'false');
+        function selectOption() {
             const grid = this.parentElement;
-            grid.querySelectorAll('.room-option, .style-option, .palette-option').forEach(function(o) { o.classList.remove('active'); });
+            grid.querySelectorAll('.room-option, .style-option, .palette-option').forEach(function(o) {
+                o.classList.remove('active');
+                o.setAttribute('aria-checked', 'false');
+                o.setAttribute('tabindex', '-1');
+            });
             this.classList.add('active');
+            this.setAttribute('aria-checked', 'true');
+            this.setAttribute('tabindex', '0');
+        }
+        opt.addEventListener('click', selectOption);
+        opt.addEventListener('keydown', function(event) {
+            var options = Array.from(this.parentElement.querySelectorAll('[role="radio"]'));
+            var index = options.indexOf(this);
+            if (event.key === ' ' || event.key === 'Enter') {
+                event.preventDefault();
+                selectOption.call(this);
+                return;
+            }
+            var direction = (event.key === 'ArrowRight' || event.key === 'ArrowDown') ? 1 : (event.key === 'ArrowLeft' || event.key === 'ArrowUp') ? -1 : 0;
+            if (!direction) return;
+            event.preventDefault();
+            var next = options[(index + direction + options.length) % options.length];
+            selectOption.call(next);
+            next.focus();
         });
     });
     document.querySelectorAll('.tab-item, .tab').forEach(function(tab) {
         tab.addEventListener('click', function() {
             const parent = this.parentElement;
-            parent.querySelectorAll('.tab-item, .tab').forEach(function(t) { t.classList.remove('tab-active', 'active'); });
+            parent.querySelectorAll('.tab-item, .tab').forEach(function(t) { t.classList.remove('tab-active', 'active'); t.removeAttribute('aria-current'); });
             this.classList.add('tab-active', 'active');
+            this.setAttribute('aria-current', 'page');
         });
     });
 }
@@ -1107,6 +1324,15 @@ function initWorkspaceHandoff() {
     var inputPhoto = document.querySelector('.workspace-input-photo');
     var photoCell = document.querySelector('.photo-cell-primary img');
     var uploadedPhoto = null;
+    var prompt = document.getElementById('workspacePrompt');
+    var generateBtn = document.getElementById('workspaceGenerateBtn');
+    var sendBtn = document.querySelector('.page-workspace .send-btn');
+    var promptError = document.getElementById('workspacePromptError');
+    function updateWorkspaceSubmitState() {
+        var ready = !!window.__HousoraToolFile && !!(prompt && prompt.value.trim());
+        if (generateBtn) generateBtn.disabled = !ready;
+        if (sendBtn) sendBtn.disabled = !ready;
+    }
     try { uploadedPhoto = sessionStorage.getItem('housora_first_design_photo'); } catch (e) {}
     if (uploadedPhoto) {
         document.body.classList.remove('workspace-empty');
@@ -1124,15 +1350,22 @@ function initWorkspaceHandoff() {
         if (progressFill) progressFill.style.width = '100%';
         fetch(uploadedPhoto).then(function(response) { return response.blob(); }).then(function(blob) {
             window.__HousoraToolFile = new File([blob], 'room-upload.png', { type: blob.type || 'image/png' });
+            updateWorkspaceSubmitState();
         }).catch(function() {});
     } else document.body.classList.add('workspace-empty');
     var selectedStyleImage = document.querySelector('.workspace-photo-grid .photo-cell:nth-child(2) img');
     if (selectedStyleImage && styleImages[style]) selectedStyleImage.src = styleImages[style];
-    var prompt = document.getElementById('workspacePrompt');
     if (prompt) {
         if (uploadedPhoto) prompt.value = 'Redesign this ' + room + ' in a ' + style + ' style with a ' + palette + ' palette.';
         else prompt.placeholder = 'Upload a room photo before describing your design';
+        prompt.addEventListener('input', function() {
+            prompt.removeAttribute('aria-invalid');
+            if (promptError) promptError.textContent = '';
+            updateWorkspaceSubmitState();
+        });
     }
+    if (sendBtn && generateBtn) sendBtn.addEventListener('click', function() { generateBtn.click(); });
+    updateWorkspaceSubmitState();
     if (budgetInput) budgetInput.addEventListener('input', function() { if (budgetAmount) budgetAmount.textContent = '$' + Number(this.value).toLocaleString(); });
 }
 
@@ -1215,13 +1448,23 @@ function initQuiz() {
 function initPlanStatus() {
     var card = document.getElementById('planStatus');
     if (!card) return;
+    function addTextElement(tag, text, className) {
+        var element = document.createElement(tag);
+        if (className) element.className = className;
+        element.textContent = text;
+        card.appendChild(element);
+    }
     function render(status) {
+        card.replaceChildren();
         if (!status || !status.plan || status.plan === 'free') {
-            card.innerHTML = '<h3>Your current plan</h3><p>No paid plan is active yet. Choose a plan above whenever you are ready.</p>';
+            addTextElement('h2', 'Your current plan');
+            addTextElement('p', 'No paid plan is active yet. Choose a plan above whenever you are ready.');
             return;
         }
         var end = status.subscriptionEnd ? new Date(status.subscriptionEnd).toLocaleDateString() : 'managed through Whop';
-        card.innerHTML = '<h3>Active plan: ' + String(status.plan).toUpperCase() + '</h3><p>' + String(status.credits || 0) + ' image credits available. Billing status: ' + String(status.subscriptionStatus || 'active') + '.</p><p class="plan-status-note">Cancel future renewals in Whop, or contact support for a refund review. Subscription end: ' + end + '.</p>';
+        addTextElement('h2', 'Active plan: ' + String(status.plan).toUpperCase());
+        addTextElement('p', String(status.credits || 0) + ' image credits available. Billing status: ' + String(status.subscriptionStatus || 'active') + '.');
+        addTextElement('p', 'Cancel future renewals in Whop, or contact support for a refund review. Subscription end: ' + end + '.', 'plan-status-note');
     }
     function load() {
         if (!window.Clerk || !window.Clerk.user || !window.convexClient) { render(null); return; }
@@ -1245,7 +1488,10 @@ function initPricingToggle() {
             var annualTotalLabel = card.querySelector('.annual-total-label');
             if (monthly) monthly.style.display = period === 'monthly' ? 'inline' : 'none';
             if (annual) annual.style.display = period === 'yearly' ? 'inline' : 'none';
-            if (periodEl) periodEl.textContent = period === 'yearly' ? ' / month' : ' / month';
+            if (periodEl && periodEl.hasAttribute('data-billing-period')) {
+                var localizedPeriod = window.HousoraI18n && window.HousoraI18n.t ? window.HousoraI18n.t('pricing.per_month') : ' / month';
+                periodEl.textContent = localizedPeriod;
+            }
             if (annualTotal) annualTotal.style.display = period === 'yearly' ? 'inline' : 'none';
             if (annualTotalLabel) annualTotalLabel.style.display = period === 'yearly' ? 'inline' : 'none';
         });
@@ -1316,7 +1562,8 @@ function initWhopCheckout() {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
-                        'Authorization': 'Bearer ' + sessionToken
+                        'Authorization': 'Bearer ' + sessionToken,
+                        'X-Housora-Analytics-Consent': window.HousoraAnalytics.consentHeader()
                     },
                     body: 'planId=' + encodeURIComponent(planId)
                 });
@@ -1393,7 +1640,7 @@ function initSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach(function(a) {
         a.addEventListener('click', function(e) {
             var target = document.querySelector(this.getAttribute('href'));
-            if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+            if (target) { e.preventDefault(); target.scrollIntoView({ behavior: scrollBehavior(), block: 'start' }); target.focus({ preventScroll: true }); }
         });
     });
 }
@@ -1460,9 +1707,21 @@ function initCookiebot() {
     var panel = document.getElementById('cookiebot-panel');
     if (!panel) return;
 
+    var consentKey = 'housora-consent-v2';
+    var consentVersion = 2;
+    var consentLifetimeMs = 180 * 24 * 60 * 60 * 1000;
     var savedConsent = null;
-    try { savedConsent = JSON.parse(localStorage.getItem('housora-consent-v1') || 'null'); } catch (_) {}
-    var defaults = { necessary: true, preferences: false, analytics: false, marketing: false };
+    try {
+        savedConsent = JSON.parse(localStorage.getItem(consentKey) || 'null');
+        if (!savedConsent || savedConsent.version !== consentVersion || !savedConsent.expiresAt || savedConsent.expiresAt <= Date.now()) {
+            savedConsent = null;
+            localStorage.removeItem(consentKey);
+        }
+        localStorage.removeItem('housora-consent-v1');
+        localStorage.removeItem('cookiebot-consent');
+    } catch (_) { savedConsent = null; }
+    var defaults = { necessary: true, analytics: false };
+    var previouslyFocused = null;
     function applyConsentToControls(consent) {
         panel.querySelectorAll('.cookiebot-checkbox').forEach(function(cb) {
             cb.checked = cb.name === 'necessary' ? true : consent[cb.name] === true;
@@ -1472,15 +1731,33 @@ function initCookiebot() {
         });
     }
     function saveConsent(consent) {
-        consent.necessary = true;
-        consent.version = 1;
-        consent.timestamp = Date.now();
-        localStorage.setItem('housora-consent-v1', JSON.stringify(consent));
+        var now = Date.now();
+        savedConsent = {
+            necessary: true,
+            analytics: consent.analytics === true,
+            version: consentVersion,
+            timestamp: now,
+            expiresAt: now + consentLifetimeMs
+        };
+        localStorage.setItem(consentKey, JSON.stringify(savedConsent));
         panel.style.display = 'none';
-        if (consent.analytics === true) window.HousoraAnalytics.init();
+        panel.setAttribute('aria-hidden', 'true');
+        if (window.HousoraAnalytics) window.HousoraAnalytics.applyConsent(savedConsent.analytics);
+        if (window.gtag) {
+            window.gtag('consent', 'update', {
+                analytics_storage: savedConsent.analytics ? 'granted' : 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+            });
+        }
+        window.dispatchEvent(new CustomEvent('housora:consent-changed', { detail: { analytics: savedConsent.analytics, version: consentVersion } }));
+        if (previouslyFocused && typeof previouslyFocused.focus === 'function') previouslyFocused.focus();
     }
     applyConsentToControls(savedConsent || defaults);
     panel.style.display = savedConsent ? 'none' : 'block';
+    panel.setAttribute('aria-hidden', savedConsent ? 'true' : 'false');
+    if (savedConsent && window.HousoraAnalytics) window.HousoraAnalytics.applyConsent(savedConsent.analytics === true);
 
     // Toggle switches
     panel.querySelectorAll('.cookiebot-checkbox').forEach(function(cb) {
@@ -1493,48 +1770,34 @@ function initCookiebot() {
         });
     });
 
-    // Details button
-    var detailsBtn = document.getElementById('cookiebot-details-btn');
-    if (detailsBtn) {
-        detailsBtn.addEventListener('click', function() {
-            var toggles = panel.querySelector('.cookiebot-toggles');
-            if (toggles) {
-                var isVisible = toggles.style.display !== 'none';
-                toggles.style.display = isVisible ? 'none' : 'flex';
-                this.setAttribute('aria-expanded', isVisible ? 'false' : 'true');
-                this.textContent = isVisible ? 'Show details ›' : 'Hide details';
-            }
-        });
-    }
-
-    // OK button — save consent and hide
+    // Allow analytics. This must not depend on the current checkbox value.
     var okBtn = document.getElementById('cookiebot-ok-btn');
     if (okBtn) {
         okBtn.addEventListener('click', function() {
-            var consent = { necessary: true, preferences: false, analytics: false, marketing: false };
-            panel.querySelectorAll('.cookiebot-checkbox').forEach(function(cb) {
-                consent[cb.name] = cb.checked;
-            });
-            saveConsent(consent);
+            saveConsent({ necessary: true, analytics: true });
         });
     }
 
     var necessaryBtn = document.getElementById('cookiebot-necessary-btn');
     if (necessaryBtn) necessaryBtn.addEventListener('click', function() {
-        saveConsent({ necessary: true, preferences: false, analytics: false, marketing: false });
+        saveConsent({ necessary: true, analytics: false });
     });
     var saveBtn = document.getElementById('cookiebot-save-btn');
     if (saveBtn) saveBtn.addEventListener('click', function() {
-        var consent = { necessary: true, preferences: false, analytics: false, marketing: false };
+        var consent = { necessary: true, analytics: false };
         panel.querySelectorAll('.cookiebot-checkbox').forEach(function(cb) { consent[cb.name] = cb.checked; });
         saveConsent(consent);
     });
 
     var settingsBtn = document.getElementById('cookie-settings-btn');
     if (settingsBtn) settingsBtn.addEventListener('click', function() {
+        previouslyFocused = this;
         applyConsentToControls(savedConsent || defaults);
         panel.style.display = 'block';
-        panel.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        panel.setAttribute('aria-hidden', 'false');
+        panel.scrollIntoView({ behavior: scrollBehavior(), block: 'end' });
+        var firstChoice = document.getElementById('cookiebot-necessary-btn');
+        if (firstChoice) firstChoice.focus();
     });
 }
 
@@ -1565,21 +1828,7 @@ function initConvexCredits() {
             return 0;
         }
     };
-    window.Housora.deductCredits = async function(amount) {
-        if (!window.convexClient || !window.Clerk || !window.Clerk.user) return false;
-        try {
-            return await window.convexClient.mutation('users:deductCredits', {
-                clerkId: window.Clerk.user.id,
-                amount: amount,
-                toolType: 'design',
-            });
-        } catch (e) {
-            console.warn('[Convex] Failed to reserve an image generation:', e);
-            return false;
-        }
-    };
     window.Housora.getImagesRemaining = window.Housora.getCredits;
-    window.Housora.deductImages = window.Housora.deductCredits;
     window.Housora.getSubscription = async function() {
         if (!window.convexClient || !window.Clerk || !window.Clerk.user) return null;
         try {
@@ -1611,26 +1860,68 @@ function initHousoraProjects() {
         grid.style.display = 'none';
         if (empty) empty.style.display = 'none';
         showMessage('');
+        if (authGate && !authGate.querySelector('.projects-signup-link')) {
+            var signup = document.createElement('a');
+            signup.href = '/sign-up?redirect=/projects';
+            signup.className = 'projects-signup-link btn-secondary';
+            signup.textContent = 'Create an account';
+            authGate.appendChild(signup);
+        }
     }
     function render(projects) {
-        grid.innerHTML = '';
-        if (!projects.length) { if (empty) empty.style.display = 'block'; return; }
+        grid.replaceChildren();
+        if (!projects.length) {
+            if (empty) {
+                empty.style.display = 'block';
+                if (!empty.querySelector('.projects-empty-cta')) {
+                    var emptyCta = document.createElement('a');
+                    emptyCta.href = '/design';
+                    emptyCta.className = 'projects-empty-cta btn-primary';
+                    emptyCta.textContent = 'Start your first design';
+                    empty.appendChild(emptyCta);
+                }
+            }
+            return;
+        }
         if (empty) empty.style.display = 'none';
         projects.forEach(function(project) {
             var card = document.createElement('article');
             card.className = 'project-card';
             card.dataset.projectId = project._id;
+            card.tabIndex = 0;
+            card.setAttribute('role', 'link');
             var preview = project.afterImageUrl || project.beforeImageUrl || '/static/images/room-after.jpg';
-            card.innerHTML = '<div class="project-preview"><img alt="' + (project.title || 'Project') + '" src="' + preview + '"><button type="button" class="project-delete-btn" aria-label="Delete project">×</button></div>' +
-                '<div class="project-info"><h2 class="project-name"></h2><p class="project-date"></p></div>';
-            card.querySelector('.project-name').textContent = project.title || 'Untitled Project';
-            card.querySelector('.project-date').textContent = 'Updated ' + new Date(project.updatedAt || project.createdAt).toLocaleDateString();
-            card.addEventListener('click', function() {
+            var previewWrap = document.createElement('div');
+            previewWrap.className = 'project-preview';
+            var image = document.createElement('img');
+            image.alt = 'Preview of ' + (project.title || 'Untitled Project');
+            image.src = preview;
+            var deleteButton = document.createElement('button');
+            deleteButton.type = 'button';
+            deleteButton.className = 'project-delete-btn';
+            deleteButton.setAttribute('aria-label', 'Delete ' + (project.title || 'untitled project'));
+            deleteButton.textContent = '×';
+            previewWrap.append(image, deleteButton);
+            var info = document.createElement('div');
+            info.className = 'project-info';
+            var name = document.createElement('h2');
+            name.className = 'project-name';
+            name.textContent = project.title || 'Untitled Project';
+            var date = document.createElement('p');
+            date.className = 'project-date';
+            date.textContent = 'Updated ' + new Date(project.updatedAt || project.createdAt).toLocaleDateString();
+            info.append(name, date);
+            card.append(previewWrap, info);
+            function openProject() {
                 window.HousoraAnalytics.track('project_opened');
                 localStorage.setItem('housora_current_project', project._id);
-                window.location.href = '/create#project-' + encodeURIComponent(project._id);
+                window.location.href = '/design?project=' + encodeURIComponent(project._id);
+            }
+            card.addEventListener('click', openProject);
+            card.addEventListener('keydown', function(event) {
+                if (event.target === card && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); openProject(); }
             });
-            card.querySelector('.project-delete-btn').addEventListener('click', function(event) {
+            deleteButton.addEventListener('click', function(event) {
                 event.stopPropagation();
                 if (!confirm('Delete this project? This cannot be undone.')) return;
                 window.HousoraAnalytics.track('project_deleted');
@@ -1658,7 +1949,7 @@ function initHousoraProjects() {
         }).then(function(id) {
             window.HousoraAnalytics.track('project_created');
             localStorage.setItem('housora_current_project', id);
-            window.location.href = '/create#project-' + encodeURIComponent(id);
+            window.location.href = '/design?project=' + encodeURIComponent(id);
         }).catch(function(error) { showMessage(error.message || 'Could not create the project.', true); newBtn.disabled = false; });
     });
     if (signInBtn) signInBtn.addEventListener('click', function() {
@@ -1677,6 +1968,7 @@ function initHousoraProjects() {
 
 // ===== TOOL CARD SLIDESHOW =====
 function initToolCardSlideshow() {
+    if (prefersReducedMotion()) return;
     document.querySelectorAll('.create-tool-card').forEach(function(card) {
         var slideshow = card.querySelector('.create-tool-card__slideshow');
         if (!slideshow) return;
@@ -1696,24 +1988,40 @@ function initToolGenerateButtons() {
     document.querySelectorAll('.btn-generate-full, .btn-design-room').forEach(function(btn) {
         btn.addEventListener('click', function() {
             var file = window.__HousoraToolFile;
+            var isWorkspace = btn.classList.contains('btn-design-room');
+            var promptInput = isWorkspace ? document.getElementById('workspacePrompt') : null;
+            var errorEl = isWorkspace ? document.getElementById('workspacePromptError') : null;
             var room = document.querySelector('.room-option.active .room-name');
             var style = document.querySelector('.style-option.active .style-name');
             var palette = document.querySelector('.palette-option.active .palette-name');
             var budget = document.querySelector('.budget-amount');
             var prompt = 'Redesign this ' + (room ? room.textContent.trim().toLowerCase() : 'room') + ' with a photorealistic interior design. Use the ' + (style ? style.textContent.trim() : 'selected') + ' style, the ' + (palette ? palette.textContent.trim() : 'neutral') + ' color palette, and keep the result within a ' + (budget ? budget.textContent.trim() : 'reasonable') + ' furniture budget while preserving the room architecture.';
+            if (promptInput && promptInput.value.trim()) prompt = promptInput.value.trim() + ' ' + prompt;
             if (!file) {
-                alert('Please upload a room photo first.');
+                if (errorEl) errorEl.textContent = 'Upload a room photo before generating.';
                 return;
             }
+            if (promptInput && !promptInput.value.trim()) {
+                promptInput.setAttribute('aria-invalid', 'true');
+                if (errorEl) errorEl.textContent = 'Describe the design you want before generating.';
+                promptInput.focus();
+                return;
+            }
+            if (errorEl) errorEl.textContent = '';
             var original = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = 'GENERATING...';
+            btn.setAttribute('aria-busy', 'true');
+            btn.textContent = 'GENERATING…';
             requestHousoraGeneration(prompt, file).then(function(imageUrl) {
                 showGeneratedHousoraImage(imageUrl);
             }).catch(function(error) {
-                alert(error.message);
+                if (errorEl) {
+                    errorEl.textContent = error.message || 'Generation failed. Please try again.';
+                    errorEl.focus && errorEl.focus();
+                }
             }).finally(function() {
                 btn.disabled = false;
+                btn.removeAttribute('aria-busy');
                 btn.innerHTML = original;
             });
         });
@@ -1755,7 +2063,40 @@ document.addEventListener('DOMContentLoaded', function() {
     initToolCardSlideshow();
     initCookiebot();
     initGlobalImageFallback();
+    initResponsiveImages();
 });
+
+// ===== RESPONSIVE LOCAL IMAGES =====
+function initResponsiveImages() {
+    fetch('/static/assets/responsive-images.json').then(function(response) {
+        if (!response.ok) throw new Error('Responsive image manifest unavailable');
+        return response.json();
+    }).then(function(manifest) {
+        document.querySelectorAll('img[src^="/static/images/"]').forEach(function(img) {
+            var pathname = new URL(img.currentSrc || img.src, window.location.href).pathname;
+            var entry = manifest.images && manifest.images[pathname];
+            if (!entry || img.parentElement.tagName === 'PICTURE') return;
+            var picture = document.createElement('picture');
+            ['avif', 'webp'].forEach(function(format) {
+                if (!entry.sources[format] || !entry.sources[format].length) return;
+                var source = document.createElement('source');
+                source.type = 'image/' + format;
+                source.srcset = entry.sources[format].map(function(candidate) {
+                    return candidate.path + ' ' + candidate.width + 'w';
+                }).join(', ');
+                source.sizes = img.getAttribute('sizes') || '(max-width: 640px) 100vw, ' + entry.width + 'px';
+                picture.appendChild(source);
+            });
+            if (!img.hasAttribute('width')) img.width = entry.width;
+            if (!img.hasAttribute('height')) img.height = entry.height;
+            if (entry.placeholder) img.dataset.neutralPlaceholder = 'true';
+            img.parentNode.insertBefore(picture, img);
+            picture.appendChild(img);
+        });
+    }).catch(function() {
+        // The optimized formats are progressive enhancement; JPEG remains.
+    });
+}
 
 // ===== GLOBAL IMAGE FALLBACK =====
 function initGlobalImageFallback() {
@@ -1770,8 +2111,9 @@ function initGlobalImageFallback() {
             img.style.height = '0';
             return;
         }
-        img.style.opacity = '0.3';
-        if (!img.alt || img.alt === '') {
+        img.classList.add('media-unavailable');
+        img.dataset.mediaUnavailable = 'true';
+        if (!img.hasAttribute('alt')) {
             img.alt = 'Image not available';
         }
     }, true);

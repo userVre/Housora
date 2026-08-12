@@ -215,6 +215,10 @@ fun HTML.toolPage(config: ToolPageConfig) {
                     div(classes = "id-configure-left") {
                         div(classes = "id-upload-area") {
                             id = "uploadZone"
+                            attributes["role"] = "button"
+                            attributes["tabindex"] = "0"
+                            attributes["aria-describedby"] = "toolUploadHelp toolUploadError"
+                            attributes["aria-label"] = "Upload a photo for ${config.toolName}"
                             input(type = InputType.file, classes = "id-upload-input") {
                                 id = "fileInput"
                                 attributes["accept"] = "image/*"
@@ -223,17 +227,22 @@ fun HTML.toolPage(config: ToolPageConfig) {
                             }
                             div(classes = "id-upload-placeholder") {
                                 div(classes = "id-upload-stack") {
-                                    img(src = "/static/images/room-preview-1.jpg", alt = "Empty room", classes = "id-upload-stack-img id-upload-stack-left") { attributes["width"] = "120"; attributes["height"] = "84"; attributes["loading"] = "lazy" }
-                                    img(src = "/static/images/room-preview-2.jpg", alt = "Room preview", classes = "id-upload-stack-img id-upload-stack-center") { attributes["width"] = "132"; attributes["height"] = "91"; attributes["loading"] = "lazy" }
-                                    img(src = "/static/images/room-preview-3.jpg", alt = "Room preview", classes = "id-upload-stack-img id-upload-stack-right") { attributes["width"] = "120"; attributes["height"] = "84"; attributes["loading"] = "lazy" }
+                                    img(src = "/static/images/room-preview-1.jpg", alt = "", classes = "id-upload-stack-img id-upload-stack-left") { attributes["width"] = "120"; attributes["height"] = "84"; attributes["loading"] = "lazy" }
+                                    img(src = "/static/images/room-preview-2.jpg", alt = "", classes = "id-upload-stack-img id-upload-stack-center") { attributes["width"] = "132"; attributes["height"] = "91"; attributes["loading"] = "lazy" }
+                                    img(src = "/static/images/room-preview-3.jpg", alt = "", classes = "id-upload-stack-img id-upload-stack-right") { attributes["width"] = "120"; attributes["height"] = "84"; attributes["loading"] = "lazy" }
                                     span(classes = "id-upload-stack-icon") {
                                         unsafe { +"""<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>""" }
                                     }
                                 }
                                 span(classes = "id-upload-title") { attributes["data-i18n"] = "tool.upload_title"; attributes["data-i18n-tool"] = config.toolName; +"AI ${config.toolName.uppercase()}" }
-                                span(classes = "id-upload-subtitle") { +config.uploadDescription }
+                                span(classes = "id-upload-subtitle") { id = "toolUploadHelp"; +config.uploadDescription }
                                 span(classes = "id-upload-formats") { attributes["data-i18n"] = "tool.upload_formats"; +"FREE" }
                             }
+                        }
+                        p(classes = "id-field-error") {
+                            id = "toolUploadError"
+                            attributes["role"] = "alert"
+                            attributes["aria-live"] = "polite"
                         }
                     }
                     // Config Panel
@@ -289,7 +298,7 @@ fun HTML.toolPage(config: ToolPageConfig) {
                                             }) {
                                                 attributes["type"] = "button";
                                                                                                 if (image.isNotEmpty()) {
-                                                    img(src = image, alt = name) { attributes["loading"] = "lazy"; attributes["onerror"] = "this.style.display='none'" }
+                                                    img(src = image, alt = "") { attributes["loading"] = "lazy"; attributes["onerror"] = "this.style.display='none'" }
                                                 }
                                                 span(classes = "id-card-label") { +name }
                                             }
@@ -309,10 +318,19 @@ fun HTML.toolPage(config: ToolPageConfig) {
                         }
                         if (config.showCustomPrompt) {
                             div(classes = "id-custom-prompt-section") {
-                                div(classes = "id-config-label") { attributes["data-i18n"] = "shared.or_describe"; +"OR DESCRIBE YOUR OWN" }
-                                input(type = InputType.text, classes = "id-custom-prompt") {
-                                    placeholder = config.textInputPlaceholder
+                                label(classes = "id-config-label") {
+                                    htmlFor = "customPrompt"
+                                    attributes["data-i18n"] = "shared.or_describe"
+                                    +"OR DESCRIBE YOUR OWN"
                                 }
+                                input(type = InputType.text, classes = "id-custom-prompt") {
+                                    id = "customPrompt"
+                                    placeholder = config.textInputPlaceholder
+                                    attributes["aria-describedby"] = "customPromptHelp"
+                                    attributes["maxlength"] = "500"
+                                    attributes["autocomplete"] = "off"
+                                }
+                                p(classes = "id-field-help") { id = "customPromptHelp"; +"Describe the specific changes, materials, or mood you want to see." }
                             }
                         }
                         div(classes = "id-generate-wrap") {
@@ -326,6 +344,11 @@ fun HTML.toolPage(config: ToolPageConfig) {
                                 unsafe { +"""<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>""" }
                             }
                             span(classes = "id-generate-tooltip") { attributes["data-i18n"] = "tool.generate_tooltip"; +"Upload a photo \u2192 Select options \u2192 Generate" }
+                            p(classes = "id-field-error") {
+                                id = "toolGenerationError"
+                                attributes["role"] = "alert"
+                                attributes["aria-live"] = "polite"
+                            }
                         }
                     }
                 }
@@ -518,8 +541,8 @@ fun HTML.toolPage(config: ToolPageConfig) {
             h2 { +config.ctaHeading }
             p { +"Explore a new visual direction for your own space." }
             div(classes = "id-bottom-cta-links") {
-                a(href = "/create", classes = "id-bottom-cta-primary") { +"Try Housora Free" }
-                a(href = "/create", classes = "id-bottom-cta-secondary") { +"Open the AI ${config.toolName} Tool" }
+                a(href = "/design", classes = "id-bottom-cta-primary") { +"Try Housora Free" }
+                a(href = "/design", classes = "id-bottom-cta-secondary") { +"Open the AI ${config.toolName} Tool" }
             }
         }
 
@@ -536,6 +559,7 @@ fun HTML.toolPage(config: ToolPageConfig) {
                             if (!container) return;
                             var wordEls = container.querySelectorAll('.hero-rotating-word');
                             if (wordEls.length === 0) return;
+                            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
                             // Reserve the width of the longest word so the
                             // headline does not jump or overlap while changing.
                             var maxWidth = 0;
@@ -561,7 +585,7 @@ fun HTML.toolPage(config: ToolPageConfig) {
 
                         // Slideshow
                         var slides = document.querySelectorAll('.hero-desktop-slide');
-                        if (slides.length > 1) {
+                        if (slides.length > 1 && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
                             var slideIdx = 0;
                             setInterval(function() {
                                 slides[slideIdx].classList.remove('active');

@@ -302,7 +302,12 @@ fun HTML.createPage() {
         // ===== TRY IT YOURSELF =====
         section("demo-section") {
             id = "first-design"
-            id = "designStudio"
+            attributes["tabindex"] = "-1"
+            span("sr-only") {
+                id = "designStudio"
+                attributes["tabindex"] = "-1"
+                +"Design studio"
+            }
             h2("demo-section-title") { attributes["data-i18n"] = "create.first_design_title"; +"Create Your First Design" }
             p("demo-section-subtitle") { attributes["data-i18n"] = "create.first_design_sub"; +"Upload your photo, choose your room and style, then generate your free design." }
             div("demo-layout") {
@@ -322,7 +327,7 @@ fun HTML.createPage() {
                             unsafe { +"""<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4m0 0-4 4m4-4 4 4"/><path d="M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/></svg>""" }
                             span(classes = "demo-upload-zone-copy") {
                                 strong { attributes["data-i18n"] = "create.upload_own"; +"UPLOAD YOUR OWN PHOTO" }
-                                small { id = "demoPhotoHint"; attributes["data-i18n"] = "create.upload_own_sub"; +"Upload a photo of your room and get a personalized design in seconds" }
+                                small { id = "demoPhotoHint"; attributes["data-i18n"] = "create.upload_own_sub"; +"Upload a photo of your room and explore a personalized design concept" }
                             }
                         }
                         div("demo-upload-preview") {
@@ -772,10 +777,10 @@ fun HTML.createPage() {
                     Triple("How does Housora help me choose a direction?", "Housora turns your selections into a visual concept you can review, discuss, and refine before you commit to a design direction.", "/pricing"),
                     Triple("What is virtual staging and how much does it cost?", "Virtual staging digitally furnishes an empty room so you can explore a possible direction. Housora plan limits and generation allowances are shown on the pricing page.", "/pricing"),
                     Triple("How many design styles can I try?", "The available styles depend on the tool. Choose from the style cards and prompts shown in the editor; the generated result is a visual concept, not a catalogue of purchasable products.", "/interior-design"),
-                    Triple("What AI design tools does Housora include?", "Housora is a complete AI home design suite, not just one tool. Alongside the core AI interior designer, there is a specialist tool for almost every part of a space: AI Interior Design, AI Floor Restyle, AI Wall Texture, AI Stairs Design, AI Doors Design, AI Windows Design, AI Exterior Design, AI Garden Design, AI Floorplan to 3D, AI Photo to Render, and AI Video Walkthrough. Every tool works the same way: upload a photo, pick a look, and get a photorealistic result in seconds.", "/interior-design"),
+                    Triple("What AI design tools does Housora include?", "Housora offers a set of visual design tools for interiors, exteriors, gardens, layouts, floors, walls, stairs, doors, windows, kitchens, bathrooms, floor plans, renders, and walkthrough concepts. Upload a photo, choose the available options, and review the result as a starting point for your own decisions.", "/interior-design"),
                     Triple("Can I redesign my staircase, doors, or windows with AI?", "Yes, Housora has a dedicated tool for each. Upload a photo and the AI restyles only that element while keeping the rest of the room intact: try AI Stairs Design for treads, risers and railings, AI Doors Design for new interior doors, glass and handles, and AI Windows Design for new frames, glazing and window styles. Each render keeps your real perspective and lighting, so you can take it straight to a joiner, fitter or installer.", "/ai-stairs-design"),
                     Triple("Can Housora restyle my floors, walls, or home exterior?", "Yes. Use AI Floor Restyle to swap flooring such as wood, tile or concrete, AI Wall Texture to test paint colors, wallpaper and finishes, and AI Exterior Design or AI Garden Design to reimagine your facade, cladding and outdoor space. Every change lands on your actual photo at the correct scale and lighting, so you see exactly how it will look before you commit.", "/floor-restyle"),
-                    Triple("Can I turn a floor plan into a 3D render or make a video walkthrough?", "Yes. AI Floorplan to 3D converts a flat 2D plan into a furnished, photorealistic 3D room, and AI Photo to Render turns a rough draft, sketch or 3D model view into a finished render. Once you have a design you love, AI Video Walkthrough animates it into a moving tour you can share with clients or on social media.", "/floorplan-3d"),
+                    Triple("Can I turn a floor plan into a 3D render or make a video walkthrough?", "Yes. AI Floorplan to 3D converts a flat 2D plan into a furnished, photorealistic 3D room, and AI Photo to Render turns a rough draft, sketch or 3D model view into a finished render. Once you have a design you love, AI Video Walkthrough animates it into a moving tour you can share with clients or on social media.", "/floorplan-to-3d"),
                     Triple("What is the best AI interior design tool in 2026?", "Choose the tool that fits your workflow. Housora brings room redesign together with specialist tools for floors, walls, staircases, doors, windows, exteriors and video, so you can explore concepts from one place.", "/interior-design")
                 )
                 faqs.forEachIndexed { index, (q, a, link) ->

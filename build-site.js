@@ -1,12 +1,13 @@
 const { spawn } = require('child_process');
 const http = require('http');
 const path = require('path');
+const { defaultOrigin, port: configuredTestPort } = require('./scripts/test-config');
 
 const root = __dirname;
 const isWindows = process.platform === 'win32';
 const wrapper = path.join(root, isWindows ? 'gradlew.bat' : 'gradlew');
-const port = Number(process.env.BUILD_PORT || 8081);
-const buildOrigin = `http://127.0.0.1:${port}`;
+const port = Number(process.env.BUILD_PORT || configuredTestPort);
+const buildOrigin = process.env.BUILD_PORT ? `http://127.0.0.1:${port}` : defaultOrigin;
 
 function run(command, args, options = {}) {
   return new Promise((resolve, reject) => {
@@ -65,7 +66,7 @@ async function build() {
   console.log(`Starting the build server at ${buildOrigin}...`);
   const server = spawn(executable, [], {
     cwd: root,
-    env: { ...process.env, PORT: String(port) },
+    env: { ...process.env, PORT: String(port), YOUR_WEBSITE_URL: process.env.PUBLIC_SITE_URL || process.env.YOUR_WEBSITE_URL || '' },
     stdio: 'inherit',
     shell: isWindows
   });
@@ -75,6 +76,10 @@ async function build() {
     console.log('Exporting public routes...');
     await run(process.execPath, ['build-static.js'], {
       env: { BUILD_ORIGIN: buildOrigin }
+    });
+    console.log('Verifying Ktor/static route parity, links, fragments, and assets...');
+    await run(process.execPath, ['route-crawler.js'], {
+      env: { LOCAL_ORIGIN: buildOrigin, DIST_DIR: path.join(root, 'dist') }
     });
   } finally {
     await stopServer(server);

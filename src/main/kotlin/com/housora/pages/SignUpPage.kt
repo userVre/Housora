@@ -5,7 +5,7 @@ import kotlinx.html.dom.*
 import com.housora.templates.baseLayout
 
 fun HTML.signUpPage() {
-    baseLayout("Housora - Sign Up") {
+    baseLayout("Housora - Sign Up", bodyClass = "page-auth", path = "/sign-up") {
         section("auth-page") {
             div("auth-container") {
                 div("auth-left") {
@@ -44,13 +44,14 @@ fun HTML.signUpPage() {
 
                     div("auth-email-form") {
                         label("auth-email-label") { htmlFor = "clerk-email-input"; attributes["data-i18n"] = "auth.email"; +"EMAIL" }
+                        p("auth-field-help") { id = "clerk-email-help"; +"Use an address you can access to create and recover your account." }
                         input(type = InputType.email, classes = "auth-email-input") {
                             attributes["id"] = "clerk-email-input"
                             attributes["placeholder"] = "you@example.com"
                             attributes["data-i18n-placeholder"] = "auth.email_placeholder"
                             attributes["required"] = "required"
                             attributes["autocomplete"] = "email"
-                            attributes["aria-describedby"] = "clerk-email-error"
+                            attributes["aria-describedby"] = "clerk-email-help clerk-email-error"
                         }
                         p("auth-field-error") { id = "clerk-email-error"; attributes["role"] = "alert"; attributes["aria-live"] = "polite" }
                         button(classes = "auth-email-btn") {
@@ -96,8 +97,8 @@ fun HTML.signUpPage() {
                                 span("auth-stat-label") { +"TRUSTED USERS" }
                             }
                             div("auth-stat") {
-                                span("auth-stat-number") { +"55+" }
-                                span("auth-stat-label") { +"COUNTRIES" }
+                                span("auth-stat-number") { +"Explore" }
+                                span("auth-stat-label") { +"YOUR SPACE" }
                             }
                         }
                         div("auth-review") {
@@ -107,10 +108,10 @@ fun HTML.signUpPage() {
                                 span("star") { +"â˜…" }
                                 span("star") { +"â˜…" }
                                 span("star") { +"â˜…" }
-                                span("auth-review-count") { +" (2,761 reviews)" }
+                                span("auth-review-count") { +" Product preview" }
                             }
-                            p("auth-review-text") { +"\"Found the exact sofa on Amazon for $200 less than in-store. Housora matched it perfectly.\"" }
-                            span("auth-review-author") { +"Elena Hargreaves Â· GB" }
+                            p("auth-review-text") { +"Explore a visual direction from your own room photo." }
+                            span("auth-review-author") { +"Housora product example" }
                         }
                     }
                 }
@@ -162,6 +163,12 @@ fun HTML.signUpPage() {
                             emailInput.addEventListener('input', function() {
                                 emailInput.removeAttribute('aria-invalid');
                                 if (emailError) emailError.textContent = '';
+                            });
+                            emailInput.addEventListener('keydown', function(event) {
+                                if (event.key === 'Enter') {
+                                    event.preventDefault();
+                                    emailBtn.click();
+                                }
                             });
                         }
                     }

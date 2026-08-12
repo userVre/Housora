@@ -1,7 +1,8 @@
 const { chromium } = require('playwright');
 const fs = require('fs');
+const { siteOrigin } = require('./scripts/test-config');
 
-const BASE = process.env.SITE_URL || 'http://127.0.0.1:8082';
+const BASE = siteOrigin();
 const coverage = require('./website-screenshots-complete/coverage.json');
 const routes = [...new Set(coverage.pages.map(p => p.route))];
 const viewports = { desktop: { width: 1440, height: 1000 }, tablet: { width: 834, height: 1112 }, mobile: { width: 390, height: 844 } };

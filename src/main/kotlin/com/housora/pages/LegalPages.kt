@@ -5,49 +5,75 @@ import kotlinx.html.dom.*
 import com.housora.templates.baseLayout
 
 private const val CONTACT_EMAIL = "support@housora.app"
+private const val LEGAL_UPDATED = "August 11, 2026"
+
+private fun FlowContent.legalContactLink(subject: String = "Housora legal request") {
+    a(href = "mailto:$CONTACT_EMAIL?subject=${subject.replace(" ", "%20")}") { +CONTACT_EMAIL }
+}
 
 fun HTML.privacyPage() {
     baseLayout("Privacy Policy | Housora", path = "/privacy") {
         section("legal-section") {
             div("legal-inner") {
                 h1("legal-title") { +"Privacy Policy" }
-                p("legal-updated") { +"Last updated: July 28, 2026" }
+                p("legal-updated") { +"Last updated: $LEGAL_UPDATED" }
                 div("legal-content") {
-                    p { +"This Privacy Policy explains how Housora collects and uses information when you use the Housora web application and related services (the Service)." }
-                    h2 { +"1. Who operates Housora" }
-                    p { +"Housora is operated by Ismail Abelouas. For legal notices, privacy requests, or service questions, contact: $CONTACT_EMAIL." }
-                    h2 { +"2. Information we collect" }
+                    p { +"This Privacy Policy explains how Housora handles personal data when you visit the website, create an account, upload content, generate design concepts, buy a plan, or contact support." }
+
+                    h2 { +"1. Controller and contact" }
+                    p { +"Housora is operated by Ismail Abelouas, trading as Housora, who is the controller of the personal data described in this Policy. For privacy requests, legal notices, or questions, email "; legalContactLink("Housora privacy request"); +"." }
+
+                    h2 { +"2. Personal data we handle" }
                     ul {
-                        li { +"Account information, such as your name, email address, profile image, and authentication identifiers." }
-                        li { +"Content you submit, including room photos, floor plans, prompts, project names, and generated designs." }
-                        li { +"Subscription and transaction information. Payments are handled by our payment provider; we do not store full card numbers." }
-                        li { +"Technical information such as IP address, browser, device, error logs, and security events." }
-                        li { +"Support messages and other information you choose to send us." }
+                        li { strong { +"Account data: " }; +"name, email address, profile image, authentication identifiers, account status, and plan information supplied by you or our authentication provider." }
+                        li { strong { +"Your content: " }; +"room photographs, floor plans, prompts, project names, selected design options, generated images, and related file metadata." }
+                        li { strong { +"Payments and subscriptions: " }; +"plan, billing period, transaction and subscription identifiers, payment status, and limited receipt information supplied by Whop. Housora does not receive or store your full payment-card number." }
+                        li { strong { +"Technical and security data: " }; +"IP address, timestamps, browser and device information, request metadata, security events, rate-limit records, and error logs." }
+                        li { strong { +"Optional analytics data: " }; +"page paths and selected product events described in section 6, but only after analytics consent." }
+                        li { strong { +"Communications: " }; +"support messages, refund requests, feedback, and any information you choose to include." }
                     }
-                    h2 { +"3. How we use information" }
+                    p { +"We receive this data from you, your device, Clerk, Whop, and the infrastructure providers involved in delivering the Service." }
+
+                    h2 { +"3. Why we use data and our legal bases" }
                     ul {
-                        li { +"To authenticate accounts and provide, save, and secure the Service." }
-                        li { +"To process uploaded images and prompts and return requested AI design outputs." }
-                        li { +"To process subscriptions, prevent abuse, communicate service changes, and provide support." }
-                        li { +"To diagnose errors and improve reliability, usability, and safety." }
-                        li { +"To comply with legal obligations and enforce our Terms." }
+                        li { +"Contract: to create and secure your account, provide requested design features, store projects, process subscriptions, and provide support." }
+                        li { +"Legitimate interests: to secure the Service, prevent fraud and abuse, diagnose faults, maintain reliable operations, and establish or defend legal claims. We balance these interests against your rights." }
+                        li { +"Consent: for optional PostHog analytics and any optional marketing communication. You can withdraw consent at any time without affecting earlier lawful processing." }
+                        li { +"Legal obligations: for tax, accounting, consumer-protection, payment-dispute, and lawful-authority requirements." }
                     }
-                    h2 { +"4. Legal bases" }
-                    p { +"Where GDPR applies, we rely on contract performance for account and design features, legitimate interests for security and service improvement, consent for optional cookies or marketing, and legal obligations where required." }
-                    h2 { +"5. Service providers" }
-                    p { +"Housora may use Clerk for authentication, Convex for application data and credits, Whop for subscriptions, Cloudflare for hosting and delivery, PostHog for optional analytics, and an image-generation provider when image generation is enabled. Providers process information only as needed to provide their services and under their applicable terms." }
-                    h2 { +"6. Images and AI processing" }
-                    p { +"You keep ownership of photos and other content you upload. You authorize Housora and its processors to host and process that content only to provide the requested features, protect the Service, and support your account. Do not upload images you do not have permission to use or images containing people who have not agreed to this use." }
-                    h2 { +"7. Retention and deletion" }
-                    p { +"We keep account, project, uploaded-image, and generation information while your account is active or as needed to provide the Service. You can start account deletion from the signed-in account controls or contact $CONTACT_EMAIL. We may retain limited records where required by law, for fraud prevention, payment disputes, or accounting." }
-                    h2 { +"8. Your rights" }
-                    p { +"Depending on your location, you may have rights to access, correct, delete, restrict, object to, or receive a copy of your personal data, and to withdraw consent. Contact $CONTACT_EMAIL. You may also complain to your local data protection authority." }
-                    h2 { +"9. International transfers and security" }
-                    p { +"Service providers may process information in countries outside your own. We use appropriate contractual or legal safeguards where required. We use reasonable technical and organizational safeguards, but no internet service can guarantee absolute security." }
-                    h2 { +"10. Children" }
-                    p { +"The Service is not directed to children under 16. If you believe a child has provided personal information, contact us so we can investigate and delete it where appropriate." }
-                    h2 { +"11. Changes and contact" }
-                    p { +"We may update this Policy when the Service or law changes. The date above shows when it was last revised. Questions and privacy requests: $CONTACT_EMAIL." }
+                    p { +"Account, upload, prompt, and payment information is required when you ask us to provide the corresponding feature. If you do not provide it, that feature may not work. You are not required by law to create an account or provide optional analytics consent." }
+
+                    h2 { +"4. Images, prompts, and AI processing" }
+                    p { +"You keep your rights in content you upload. You authorize Housora and its processors to host, transmit, and process that content to provide the feature you requested, secure the Service, and support your account. Uploaded content is not used for advertising. Housora will not use your private uploads to train a general-purpose AI model unless we first provide a separate notice and obtain any consent required by law." }
+                    p { +"Room images can reveal private information about a home. Do not upload images you do not have permission to use, confidential documents, precise security details, or identifiable people who have not agreed to the processing." }
+
+                    h2 { +"5. Providers and recipients" }
+                    p { +"We use service providers only for the functions described here. They may include Clerk for authentication, Convex for application data and file storage, Cloudflare for hosting, delivery, security, and media storage, Whop for checkout and subscriptions, PostHog for consent-based product analytics, and the configured image-generation provider for processing the image and prompt submitted for a generation request. Professional advisers and authorities may receive limited data where legally required." }
+                    p { +"We do not sell personal data. We do not use uploaded room images or prompts for third-party advertising." }
+
+                    h2 { +"6. PostHog analytics" }
+                    p { +"PostHog analytics is optional and remains off until you choose Allow analytics. When enabled, Housora may record page paths and explicit product events such as tool selected, upload type and size range, generation started/succeeded/failed and duration, checkout state, and project actions. For signed-in users, events may be associated with a pseudonymous Clerk user identifier and plan name." }
+                    p { +"Housora configures PostHog without session replay, form or click autocapture, marketing profiling, or the contents of uploaded images and prompts. Query strings are removed from analytics page URLs. You can withdraw consent at any time through Cookie settings in the footer; withdrawal stops future browser and consent-gated server analytics on that device." }
+
+                    h2 { +"7. International transfers" }
+                    p { +"Some providers may process data outside your country or the European Economic Area. Where required, transfers rely on an adequacy decision, the European Commission's Standard Contractual Clauses, or another lawful safeguard. Contact us to request information about the safeguard relevant to a particular provider." }
+
+                    h2 { +"8. Retention and deletion" }
+                    p { +"We keep account, project, upload, and generation data while your account is active and for the period reasonably needed to provide the Service, complete deletion, resolve disputes, prevent fraud, or meet legal duties. Security logs and rate-limit records are kept only for the operational period for which they are needed. Payment and transaction records may be kept for the tax, accounting, chargeback, and consumer-law periods that apply. Optional analytics data follows the retention configured for the Housora PostHog project." }
+                    p { +"You can start account deletion from the signed-in account controls or email "; legalContactLink("Delete my Housora account and data"); +". Deletion requests cover Housora account data, projects, generations, and Housora-controlled uploads, subject to legal retention exceptions and limited provider backup cycles." }
+
+                    h2 { +"9. Your rights" }
+                    p { +"Depending on where you live, you may have rights to access, correct, delete, restrict, object to, or receive a portable copy of your personal data. You may withdraw consent and object to processing based on legitimate interests. You may also complain to the data-protection authority where you live, work, or believe an infringement occurred." }
+                    p { +"To exercise a right, email "; legalContactLink("Housora data rights request"); +". We may ask for information needed to verify that the request concerns your account. We will respond within the period required by applicable law." }
+
+                    h2 { +"10. Security and automated decisions" }
+                    p { +"We use access controls, authentication, request validation, encryption in transit, and provider security controls intended to protect data. No internet service can guarantee absolute security. Housora does not make legal or similarly significant decisions about you using solely automated processing." }
+
+                    h2 { +"11. Children" }
+                    p { +"The Service is not directed to children under 16. If local law permits a lower age for independent consent, the local rule applies. If you believe a child has provided personal data without valid authorization, contact us so we can investigate and delete it where appropriate." }
+
+                    h2 { +"12. Changes" }
+                    p { +"We may update this Policy when the Service, providers, or law changes. We will change the date above and provide additional notice when a material change requires it." }
                 }
             }
         }
@@ -59,36 +85,57 @@ fun HTML.termsPage() {
         section("legal-section") {
             div("legal-inner") {
                 h1("legal-title") { +"Terms & Conditions" }
-                p("legal-updated") { +"Last updated: July 28, 2026" }
+                p("legal-updated") { +"Last updated: $LEGAL_UPDATED" }
                 div("legal-content") {
-                    p { +"These Terms govern your use of Housora. Housora is operated by Ismail Abelouas. Contact: $CONTACT_EMAIL. Please review these Terms together with the Refund Policy before using paid features." }
+                    p { +"These Terms govern your use of Housora. Housora is operated by Ismail Abelouas, trading as Housora. Contact: "; legalContactLink("Housora terms question"); +". By creating an account or using the Service, you agree to these Terms. Paid purchases are also subject to the Refund Policy and the information shown at checkout." }
+
                     h2 { +"1. The Service" }
-                    p { +"Housora provides tools for creating visual home-design concepts from user-provided images, floor plans, and prompts. Outputs are suggestions for planning and inspiration, not architectural, engineering, construction, safety, valuation, or professional design advice." }
-                    h2 { +"2. Accounts" }
-                    p { +"You must provide accurate information, keep your account secure, and promptly tell us about unauthorized use. You must be at least 16, or the minimum age required where you live." }
+                    p { +"Housora creates visual home-design concepts from user-provided images, floor plans, and prompts. Outputs are for exploration and inspiration. They are not architectural, engineering, construction, electrical, structural, safety, valuation, legal, or other professional advice." }
+
+                    h2 { +"2. Eligibility and accounts" }
+                    p { +"You must be at least 16, or the minimum age required to agree to these Terms where you live. You must provide accurate account information, keep access credentials secure, and promptly report unauthorized access. You are responsible for activity performed through your account unless applicable law provides otherwise." }
+
                     h2 { +"3. User content" }
-                    p { +"You retain your rights in uploaded content. You confirm that you have permission to upload it and that it does not violate law, privacy, copyright, trademark, or other rights. You grant Housora a limited, non-exclusive license to host, copy, transmit, and process it only to operate and improve the Service, respond to support requests, and prevent abuse." }
+                    p { +"You retain your rights in uploaded content. You confirm that you have permission to upload and process it and that it does not violate law, confidentiality, privacy, copyright, trademark, or other rights. You grant Housora a limited, non-exclusive license to host, copy, transmit, and process the content only to provide and secure the Service, respond to support, and comply with law." }
+
                     h2 { +"4. AI outputs" }
-                    p { +"AI outputs can be inaccurate, incomplete, or inconsistent. Check measurements, materials, product details, planning rules, and safety requirements with qualified professionals before making decisions or spending money. You are responsible for reviewing outputs before using or sharing them." }
+                    p { +"AI outputs may be inaccurate, incomplete, inconsistent, or different from your prompt. They may depict products that do not exist and may not preserve measurements, lighting, structure, materials, or availability. Check all measurements, products, planning rules, and safety requirements with qualified professionals before construction, purchase, publication, or reliance." }
+                    p { +"Housora does not claim ownership of your uploaded content. To the extent Housora has rights in an output created for you, Housora grants you permission to use that output for lawful personal or commercial projects, subject to third-party rights, provider terms, and applicable law. Copyright protection for AI-generated material can differ by country." }
+
                     h2 { +"5. Acceptable use" }
                     ul {
-                        li { +"Do not use Housora unlawfully or to infringe another person's rights." }
-                        li { +"Do not upload malware, private information without permission, or harmful or abusive content." }
-                        li { +"Do not bypass limits, scrape the Service, reverse engineer it, or interfere with its security." }
-                        li { +"Do not represent AI concepts as certified plans or guaranteed outcomes." }
+                        li { +"Do not use Housora unlawfully, deceptively, or to infringe another person's rights." }
+                        li { +"Do not upload malware, confidential or personal data without permission, or unlawful, abusive, or exploitative content." }
+                        li { +"Do not bypass account, credit, rate, or security limits; scrape the Service; reverse engineer protected parts; or disrupt infrastructure." }
+                        li { +"Do not present an AI concept as a certified plan, measured survey, authentic property photograph, or guaranteed outcome." }
+                        li { +"Do not use the Service to make high-impact decisions about another person." }
                     }
-                    h2 { +"6. Plans, credits, and payments" }
-                    p { +"The current plans are Standard (100 images, €14 monthly or €149 annually), Pro (190 images, €29 monthly or €299 annually), Growth (1,200 images, €199 monthly or €2,099 annually), Scale (2,250 images, €349 monthly or €3,799 annually), and Unlimited (5,250 images, €749 monthly or €7,999 annually). Prices, taxes, renewal terms, and feature limits shown at checkout control the purchase. Paid plans renew according to the displayed billing period until cancelled. Payments are processed by Whop. Mandatory consumer rights are not affected." }
-                    h2 { +"7. Cancellation and refunds" }
-                    p { +"You may cancel through the account or payment-management controls provided by Housora. Cancellation normally takes effect at the end of the current paid period. Refunds are handled under the Refund Policy and applicable consumer law. Where a right of withdrawal applies to a digital service, we will obtain any legally required express request and acknowledgement before immediate performance." }
-                    h2 { +"8. Intellectual property" }
-                    p { +"Housora owns or licenses the Service, software, branding, interface, and original site content. Except for the rights expressly granted here, no rights are transferred. Housora does not claim ownership of your uploaded content. Subject to law and these Terms, you may use outputs generated from your content for your own projects." }
-                    h2 { +"9. Availability and liability" }
-                    p { +"The Service is provided on an availability basis and may change, be interrupted, or contain errors. To the maximum extent permitted by law, Housora is not liable for indirect or consequential loss. Nothing limits liability that cannot legally be limited, including fraud or personal injury caused by negligence." }
-                    h2 { +"10. Suspension and termination" }
-                    p { +"We may suspend or terminate access for security, legal, abuse, non-payment, or serious Terms violations. You may stop using the Service at any time. After termination, we may delete content according to the Privacy Policy and applicable retention duties." }
-                    h2 { +"11. Governing law and contact" }
-                    p { +"These Terms are subject to applicable mandatory consumer-protection laws. Questions about these Terms: $CONTACT_EMAIL." }
+
+                    h2 { +"6. Plans, credits, and contract formation" }
+                    p { +"Plan prices, included image allowances, billing period, taxes, renewal terms, and material limits are displayed before purchase. The checkout and confirmation identify the plan and amount charged. Your paid contract is formed when payment is accepted and access is confirmed. Credits or included images are usage allowances, not money, and cannot be transferred or redeemed for cash. Any expiry or rollover rule must be displayed with the plan before purchase." }
+                    p { +"Paid plans renew for the displayed billing period until cancelled. You authorize the payment provider to charge the payment method for each renewal after any legally required notice. You can cancel future renewals through the online account or payment-management controls. Cancellation does not itself refund a completed charge." }
+
+                    h2 { +"7. Consumer withdrawal, cancellation, and refunds" }
+                    p { +"If mandatory consumer law gives you a cooling-off or withdrawal right, that right applies in addition to Housora's support-backed refund review. For many EU distance contracts, the period is 14 days. If you expressly request immediate supply of digital content or performance of a service, the law may require you to acknowledge when and to what extent the withdrawal right is lost or a proportionate amount becomes payable." }
+                    p { +"See the Refund Policy for how to submit a withdrawal or refund request. Nothing in these Terms removes mandatory remedies for a digital service that is not supplied as agreed." }
+
+                    h2 { +"8. Third-party services" }
+                    p { +"Authentication, hosting, storage, checkout, analytics, and AI processing may be provided by third parties. Their service availability and, where presented to you, their terms may also apply. Housora remains responsible for its obligations that cannot legally be delegated." }
+
+                    h2 { +"9. Housora intellectual property" }
+                    p { +"Housora owns or licenses the Service, software, branding, interface, and original site content. Except for rights expressly granted in these Terms, no rights are transferred. You may not copy or exploit protected parts of the Service beyond what law permits." }
+
+                    h2 { +"10. Availability, changes, and suspension" }
+                    p { +"The Service may change, be interrupted, or contain errors. We may suspend access to protect security, investigate abuse, comply with law, address non-payment, or respond to a serious Terms violation. Where reasonably possible, we will provide notice and an opportunity to resolve the issue. If we permanently discontinue a paid feature during a prepaid period, mandatory refund and consumer rights remain available." }
+
+                    h2 { +"11. Liability" }
+                    p { +"Nothing in these Terms excludes or limits liability where doing so is unlawful, including liability for fraud, wilful misconduct, or death or personal injury caused by negligence. Subject to those rules, Housora is not responsible for indirect loss or decisions made by treating an AI concept as professional or measured advice. Any limitation is applied only to the maximum extent permitted by the law protecting you." }
+
+                    h2 { +"12. Ending use and surviving terms" }
+                    p { +"You may stop using the Service and cancel future renewals at any time. On account deletion or termination, content is handled under the Privacy Policy. Provisions that by their nature should survive, including payment obligations already incurred, intellectual-property rules, disclaimers, and dispute provisions, continue to apply." }
+
+                    h2 { +"13. Changes, disputes, and contact" }
+                    p { +"We may update these Terms for legal, security, or material Service changes. We will provide notice when required, and changes do not retroactively remove accrued consumer rights. Mandatory consumer protections and the courts available to you under applicable law are not displaced by these Terms. Please contact "; legalContactLink("Housora complaint"); +" first so we can try to resolve a complaint." }
                 }
             }
         }
@@ -96,21 +143,36 @@ fun HTML.termsPage() {
 }
 
 fun HTML.refundPage() {
-    baseLayout("Refund Policy | Housora", path = "/refund-policy") {
+    baseLayout("Refund & Withdrawal Policy | Housora", path = "/refund-policy") {
         section("legal-section") {
             div("legal-inner") {
-                h1("legal-title") { +"Refund Policy" }
-                p("legal-updated") { +"Last updated: July 28, 2026" }
+                h1("legal-title") { +"Refund & Withdrawal Policy" }
+                p("legal-updated") { +"Last updated: $LEGAL_UPDATED" }
                 div("legal-content") {
-                    p { +"This policy applies to paid Housora plans unless a different term is shown at checkout or required by law." }
-                    h2 { +"Cancellation" }
-                    p { +"Cancel before the next renewal to avoid the next charge. You normally keep paid access until the end of the current billing period." }
-                    h2 { +"Refund requests" }
-                    p { +"For a support-backed refund review, contact $CONTACT_EMAIL within 7 days of the charge with your account email, purchase date, Whop receipt, and a description of the problem. We may offer a correction, replacement images, a partial refund, or another fair remedy. This review window does not remove any mandatory refund or withdrawal rights." }
-                    h2 { +"Consumer rights" }
-                    p { +"Nothing here removes mandatory consumer rights. If a digital service begins immediately after purchase, we will handle any required consent and withdrawal disclosures under the law that applies to you." }
-                    h2 { +"Contact" }
-                    p { +"Refund and billing questions: $CONTACT_EMAIL." }
+                    p { +"This Policy explains cancellation, Housora's optional 7-day support review, and mandatory consumer withdrawal and refund rights. A cancellation stops future renewal; it does not automatically reverse a charge already completed." }
+
+                    h2 { +"1. Cancel future renewals" }
+                    p { +"Cancel through the online account or Whop payment-management controls before the next renewal. You normally retain access until the end of the paid billing period. If you bought online, you may also request cancellation by emailing "; legalContactLink("Cancel my Housora subscription"); +". We will provide or request confirmation of cancellation." }
+
+                    h2 { +"2. Housora's 7-day support-backed review" }
+                    p { +"In addition to mandatory legal rights, you may ask Housora to review a charge within 7 days. This is a review, not an unconditional money-back guarantee. It is intended for duplicate charges, access that was not delivered, persistent technical failure, or another material billing or Service problem." }
+                    p { +"Email "; legalContactLink("Housora 7-day refund review"); +" with the account email, purchase date, Whop receipt or transaction identifier, and a short description of the problem. Depending on the circumstances, we may correct access, replace affected image allowances, issue a partial or full refund, or explain why the request is not eligible. This optional review never reduces mandatory rights." }
+
+                    h2 { +"3. EU/EEA and other mandatory withdrawal rights" }
+                    p { +"Where EU/EEA consumer law applies, an online service or subscription will commonly carry a 14-day withdrawal period starting when the contract is concluded. You do not need to give a reason. Other countries may provide similar or additional rights." }
+                    p { +"If you expressly request performance during the withdrawal period, a proportionate amount may be payable for service already supplied where law permits. For digital content supplied immediately, the withdrawal right may be lost only after the legally required prior express consent and acknowledgement. If Housora or checkout did not obtain what the law requires, your withdrawal rights are not removed by this Policy." }
+
+                    h2 { +"4. How to withdraw" }
+                    p { +"Before the applicable deadline, email "; legalContactLink("I withdraw from my Housora purchase"); +" and clearly state that you withdraw from the purchase. Include your name, account email, purchase date, plan, and receipt or transaction identifier so we can locate it. A reason is not required for a statutory withdrawal." }
+
+                    h2 { +"5. Service problems and refunds" }
+                    p { +"If the digital service is not supplied, is materially different from what was promised, or remains defective after a reasonable opportunity to correct it, you may have rights to correction, a price reduction, termination, or refund under applicable consumer law. Report the problem promptly with information that helps us reproduce it." }
+
+                    h2 { +"6. Refund method and timing" }
+                    p { +"Approved refunds are normally sent to the original payment method through Whop or the payment provider. Statutory refunds are issued within the legally required period; where EU withdrawal law applies, this is generally no later than 14 days after valid notice. Your bank or provider may take additional time to display the credit." }
+
+                    h2 { +"7. Contact" }
+                    p { +"Cancellation, withdrawal, refund, and billing questions: "; legalContactLink("Housora billing request"); +"." }
                 }
             }
         }
@@ -118,27 +180,40 @@ fun HTML.refundPage() {
 }
 
 fun HTML.cookiePolicyPage() {
-    baseLayout("Cookie Policy | Housora", path = "/cookies") {
+    baseLayout("Cookie & Storage Policy | Housora", path = "/cookies") {
         section("legal-section") {
             div("legal-inner") {
-                h1("legal-title") { +"Cookie Policy" }
-                p("legal-updated") { +"Last updated: July 28, 2026" }
+                h1("legal-title") { +"Cookie & Storage Policy" }
+                p("legal-updated") { +"Last updated: $LEGAL_UPDATED" }
                 div("legal-content") {
-                    h2 { +"1. What cookies are" }
-                    p { +"Cookies and similar technologies store or read small pieces of information on your device. Some are needed for the site to work; others are optional." }
-                    h2 { +"2. Categories" }
+                    p { +"This Policy explains cookies and similar browser storage used by Housora. Cookies are small browser files; local storage and session storage serve similar purposes. Housora does not enable optional PostHog analytics until you consent." }
+
+                    h2 { +"1. Strictly necessary and user-requested storage" }
                     ul {
-                        li { +"Strictly necessary: authentication, security, session management, consent preferences, and basic routing. These cannot be disabled through the site." }
-                        li { +"Preferences: remembers choices such as interface or upload settings, if enabled." }
-                        li { +"Analytics: helps us understand visits and errors only after you consent, if analytics is enabled." }
-                        li { +"Marketing: used only if we later add marketing or advertising tools and you consent." }
+                        li { strong { +"housora-consent-v2 (local storage): " }; +"records your analytics choice, policy version, date, and expiry for up to 6 months so the site can respect it. This storage is necessary to remember refusal as well as acceptance." }
+                        li { strong { +"housora-theme and housora-lang (local storage): " }; +"remember a theme or language after you actively choose it. They remain until you change the choice or clear browser storage." }
+                        li { strong { +"First-design handoff values (session storage): " }; +"temporarily carry the image preview and options you selected into the editor and are cleared when the browser tab session ends." }
+                        li { strong { +"Current-project identifier (local storage): " }; +"opens the project you selected and remains until replaced, removed, or browser storage is cleared." }
+                        li { strong { +"Clerk authentication storage: " }; +"maintains sign-in, session security, and fraud protection. Names and duration can vary with Clerk's security configuration and your sign-in method." }
+                        li { strong { +"Cloudflare security and delivery storage: " }; +"may be used where strictly necessary to protect traffic, balance delivery, and prevent abuse. Duration depends on the security challenge or delivery function." }
                     }
-                    h2 { +"3. Current third parties" }
-                    p { +"Clerk may set authentication-related storage, Convex may support application state, Cloudflare may use security or delivery technologies, Whop may use payment-session storage, and PostHog may use optional analytics storage only after analytics consent. The exact names and durations can change as the configuration changes." }
-                    h2 { +"4. Your choices" }
-                    p { +"You can block or delete cookies in your browser. Optional cookies should be enabled only after consent where required. Blocking necessary storage can prevent sign-in, uploads, subscriptions, or other features from working." }
-                    h2 { +"5. Updates and contact" }
-                    p { +"We will update this page when our cookie configuration changes. Questions: $CONTACT_EMAIL. See the Privacy Policy for information about personal data." }
+                    p { +"These technologies support a feature you request or remember your privacy choice. Blocking them can prevent sign-in, project handoff, security checks, or saved preferences from working." }
+
+                    h2 { +"2. Optional PostHog analytics" }
+                    p { +"If you choose Allow analytics, PostHog may use local storage to maintain a pseudonymous analytics identifier and session context. Housora sends page paths and explicit product events, which may include browser/device details, approximate network location derived by the provider, tool name, file type or size range, event timing, generation status, checkout state, project actions, plan, and a pseudonymous signed-in user identifier." }
+                    p { +"Housora disables PostHog session replay, click/form autocapture, and marketing profiling. Housora does not intentionally send uploaded image contents, prompts, form text, payment-card data, or page-query parameters to PostHog. Optional analytics storage and collection stop when you withdraw consent." }
+
+                    h2 { +"3. Payment-provider storage" }
+                    p { +"When you choose checkout, you are redirected to Whop. Whop may use its own strictly necessary, fraud-prevention, preference, or other technologies under the notice shown on its checkout domain. Housora does not control storage set on Whop's website." }
+
+                    h2 { +"4. No marketing trackers currently" }
+                    p { +"Housora does not currently enable advertising or cross-site marketing trackers. A future marketing tool will not be activated under a general advance consent; the banner and this Policy must first be updated to identify the tool, purpose, data, and choice." }
+
+                    h2 { +"5. Make or withdraw a choice" }
+                    p { +"On your first visit, Reject analytics and Allow analytics are presented together. Analytics is off by default. You can later open Cookie settings in the footer, change the analytics switch, and save. Withdrawing is free and does not prevent normal use of Housora. It stops future optional analytics on that browser; data lawfully collected before withdrawal may be retained for the applicable analytics retention period." }
+
+                    h2 { +"6. Browser controls and contact" }
+                    p { +"You can also inspect, block, or delete cookies and site storage through your browser. Browser deletion may remove your saved refusal, so the banner may ask again. Questions or requests: "; legalContactLink("Housora cookie question"); +". See the Privacy Policy for data-protection rights and provider information." }
                 }
             }
         }

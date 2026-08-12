@@ -1,393 +1,154 @@
-import { createPostHogClient } from '../../lib/posthog.js';
+import {
+  HttpError,
+  coordinatorJson,
+  errorResponse,
+  jsonResponse,
+  readBodyBytes,
+} from '../../lib/security.js';
 
-/**
- * Cloudflare Pages Function — Whop Webhook Handler
- * Live at: /api/webhooks/whop
- *
- * Whop uses Standard Webhooks format:
- *   Headers: webhook-id, webhook-timestamp, webhook-signature
- *   Signature: v1,<base64-hmac-sha256>
- *   Signed content: "{webhook-id}.{webhook-timestamp}.{raw-body}"
- */
+const MAX_WEBHOOK_BYTES = 64 * 1024;
 
-const WHOP_PLAN_MAP = {
-  'plan_yxeVUCgF75vlO': 'standard',
-  'plan_AxQbdctmhX5Kn': 'standard',
-  'plan_C7MWO8IMtbJcC': 'pro',
-  'plan_hPAcqZhdB4WZ5': 'pro',
-  'plan_dgZnX4Ls8lhY8': 'growth',
-  'plan_8unBaQsEW9mCk': 'growth',
-  'plan_lzM8trcdX71ha': 'scale',
-  'plan_80drB7FPmQiKB': 'unlimited',
-};
-
-const CREDITS = { free: 5, standard: 100, pro: 190, growth: 1200, scale: 2250, unlimited: 5250 };
-
-function timingSafeEqual(a, b) {
-  if (a.length !== b.length) return false;
-  let result = 0;
-  for (let i = 0; i < a.length; i++) {
-    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+function webhookSecretBytes(secret) {
+  if (!secret || !secret.startsWith('whsec_')) {
+    throw new HttpError(503, 'webhook_unavailable', 'The webhook endpoint is not configured.');
   }
-  return result === 0;
+  try {
+    const value = secret.slice('whsec_'.length);
+    if (!value || !/^[A-Za-z0-9+/]+={0,2}$/.test(value)) throw new Error('Invalid secret');
+    return Uint8Array.from(atob(value), (character) => character.charCodeAt(0));
+  } catch {
+    throw new HttpError(503, 'webhook_unavailable', 'The webhook endpoint is not configured.');
+  }
 }
 
-async function verifySignature(body, headers, secret) {
-  if (!secret) return false;
+export async function verifyWhopSignature(rawBody, headers, secret, now = Date.now()) {
+  const eventId = headers.get('webhook-id') || '';
+  const timestampValue = headers.get('webhook-timestamp') || '';
+  const signatureHeader = headers.get('webhook-signature') || '';
+  const timestamp = Number(timestampValue);
+  if (!eventId || eventId.length > 256 || !Number.isSafeInteger(timestamp)
+    || Math.abs(Math.floor(now / 1000) - timestamp) > 300 || !signatureHeader) return false;
 
-  const webhookId = headers.get('webhook-id') || '';
-  const webhookTimestamp = headers.get('webhook-timestamp') || '';
-  const webhookSignature = headers.get('webhook-signature') || '';
-
-  if (!webhookSignature) return false;
-
-  // Reject if timestamp is older than 5 minutes (replay protection)
-  const timestampAge = Math.abs(Date.now() / 1000 - parseInt(webhookTimestamp, 10));
-  if (timestampAge > 300) {
-    console.error('[Whop Webhook] Timestamp too old:', timestampAge, 'seconds');
+  let key;
+  try {
+    key = await crypto.subtle.importKey('raw', webhookSecretBytes(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['verify']);
+  } catch (error) {
+    if (error instanceof HttpError) throw error;
     return false;
   }
-
-  // Signed content = "{id}.{timestamp}.{body}"
-  const signedContent = `${webhookId}.${webhookTimestamp}.${body}`;
-
-  const secretValue = secret.replace(/^whsec_/, '');
-  let secretBytes;
-  try {
-    const decoded = atob(secretValue);
-    secretBytes = Uint8Array.from(decoded, (char) => char.charCodeAt(0));
-  } catch (_) {
-    secretBytes = new TextEncoder().encode(secret);
-  }
-
-  // Compute HMAC-SHA256
-  const key = await crypto.subtle.importKey(
-    'raw', secretBytes, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
-  );
-  const signatureBytes = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(signedContent));
-  const computed = btoa(String.fromCharCode(...new Uint8Array(signatureBytes)));
-
-  // Whop may send multiple signatures separated by spaces — check each
-  const signatures = webhookSignature.split(' ');
-  for (const sig of signatures) {
-    const parts = sig.split(',');
-    if (parts.length === 2 && parts[0] === 'v1') {
-      if (timingSafeEqual(parts[1], computed)) return true;
+  const signed = new TextEncoder().encode(`${eventId}.${timestampValue}.${rawBody}`);
+  for (const candidate of signatureHeader.split(/\s+/)) {
+    const match = /^v1,([A-Za-z0-9+/]+={0,2})$/.exec(candidate);
+    if (!match) continue;
+    try {
+      const signature = Uint8Array.from(atob(match[1]), (character) => character.charCodeAt(0));
+      if (await crypto.subtle.verify('HMAC', key, signature, signed)) return true;
+    } catch {
+      // Keep checking any other signatures in the header.
     }
   }
-
   return false;
 }
 
-function extractClerkId(data) {
-  return data.client_reference_id
-    || data.user?.clerk_id
-    || data.metadata?.clerk_id
-    || null;
+function eventTime(event, headers) {
+  const candidate = event.created_at ?? event.timestamp ?? event.data?.created_at ?? event.data?.timestamp;
+  if (typeof candidate === 'number' && Number.isFinite(candidate)) {
+    const millis = candidate < 100000000000 ? candidate * 1000 : candidate;
+    if (Number.isSafeInteger(millis)) return millis;
+  }
+  if (typeof candidate === 'string') {
+    const numeric = Number(candidate);
+    if (Number.isFinite(numeric)) {
+      const millis = numeric < 100000000000 ? numeric * 1000 : numeric;
+      if (Number.isSafeInteger(millis)) return millis;
+    }
+    const parsed = Date.parse(candidate);
+    if (Number.isSafeInteger(parsed)) return parsed;
+  }
+  return Number(headers.get('webhook-timestamp')) * 1000;
 }
 
-function mapPlanId(planId) {
-  return WHOP_PLAN_MAP[planId] || 'free';
+function eventEntity(event) {
+  const data = event.data || {};
+  return String(
+    data.subscription_id || data.membership?.id || data.membership_id
+    || data.customer_id || data.client_reference_id || data.id || '',
+  );
+}
+
+function targetUrl(env) {
+  const configured = env.WEBHOOK_FORWARD_URL || env.EXPO_PUBLIC_CONVEX_SITE_URL
+    || (env.EXPO_PUBLIC_CONVEX_URL || '').replace('.convex.cloud', '.convex.site');
+  let url;
+  try {
+    url = env.WEBHOOK_FORWARD_URL
+      ? new URL(configured)
+      : new URL('/api/webhooks/whop', configured);
+  } catch {
+    throw new HttpError(503, 'webhook_unavailable', 'The webhook endpoint is not configured.');
+  }
+  if (url.protocol !== 'https:' || url.username || url.password) {
+    throw new HttpError(503, 'webhook_unavailable', 'The webhook endpoint is not configured.');
+  }
+  return url;
 }
 
 export async function onRequestPost(context) {
   const { request, env } = context;
-
-  // 1. Read raw body (must be raw text for signature verification)
-  const body = await request.text();
-
-  // 2. Verify HMAC signature
-  const secret = env.WHOP_WEBHOOK_SECRET || '';
-  const isValid = await verifySignature(body, request.headers, secret);
-  if (!isValid) {
-    console.error('[Whop Webhook] Invalid signature. Rejecting.');
-    return new Response(JSON.stringify({ error: 'Invalid signature' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
-
-  // 3. Parse JSON
-  let event;
   try {
-    event = JSON.parse(body);
-  } catch (e) {
-    console.error('[Whop Webhook] Invalid JSON:', e.message);
-    return new Response(JSON.stringify({ error: 'Invalid JSON' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' },
+    const bytes = await readBodyBytes(request, MAX_WEBHOOK_BYTES);
+    let rawBody;
+    try {
+      rawBody = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+    } catch {
+      throw new HttpError(400, 'invalid_body', 'The webhook body is invalid.');
+    }
+    const valid = await verifyWhopSignature(rawBody, request.headers, env.WHOP_WEBHOOK_SECRET || '');
+    if (!valid) throw new HttpError(401, 'invalid_signature', 'The webhook signature is invalid.');
+
+    let event;
+    try {
+      event = JSON.parse(rawBody);
+    } catch {
+      throw new HttpError(400, 'invalid_json', 'The webhook body must be valid JSON.');
+    }
+    const type = String(event?.type || event?.event || '').trim();
+    const entityId = eventEntity(event);
+    if (!type || type.length > 128 || !event?.data || !entityId) {
+      throw new HttpError(400, 'invalid_event', 'The webhook event is invalid.');
+    }
+    // Validate production forwarding before claiming an event, so configuration
+    // errors never consume an otherwise retryable provider delivery.
+    const forwardUrl = targetUrl(env);
+
+    const eventId = request.headers.get('webhook-id');
+    const claimed = await coordinatorJson(env.SECURITY_COORDINATOR, 'webhook:whop', '/webhook/claim', {
+      eventId,
+      entityId,
+      eventTime: eventTime(event, request.headers),
+      type,
+      rawBody,
+      targetUrl: forwardUrl.toString(),
     });
-  }
-
-  // Normalize: Whop sends either { type, data } or { event, data }
-  // Whop's dashboard test can display event names with underscores while
-  // delivered webhook payloads may use dots. Normalize both forms.
-  const eventType = String(event.type || event.event || 'unknown').trim();
-  const eventData = event.data || {};
-
-  console.log(`[Whop Webhook] Received: ${eventType}`, JSON.stringify(eventData).slice(0, 200));
-
-  // 4. Return 200 immediately — process async
-  //    (Cloudflare Workers have up to 30s, but we respond fast)
-  const response = new Response(JSON.stringify({ received: true }), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' },
-  });
-
-  const posthog = createPostHogClient(env);
-  try {
-    await processEvent(eventType, eventData, env, posthog);
-  } catch (e) {
-    if (posthog) posthog.captureException(e, extractClerkId(eventData) || 'anonymous');
-    console.error(`[Whop Webhook] Error processing ${eventType}:`, e.message);
-  } finally {
-    if (posthog) await posthog.shutdown();
-  }
-
-  return response;
-}
-
-async function processEvent(type, data, env, posthog) {
-  const clerkId = extractClerkId(data);
-  const convexUrl = env.EXPO_PUBLIC_CONVEX_URL || '';
-  const convexSiteUrl = env.EXPO_PUBLIC_CONVEX_SITE_URL || '';
-
-  if (!clerkId) {
-    console.error(`[Whop Webhook] ${type}: No clerk_id found in event data`);
-    return;
-  }
-
-  switch (type) {
-    case 'payment.succeeded':
-    case 'invoice.paid': {
-      const planId = data.plan_id || data.plan?.id || data.membership?.plan?.id || data.product_id || '';
-      const plan = mapPlanId(planId);
-      const credits = CREDITS[plan] || CREDITS.free;
-
-      console.log(`[Whop Webhook] Payment succeeded: clerkId=${clerkId.slice(0, 8)}... plan=${plan} credits=${credits}`);
-
-      if (posthog) {
-        posthog.capture({
-          distinctId: clerkId,
-          event: 'payment succeeded',
-          properties: {
-            plan,
-            credits_awarded: credits,
-            whop_plan_id: planId,
-            whop_customer_id: data.customer_id || undefined,
-            $set: { plan, credits_awarded: credits, whop_customer_id: data.customer_id || undefined },
-          },
-        });
+    if (!claimed.accepted) {
+      if (claimed.reason === 'duplicate' || claimed.reason === 'stale') {
+        return jsonResponse(request, {}, { received: true, ignored: claimed.reason }, { status: 200 });
       }
-
-      // Update user in Convex
-      if (convexUrl) {
-        try {
-          // Webhooks have no Clerk browser session. Ensure the user through
-          // the protected server-to-server mutation instead.
-          await convexMutation(convexUrl, 'users:ensureUserFromWebhook', {
-            clerkId,
-            email: data.user?.email || '',
-            name: data.user?.name || undefined,
-            webhookSecret: env.WHOP_WEBHOOK_SECRET || '',
-          }, env);
-          // Activate subscription
-          await convexMutation(convexUrl, 'users:handleSubscriptionActivated', {
-            clerkId,
-            plan,
-            credits,
-            whopCustomerId: data.customer_id || undefined,
-            whopSubscriptionId: data.subscription_id || data.id || undefined,
-          }, env);
-          console.log(`[Whop Webhook] Activated plan ${plan} for ${clerkId.slice(0, 8)}...`);
-        } catch (e) {
-          // User might not exist yet — create them first
-          try {
-            await convexMutation(convexUrl, 'users:ensureUserFromWebhook', {
-              clerkId,
-              email: data.user?.email || '',
-              name: data.user?.name || undefined,
-              webhookSecret: env.WHOP_WEBHOOK_SECRET || '',
-            }, env);
-            await convexMutation(convexUrl, 'users:handleSubscriptionActivated', {
-              clerkId,
-              plan,
-              credits,
-              whopCustomerId: data.customer_id || undefined,
-              whopSubscriptionId: data.subscription_id || data.id || undefined,
-            }, env);
-            console.log(`[Whop Webhook] Created user + activated plan ${plan} for ${clerkId.slice(0, 8)}...`);
-          } catch (e2) {
-            console.error(`[Whop Webhook] Failed to create/activate user:`, e2.message);
-          }
-        }
-      }
-      break;
+      throw new HttpError(503, 'webhook_unavailable', 'The webhook could not be accepted.');
     }
 
-    case 'membership.cancel_at_period_end_changed': {
-      console.log(`[Whop Webhook] ${type}: cancellation schedule changed for clerkId=${clerkId.slice(0, 8)}...`);
-      if (convexUrl) {
-        await convexMutation(convexUrl, 'users:handleSubscriptionCancelAtPeriodEnd', {
-          clerkId,
-          subscriptionEnd: extractSubscriptionEnd(data),
-        }, env);
-      }
-      break;
-    }
-
-    case 'membership.deactivated': {
-      console.log(`[Whop Webhook] ${type}: Revoking access for clerkId=${clerkId.slice(0, 8)}...`);
-
-      if (posthog) {
-        posthog.capture({
-          distinctId: clerkId,
-          event: 'subscription canceled',
-          properties: { whop_subscription_id: data.id || undefined },
-        });
-      }
-
-      if (convexUrl) {
-        try {
-          await convexMutation(convexUrl, 'users:handleSubscriptionCanceled', { clerkId }, env);
-          console.log(`[Whop Webhook] Canceled subscription for ${clerkId.slice(0, 8)}...`);
-        } catch (e) {
-          console.error(`[Whop Webhook] Failed to cancel subscription:`, e.message);
-        }
-      }
-      break;
-    }
-
-    case 'membership.activated': {
-      const planId = data.plan_id || data.plan?.id || data.membership?.plan?.id || data.product_id || '';
-      const plan = mapPlanId(planId);
-      const credits = CREDITS[plan] || CREDITS.free;
-
-      console.log(`[Whop Webhook] ${type}: Activating plan ${plan} for clerkId=${clerkId.slice(0, 8)}...`);
-
-      if (posthog) {
-        posthog.capture({
-          distinctId: clerkId,
-          event: 'subscription activated',
-          properties: {
-            plan,
-            credits_awarded: credits,
-            whop_plan_id: planId,
-            whop_subscription_id: data.id || undefined,
-            $set: { plan, credits },
-          },
-        });
-      }
-
-      if (convexUrl) {
-        try {
-          await convexMutation(convexUrl, 'users:ensureUserFromWebhook', {
-            clerkId,
-            email: data.user?.email || '',
-            name: data.user?.name || undefined,
-            webhookSecret: env.WHOP_WEBHOOK_SECRET || '',
-          }, env);
-          await convexMutation(convexUrl, 'users:handleSubscriptionActivated', {
-            clerkId,
-            plan,
-            credits,
-            whopSubscriptionId: data.id || undefined,
-          }, env);
-        } catch (e) {
-          console.error(`[Whop Webhook] Failed to activate subscription:`, e.message);
-        }
-      }
-      break;
-    }
-
-    case 'payment.failed':
-    case 'invoice.past_due': {
-      console.log(`[Whop Webhook] Payment failed for clerkId=${clerkId.slice(0, 8)}...`);
-
-      if (posthog) {
-        posthog.capture({
-          distinctId: clerkId,
-          event: 'payment failed',
-          properties: { whop_event_type: type },
-        });
-      }
-
-      if (convexUrl) {
-        try {
-          await convexMutation(convexUrl, 'users:handleSubscriptionPaymentFailed', { clerkId }, env);
-        } catch (e) {
-          console.error(`[Whop Webhook] Failed to mark payment failed:`, e.message);
-        }
-      }
-      break;
-    }
-
-    case 'refund.created': {
-      console.log(`[Whop Webhook] Refund created for clerkId=${clerkId.slice(0, 8)}...`, data);
-      break;
-    }
-
-    case 'dispute.created': {
-      console.log(`[Whop Webhook] Dispute created for clerkId=${clerkId.slice(0, 8)}...`, data);
-      break;
-    }
-
-    default:
-      console.log(`[Whop Webhook] Unhandled event type: ${type}`);
+    return jsonResponse(request, {}, { received: true }, { status: 202 });
+  } catch (error) {
+    return errorResponse(request, {}, error);
   }
 }
 
-function extractSubscriptionEnd(data) {
-  const value = data.end_date || data.current_period_end || data.renewal_end || data.expires_at;
-  if (typeof value === 'number') return value < 100000000000 ? value * 1000 : value;
-  if (typeof value === 'string') {
-    const numeric = Number(value);
-    if (Number.isFinite(numeric)) return numeric < 100000000000 ? numeric * 1000 : numeric;
-    const parsed = Date.parse(value);
-    if (Number.isFinite(parsed)) return parsed;
-  }
-  return undefined;
+export function onRequestGet({ request }) {
+  return jsonResponse(request, {}, { ok: true, service: 'whop-webhook' });
 }
 
-// Convex helper: run a query
-async function convexQuery(url, functionPath, args, env) {
-  const siteUrl = env.EXPO_PUBLIC_CONVEX_SITE_URL || url.replace('.convex.cloud', '.convex.site');
-  const resp = await fetch(`${siteUrl}/api/query`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ path: functionPath, args }),
-  });
-  if (!resp.ok) throw new Error(`Convex query ${functionPath} failed: ${resp.status}`);
-  return resp.json();
-}
-
-// Convex helper: run a mutation
-async function convexMutation(url, functionPath, args, env) {
-  const siteUrl = env.EXPO_PUBLIC_CONVEX_SITE_URL || url.replace('.convex.cloud', '.convex.site');
-  const resp = await fetch(`${siteUrl}/api/mutation`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ path: functionPath, args }),
-  });
-  if (!resp.ok) throw new Error(`Convex mutation ${functionPath} failed: ${resp.status}`);
-  return resp.json();
-}
-
-export async function onRequestOptions() {
-  return new Response(null, {
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, webhook-id, webhook-timestamp, webhook-signature',
-    },
-  });
-}
-
-// Allow Whop and deployment checks to verify that the endpoint exists.
-// Actual payment events are still processed only through POST above.
-export async function onRequestGet() {
-  return new Response(JSON.stringify({ ok: true, service: 'whop-webhook' }), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' },
-  });
+export function onRequestOptions({ request }) {
+  return jsonResponse(request, {}, {
+    error: { code: 'method_not_allowed', message: 'CORS is not enabled for this server-to-server endpoint.' },
+  }, { status: 405, methods: '' });
 }

@@ -24,17 +24,12 @@ node_modules/
 .claude/
 .agents/
 
-# Generated vendor/static bundles. Keep the application-owned CSS and JS tracked.
-static/vendor/
+# Production static assets are tracked. Source maps and local backup files are not.
 static/**/*.map
 static/**/*.bak
 static/css/*.bak
 static/**/*.ts
 static/**/*.mjs
-static/**/*.svg
-static/**/*.png
-static/**/*.webp
-static/**/*.jpg
 !static/css/
 !static/css/**
 !static/js/

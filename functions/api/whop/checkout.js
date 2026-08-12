@@ -1,118 +1,87 @@
 import { createPostHogClient } from '../../lib/posthog.js';
+import {
+  HttpError,
+  assertCors,
+  errorResponse,
+  jsonResponse,
+  optionsResponse,
+  readBodyBytes,
+  requireClerkAuth,
+} from '../../lib/security.js';
 
 const VALID_PLAN_IDS = new Set([
   'plan_yxeVUCgF75vlO', 'plan_AxQbdctmhX5Kn',
   'plan_C7MWO8IMtbJcC', 'plan_hPAcqZhdB4WZ5',
-  'plan_dgZnX4Ls8lhY8',
-  'plan_8unBaQsEW9mCk',
-  'plan_lzM8trcdX71ha',
-  'plan_80drB7FPmQiKB',
+  'plan_dgZnX4Ls8lhY8', 'plan_8unBaQsEW9mCk',
+  'plan_lzM8trcdX71ha', 'plan_80drB7FPmQiKB',
 ]);
 
-async function verifyClerkSession(token, secretKey) {
+function checkoutOrigin(env) {
+  const allowlist = String(env.CHECKOUT_REDIRECT_ORIGINS || '').split(',').map((value) => value.trim()).filter(Boolean);
+  let website;
+  let origins;
   try {
-    const parts = token.split('.');
-    if (parts.length !== 3) return null;
-    const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
-    const sub = payload.sub;
-    const sid = payload.sid;
-    if (!sub || !sid) return null;
-    if (!secretKey) return sub;
-    const resp = await fetch(`https://api.clerk.com/v1/sessions/${sid}`, {
-      headers: { 'Authorization': `Bearer ${secretKey}`, 'Content-Type': 'application/json' },
-    });
-    if (!resp.ok) return null;
-    const session = await resp.json();
-    if (session.status !== 'active') return null;
-    return sub;
+    website = new URL(env.YOUR_WEBSITE_URL || '');
+    origins = new Set(allowlist.map((value) => {
+      const url = new URL(value);
+      if (url.protocol !== 'https:' || url.username || url.password) throw new Error('Invalid origin');
+      return url.origin;
+    }));
   } catch {
-    return null;
+    throw new HttpError(503, 'checkout_unavailable', 'Checkout is temporarily unavailable.');
   }
+  if (website.protocol !== 'https:' || website.username || website.password || !origins.has(website.origin)) {
+    throw new HttpError(503, 'checkout_unavailable', 'Checkout is temporarily unavailable.');
+  }
+  return website.origin;
 }
 
-export async function onRequestPost(context) {
-  const { request, env } = context;
+async function readPlanId(request) {
+  const type = (request.headers.get('Content-Type') || '').split(';', 1)[0].trim().toLowerCase();
+  if (type !== 'application/x-www-form-urlencoded') {
+    throw new HttpError(415, 'unsupported_content_type', 'Content-Type must be application/x-www-form-urlencoded.');
+  }
+  const bytes = await readBodyBytes(request, 4 * 1024);
+  return new URLSearchParams(new TextDecoder().decode(bytes)).get('planId')?.trim() || '';
+}
 
-  const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  };
-
-  const posthog = createPostHogClient(env);
-
+export async function onRequestPost({ request, env }) {
+  let posthog = null;
+  let userId = null;
   try {
-    const body = await request.text();
-    const params = new URLSearchParams(body);
-    const planId = params.get('planId')?.trim() || '';
+    assertCors(request, env);
+    const auth = await requireClerkAuth(request, env);
+    userId = auth.userId;
+    const planId = await readPlanId(request);
+    if (!VALID_PLAN_IDS.has(planId)) throw new HttpError(400, 'invalid_plan', 'The selected plan is invalid.');
+    const origin = checkoutOrigin(env);
+    const success = `${origin}/pricing?checkout=success`;
+    const cancel = `${origin}/pricing?checkout=canceled`;
 
-    if (!planId) {
-      return Response.json({ error: 'Missing planId' }, { status: 400, headers: corsHeaders });
-    }
-    if (!VALID_PLAN_IDS.has(planId)) {
-      return Response.json({ error: 'Invalid plan ID' }, { status: 400, headers: corsHeaders });
-    }
-
-    const websiteUrl = env.YOUR_WEBSITE_URL || '';
-    if (!websiteUrl || websiteUrl === 'YOUR_WEBSITE_URL') {
-      return Response.json({ error: 'Server configuration error. Please contact support.' }, { status: 500, headers: corsHeaders });
-    }
-
-    const authHeader = request.headers.get('Authorization');
-    const sessionToken = authHeader ? authHeader.replace('Bearer ', '').trim() : '';
-    const secretKey = env.CLERK_SECRET_KEY || '';
-
-    let verifiedClerkId = '';
-    if (sessionToken) {
-      const userId = await verifyClerkSession(sessionToken, secretKey);
-      if (!userId) {
-        return Response.json({ error: 'Authentication required. Please sign in again.' }, { status: 401, headers: corsHeaders });
-      }
-      verifiedClerkId = userId;
-    } else {
-      const whopApiKey = env.WHOP_API_KEY || '';
-      if (!whopApiKey) {
-        const mockUrl = `${websiteUrl}/pricing?mock_checkout=${planId}`;
-        return Response.json({ url: mockUrl, mock: true }, { headers: corsHeaders });
-      }
-      return Response.json({ error: 'Authentication required. Please sign in.' }, { status: 401, headers: corsHeaders });
+    if (!env.WHOP_API_KEY) {
+      const mockEnabled = env.ENVIRONMENT === 'development' && env.ENABLE_MOCK_CHECKOUT === 'true';
+      if (!mockEnabled) throw new HttpError(503, 'checkout_unavailable', 'Checkout is temporarily unavailable.');
+      return jsonResponse(request, env, { url: `${origin}/pricing?mock_checkout=${encodeURIComponent(planId)}`, mock: true });
     }
 
-    const whopApiKey = env.WHOP_API_KEY || '';
-    const redirectSuccess = `${websiteUrl}/pricing?checkout=success`;
-    const redirectCancel = `${websiteUrl}/pricing?checkout=canceled`;
-
-    if (whopApiKey) {
-      const checkoutUrl = `https://whop.com/checkout/${planId}?d2c=true&checkout[redirect_url]=${encodeURIComponent(redirectSuccess)}&checkout[cancel_url]=${encodeURIComponent(redirectCancel)}&checkout[client_reference_id]=${verifiedClerkId}`;
-      if (posthog) {
-        posthog.capture({
-          distinctId: verifiedClerkId,
-          event: 'checkout initiated',
-          properties: {
-            plan_id: planId,
-            billing_mode: 'live',
-          },
-        });
-      }
-      return Response.json({ url: checkoutUrl }, { headers: corsHeaders });
-    } else {
-      const mockUrl = `${websiteUrl}/pricing?mock_checkout=${planId}`;
-      return Response.json({ url: mockUrl, mock: true }, { headers: corsHeaders });
-    }
-  } catch (e) {
-    if (posthog) posthog.captureException(e, 'anonymous');
-    return Response.json({ error: 'Server error: ' + e.message }, { status: 500, headers: corsHeaders });
+    const checkout = new URL(`https://whop.com/checkout/${planId}`);
+    checkout.searchParams.set('d2c', 'true');
+    checkout.searchParams.set('checkout[redirect_url]', success);
+    checkout.searchParams.set('checkout[cancel_url]', cancel);
+    checkout.searchParams.set('checkout[client_reference_id]', auth.userId);
+    posthog = createPostHogClient(env, request);
+    if (posthog) posthog.capture({ distinctId: auth.userId, event: 'checkout initiated', properties: { plan_id: planId, billing_mode: 'live' } });
+    return jsonResponse(request, env, { url: checkout.toString() });
+  } catch (error) {
+    if (posthog && userId) posthog.captureException(error, userId);
+    return errorResponse(request, env, error);
   } finally {
-    if (posthog) await posthog.shutdown();
+    if (posthog) {
+      try { await posthog.shutdown(); } catch { console.error('[Analytics] Shutdown failed'); }
+    }
   }
 }
 
-export async function onRequestOptions() {
-  return new Response(null, {
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
-  });
+export function onRequestOptions({ request, env }) {
+  return optionsResponse(request, env, { methods: 'POST, OPTIONS' });
 }

@@ -1,359 +1,391 @@
 import { httpRouter } from "convex/server";
-import { httpAction } from "./_generated/server";
-import { api } from "./_generated/api";
+import type { Id } from "./_generated/dataModel";
+import type { ActionCtx } from "./_generated/server";
+import { env, httpAction } from "./_generated/server";
+import { internal } from "./_generated/api";
+import type { PaidPlan } from "./lib/plans";
 
 const http = httpRouter();
+const MAX_WEBHOOK_BODY_BYTES = 256 * 1024;
+const MAX_GENERATION_CALLBACK_BODY_BYTES = 16 * 1024;
 
-/**
- * Verify Whop webhook signature using HMAC-SHA256.
- * Uses the WHOP_WEBHOOK_SECRET env var (NOT WHOP_API_KEY).
- */
-async function verifyWebhookSignature(
-  body: string,
-  headers: Headers,
-  secret: string
-): Promise<boolean> {
-  const webhookId = headers.get("webhook-id");
-  const webhookTimestamp = headers.get("webhook-timestamp");
-  const signature = headers.get("webhook-signature");
-  if (!webhookId || !webhookTimestamp || !signature) return false;
-  try {
-    const encoder = new TextEncoder();
-    const timestamp = Number(webhookTimestamp);
-    if (!Number.isFinite(timestamp) || Math.abs(Date.now() / 1000 - timestamp) > 300) return false;
-    const signed = encoder.encode(`${webhookId}.${webhookTimestamp}.${body}`);
-    const secretValue = secret.replace(/^whsec_/, "");
-    let secretBytes: Uint8Array;
-    try {
-      const decoded = atob(secretValue);
-      secretBytes = Uint8Array.from(decoded, (char) => char.charCodeAt(0));
-    } catch (_) {
-      secretBytes = encoder.encode(secret);
-    }
-    const key = await crypto.subtle.importKey("raw", secretBytes, { name: "HMAC", hash: "SHA-256" }, false, ["verify"]);
-    for (const candidate of signature.split(" ")) {
-      const [version, value] = candidate.split(",", 2);
-      if (version !== "v1" || !value) continue;
-      const bytes = Uint8Array.from(atob(value), (char) => char.charCodeAt(0));
-      if (await crypto.subtle.verify("HMAC", key, bytes, signed)) return true;
-    }
-    return false;
-  } catch (e) {
-    console.error("[Whop Webhook] Signature verification error:", e);
-    return false;
-  }
-}
+type JsonRecord = Record<string, unknown>;
+type SubscriptionEvent =
+  | "payment.succeeded"
+  | "membership.activated"
+  | "invoice.paid"
+  | "membership.deactivated"
+  | "membership.expired"
+  | "payment.failed"
+  | "invoice.past.due"
+  | "membership.cancel_at_period_end_changed"
+  | "membership.pending";
 
-// Whop webhook endpoint
-http.route({
-  path: "/api/webhooks/whop",
-  method: "POST",
-  handler: httpAction(async (ctx, request) => {
-    // === CRITICAL: Reject if webhook secret is not configured ===
-    const webhookSecret = process.env.WHOP_WEBHOOK_SECRET;
-    if (!webhookSecret || webhookSecret.trim() === "") {
-      console.error("[Whop Webhook] WHOP_WEBHOOK_SECRET is empty or not configured. Rejecting webhook.");
-      return new Response(JSON.stringify({ error: "Webhook not configured" }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
+const SUBSCRIPTION_EVENTS = new Set<string>([
+  "payment.succeeded",
+  "membership.activated",
+  "invoice.paid",
+  "membership.deactivated",
+  "membership.expired",
+  "payment.failed",
+  "invoice.past.due",
+  "membership.cancel_at_period_end_changed",
+  "membership.pending",
+]);
 
-    const body = await request.text();
-
-    // === Verify HMAC-SHA256 signature ===
-    const isValid = await verifyWebhookSignature(body, request.headers, webhookSecret);
-    if (!isValid) {
-      console.error("[Whop Webhook] Invalid signature. Rejecting webhook.");
-      return new Response(JSON.stringify({ error: "Invalid signature" }), {
-        status: 401,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    let event: any;
-    try {
-      event = JSON.parse(body);
-    } catch (e) {
-      return new Response(JSON.stringify({ error: "Invalid JSON" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    const eventType = String(event.type || event.event || "").trim();
-    const eventData = event.data;
-
-    if (!eventType || !eventData) {
-      return new Response(JSON.stringify({ error: "Missing event or data" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    // === IDEMPOTENCY: Extract event ID for duplicate detection ===
-    const eventId = event.id || eventData.id || null;
-    console.log(`[Whop Webhook] Received verified event: ${eventType} (id: ${eventId || "none"})`);
-
-    try {
-      switch (eventType) {
-        case "payment.succeeded":
-          await handleCheckoutCompleted(ctx, eventData);
-          break;
-        case "membership.activated":
-        case "invoice.paid":
-          await handleSubscriptionActive(ctx, eventData);
-          break;
-        case "membership.deactivated":
-          await handleSubscriptionCanceled(ctx, eventData);
-          break;
-        case "payment.failed":
-        case "invoice.past.due":
-          await handlePaymentFailed(ctx, eventData);
-          break;
-        case "membership.cancel_at_period_end_changed":
-          await handleSubscriptionCancelAtPeriodEnd(ctx, eventData);
-          break;
-        case "refund.created":
-        case "dispute.created":
-          console.log(`[Whop Webhook] Financial event received: ${eventType}`);
-          break;
-        default:
-          console.log(`[Whop Webhook] Unhandled event type: ${eventType}`);
-      }
-
-      return new Response(JSON.stringify({ received: true }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
-    } catch (error: any) {
-      console.error(`[Whop Webhook] Error processing ${eventType}:`, error?.message || error);
-      return new Response(JSON.stringify({ error: error.message || "Internal error" }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-  }),
-});
-
-// Helper: Map Whop plan ID to internal plan name
-function mapPlanIdToName(planId: string): string {
-  const planMap: Record<string, string> = {
-    [process.env.WHOP_STANDARD_MONTHLY_PLAN_ID || ""]: "standard",
-    [process.env.WHOP_STANDARD_YEARLY_PLAN_ID || ""]: "standard",
-    [process.env.WHOP_PRO_MONTHLY_PLAN_ID || ""]: "pro",
-    [process.env.WHOP_PRO_YEARLY_PLAN_ID || ""]: "pro",
-    [process.env.WHOP_ENTREPRISE_STARTER_MONTHLY_PLAN_ID || ""]: "growth",
-    [process.env.WHOP_ENTREPRISE_STARTER_YEARLY_PLAN_ID || ""]: "growth",
-    [process.env.WHOP_ENTREPRISE_PLUS_MONTHLY_PLAN_ID || ""]: "scale",
-    [process.env.WHOP_ENTREPRISE_PLUS_YEARLY_PLAN_ID || ""]: "scale",
-    [process.env.WHOP_ENTREPRISE_PRO_MONTHLY_PLAN_ID || ""]: "unlimited",
-    [process.env.WHOP_ENTREPRISE_PRO_YEARLY_PLAN_ID || ""]: "unlimited",
-    [process.env.WHOP_ENTREPRISE_MAX_YEARLY_PLAN_ID || ""]: "unlimited",
-  };
-  return planMap[planId] || "free";
-}
-
-// Helper: Get credits for plan
-function getCreditsForPlan(plan: string): number {
-  const credits: Record<string, number> = {
-    free: 5,
-    standard: 650,
-    pro: 1250,
-    growth: 1200,
-    scale: 2250,
-    unlimited: 5250,
-  };
-  return credits[plan] ?? 5;
-}
-
-/**
- * Extract clerkId from signed Whop event data ONLY.
- * NEVER trust clerkId sent from browser form data.
- * The clerkId must come from Whop's signed checkout metadata (client_reference_id or metadata).
- */
-function extractClerkId(data: any): string | null {
-  // Whop passes client_reference_id in checkout.completed events
-  const clerkId = data.client_reference_id
-    || data.user?.clerk_id
-    || data.metadata?.clerk_id;
-  return clerkId || null;
-}
-
-async function handleCheckoutCompleted(ctx: any, data: any) {
-  // clerkId comes ONLY from the signed Whop event (client_reference_id or metadata)
-  const clerkId = extractClerkId(data);
-  const whopCustomerId = data.customer_id;
-  const whopSubscriptionId = data.subscription_id || data.id;
-  const planId = data.plan_id || data.product_id;
-
-  if (!clerkId) {
-    console.error("[Whop] checkout.completed: No clerk_id found in signed event data (client_reference_id or metadata)");
-    return;
-  }
-
-  const plan = mapPlanIdToName(planId);
-  const credits = getCreditsForPlan(plan);
-
-  console.log(`[Whop] checkout.completed: clerkId=${clerkId.slice(0, 8)}... plan=${plan}`);
-
-  const user = await ctx.runQuery(api.users.getCurrentUser, { clerkId });
-  if (user) {
-    // === IDEMPOTENCY: Skip if user already has this plan ===
-    if (user.plan === plan && user.subscriptionStatus !== "canceled" && user.subscriptionStatus !== "expired") {
-      console.log(`[Whop] checkout.completed: User ${clerkId.slice(0, 8)}... already has plan ${plan}, skipping`);
-      return;
-    }
-    await ctx.runMutation(api.users.handleSubscriptionActivated, {
-      clerkId,
-      plan: plan as any,
-      credits,
-      whopCustomerId: whopCustomerId || undefined,
-      whopSubscriptionId: whopSubscriptionId || undefined,
-    });
-    console.log(`[Whop] Existing user ${clerkId.slice(0, 8)}... activated plan: ${plan}`);
-  } else {
-    // Create new user with this plan
-    await ctx.runMutation(api.users.createOrUpdateUser, {
-      clerkId,
-      email: data.user?.email || "",
-      name: data.user?.name || undefined,
-    });
-    await ctx.runMutation(api.users.handleSubscriptionActivated, {
-      clerkId,
-      plan: plan as any,
-      credits,
-      whopCustomerId: whopCustomerId || undefined,
-      whopSubscriptionId: whopSubscriptionId || undefined,
-    });
-    console.log(`[Whop] New user ${clerkId.slice(0, 8)}... created with plan: ${plan}`);
-  }
-}
-
-async function handleSubscriptionActive(ctx: any, data: any) {
-  const clerkId = extractClerkId(data);
-  const subscriptionId = data.id;
-  const planId = data.plan_id;
-
-  if (!clerkId) {
-    console.error("[Whop] subscription.active: No clerk_id in signed event");
-    return;
-  }
-
-  const plan = mapPlanIdToName(planId);
-  const credits = getCreditsForPlan(plan);
-
-  // === IDEMPOTENCY: Check current state before mutating ===
-  const user = await ctx.runQuery(api.users.getCurrentUser, { clerkId });
-  if (user && user.plan === plan && user.subscriptionStatus === "active") {
-    console.log(`[Whop] subscription.active: User ${clerkId.slice(0, 8)}... already active on ${plan}, skipping`);
-    return;
-  }
-
-  await ctx.runMutation(api.users.handleSubscriptionActivated, {
-    clerkId,
-    plan: plan as any,
-    credits,
-    whopSubscriptionId: subscriptionId || undefined,
+function jsonResponse(status: number, payload: JsonRecord): Response {
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers: { "Content-Type": "application/json" },
   });
-  console.log(`[Whop] Subscription active for ${clerkId.slice(0, 8)}...: ${plan}`);
 }
 
-async function handleSubscriptionCanceled(ctx: any, data: any) {
-  const clerkId = extractClerkId(data);
-  if (!clerkId) {
-    console.error("[Whop] subscription.canceled: No clerk_id in signed event");
-    return;
-  }
-
-  // === IDEMPOTENCY: Skip if already canceled ===
-  const user = await ctx.runQuery(api.users.getCurrentUser, { clerkId });
-  if (user && user.subscriptionStatus === "canceled") {
-    console.log(`[Whop] subscription.canceled: User ${clerkId.slice(0, 8)}... already canceled, skipping`);
-    return;
-  }
-
-  await ctx.runMutation(api.users.handleSubscriptionCanceled, { clerkId });
-  console.log(`[Whop] Subscription canceled for ${clerkId.slice(0, 8)}...`);
+function asRecord(value: unknown): JsonRecord | null {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return null;
+  return value as JsonRecord;
 }
 
-function extractSubscriptionEnd(data: any): number | undefined {
-  const value = data.end_date || data.current_period_end || data.renewal_end || data.expires_at;
-  if (typeof value === "number") return value < 100000000000 ? value * 1000 : value;
-  if (typeof value === "string") {
+function optionalString(value: unknown): string | undefined {
+  return typeof value === "string" && value.trim() ? value.trim() : undefined;
+}
+
+function nestedRecord(record: JsonRecord, key: string): JsonRecord | null {
+  return asRecord(record[key]);
+}
+
+function extractClerkId(data: JsonRecord): string | null {
+  const user = nestedRecord(data, "user");
+  const metadata = nestedRecord(data, "metadata");
+  return optionalString(data.client_reference_id)
+    ?? optionalString(user?.clerk_id)
+    ?? optionalString(metadata?.clerk_id)
+    ?? null;
+}
+
+function extractEmail(data: JsonRecord): string | undefined {
+  return optionalString(nestedRecord(data, "user")?.email);
+}
+
+function extractName(data: JsonRecord): string | undefined {
+  return optionalString(nestedRecord(data, "user")?.name);
+}
+
+function normalizeTimestamp(value: unknown): number | undefined {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return Math.trunc(value < 100_000_000_000 ? value * 1000 : value);
+  }
+  if (typeof value === "string" && value.trim()) {
     const numeric = Number(value);
-    if (Number.isFinite(numeric)) return numeric < 100000000000 ? numeric * 1000 : numeric;
+    if (Number.isFinite(numeric)) {
+      return Math.trunc(numeric < 100_000_000_000 ? numeric * 1000 : numeric);
+    }
     const parsed = Date.parse(value);
     if (Number.isFinite(parsed)) return parsed;
   }
   return undefined;
 }
 
-async function handleSubscriptionCancelAtPeriodEnd(ctx: any, data: any) {
-  const clerkId = extractClerkId(data);
-  if (!clerkId) {
-    console.error("[Whop] cancellation schedule: No clerk_id in signed event");
-    return;
+function mapPlanIdToName(planId: string | undefined): PaidPlan | null {
+  if (!planId) return null;
+  const configuredPlans: Array<[string | undefined, PaidPlan]> = [
+    [env.WHOP_STANDARD_MONTHLY_PLAN_ID, "standard"],
+    [env.WHOP_STANDARD_YEARLY_PLAN_ID, "standard"],
+    [env.WHOP_PRO_MONTHLY_PLAN_ID, "pro"],
+    [env.WHOP_PRO_YEARLY_PLAN_ID, "pro"],
+    [env.WHOP_ENTREPRISE_STARTER_MONTHLY_PLAN_ID, "growth"],
+    [env.WHOP_ENTREPRISE_STARTER_YEARLY_PLAN_ID, "growth"],
+    [env.WHOP_ENTREPRISE_PLUS_MONTHLY_PLAN_ID, "scale"],
+    [env.WHOP_ENTREPRISE_PLUS_YEARLY_PLAN_ID, "scale"],
+    [env.WHOP_ENTREPRISE_PRO_MONTHLY_PLAN_ID, "unlimited"],
+    [env.WHOP_ENTREPRISE_PRO_YEARLY_PLAN_ID, "unlimited"],
+    [env.WHOP_ENTREPRISE_MAX_YEARLY_PLAN_ID, "unlimited"],
+  ];
+  return configuredPlans.find(([configured]) => configured?.trim() === planId)?.[1] ?? null;
+}
+
+async function verifyWebhookSignature(
+  body: string,
+  headers: Headers,
+  secret: string,
+): Promise<boolean> {
+  const webhookId = headers.get("webhook-id");
+  const webhookTimestamp = headers.get("webhook-timestamp");
+  const signature = headers.get("webhook-signature");
+  if (!webhookId || webhookId.length > 256 || !webhookTimestamp || !signature) return false;
+
+  try {
+    const timestamp = Number(webhookTimestamp);
+    if (!Number.isSafeInteger(timestamp) || Math.abs(Date.now() / 1000 - timestamp) > 300) {
+      return false;
+    }
+    const encoder = new TextEncoder();
+    const signed = encoder.encode(`${webhookId}.${webhookTimestamp}.${body}`);
+    const encodedSecret = secret.replace(/^whsec_/, "");
+    let secretBytes: Uint8Array;
+    try {
+      secretBytes = Uint8Array.from(atob(encodedSecret), (char) => char.charCodeAt(0));
+    } catch {
+      secretBytes = encoder.encode(secret);
+    }
+    const key = await crypto.subtle.importKey(
+      "raw",
+      secretBytes.buffer as ArrayBuffer,
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["verify"],
+    );
+    for (const candidate of signature.split(" ")) {
+      const [version, value] = candidate.split(",", 2);
+      if (version !== "v1" || !value) continue;
+      const bytes = Uint8Array.from(atob(value), (char) => char.charCodeAt(0));
+      if (await crypto.subtle.verify(
+        "HMAC",
+        key,
+        bytes.buffer as ArrayBuffer,
+        signed.buffer as ArrayBuffer,
+      )) return true;
+    }
+    return false;
+  } catch (error) {
+    console.error("[Whop Webhook] Signature verification failed", error);
+    return false;
   }
-  await ctx.runMutation(api.users.handleSubscriptionCancelAtPeriodEnd, {
+}
+
+async function processSubscriptionEvent(
+  ctx: ActionCtx,
+  eventId: string,
+  eventCreatedAt: number,
+  eventType: SubscriptionEvent,
+  data: JsonRecord,
+): Promise<string> {
+  const clerkId = extractClerkId(data);
+  if (!clerkId) throw new Error("Signed event is missing clerk_id metadata");
+
+  const activation = eventType === "payment.succeeded"
+    || eventType === "membership.activated"
+    || eventType === "invoice.paid";
+  const planId = optionalString(data.plan_id) ?? optionalString(data.product_id);
+  const plan = mapPlanIdToName(planId);
+  if (activation && !plan) throw new Error("Signed event references an unknown plan");
+
+  const result: string = await ctx.runMutation(internal.subscriptions.processWhopEvent, {
+    eventId,
+    eventCreatedAt,
+    eventType,
     clerkId,
-    subscriptionEnd: extractSubscriptionEnd(data),
+    email: extractEmail(data),
+    name: extractName(data),
+    plan: plan ?? undefined,
+    whopCustomerId: optionalString(data.customer_id),
+    whopSubscriptionId: optionalString(data.subscription_id) ?? optionalString(data.id),
+    subscriptionEnd: normalizeTimestamp(
+      data.end_date ?? data.current_period_end ?? data.renewal_end ?? data.expires_at,
+    ),
   });
-  console.log(`[Whop] Cancellation scheduled for ${clerkId.slice(0, 8)}...`);
+  return result;
 }
 
-async function handleSubscriptionExpired(ctx: any, data: any) {
-  const clerkId = extractClerkId(data);
-  if (!clerkId) {
-    console.error("[Whop] subscription.expired: No clerk_id in signed event");
-    return;
-  }
+http.route({
+  path: "/api/internal/generations/transition",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    const callbackSecret = env.GENERATION_CALLBACK_SECRET?.trim();
+    if (!callbackSecret) {
+      console.error("[Generation Callback] GENERATION_CALLBACK_SECRET is not configured");
+      return jsonResponse(500, { error: "Generation callback not configured" });
+    }
 
-  // === IDEMPOTENCY: Skip if already expired ===
-  const user = await ctx.runQuery(api.users.getCurrentUser, { clerkId });
-  if (user && user.subscriptionStatus === "expired") {
-    console.log(`[Whop] subscription.expired: User ${clerkId.slice(0, 8)}... already expired, skipping`);
-    return;
-  }
+    const contentLength = Number(request.headers.get("content-length") ?? "0");
+    if (Number.isFinite(contentLength) && contentLength > MAX_GENERATION_CALLBACK_BODY_BYTES) {
+      return jsonResponse(413, { error: "Callback body is too large" });
+    }
+    const body = await request.text();
+    if (new TextEncoder().encode(body).byteLength > MAX_GENERATION_CALLBACK_BODY_BYTES) {
+      return jsonResponse(413, { error: "Callback body is too large" });
+    }
+    if (!(await verifyWebhookSignature(body, request.headers, callbackSecret))) {
+      return jsonResponse(401, { error: "Invalid signature" });
+    }
 
-  await ctx.runMutation(api.users.handleSubscriptionExpired, { clerkId });
-  console.log(`[Whop] Subscription expired for ${clerkId.slice(0, 8)}...`);
-}
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(body) as unknown;
+    } catch {
+      return jsonResponse(400, { error: "Invalid JSON" });
+    }
+    const callback = asRecord(parsed);
+    const eventId = request.headers.get("webhook-id")?.trim();
+    const generationId = callback ? optionalString(callback.generationId) : undefined;
+    const transition = callback ? optionalString(callback.transition) : undefined;
+    if (!eventId || !transition || (transition !== "reserve" && (!generationId || generationId.length > 256))) {
+      return jsonResponse(400, { error: "Missing callback fields" });
+    }
 
-async function handlePaymentFailed(ctx: any, data: any) {
-  const clerkId = extractClerkId(data);
-  if (!clerkId) {
-    console.error("[Whop] subscription.payment_failed: No clerk_id in signed event");
-    return;
-  }
+    try {
+      if (transition === "reserve") {
+        const clerkId = optionalString(callback?.clerkId);
+        if (!clerkId || clerkId.length > 256) {
+          return jsonResponse(400, { error: "Invalid account identifier" });
+        }
+        const reservation = await ctx.runMutation(internal.users.deductCredits, {
+          eventId,
+          clerkId,
+          amount: 1,
+          toolType: "design",
+        });
+        return jsonResponse(200, { received: true, reservation });
+      }
+      const typedGenerationId = generationId as Id<"generations">;
+      if (transition === "processing") {
+        await ctx.runMutation(internal.users.markGenerationProcessing, {
+          generationId: typedGenerationId,
+        });
+      } else if (transition === "completed") {
+        await ctx.runMutation(internal.users.completeGeneration, {
+          generationId: typedGenerationId,
+        });
+      } else if (transition === "failed") {
+        const reason = optionalString(callback?.reason);
+        if (reason && reason.length > 500) {
+          return jsonResponse(400, { error: "Invalid failure reason" });
+        }
+        await ctx.runMutation(internal.users.failGeneration, {
+          generationId: typedGenerationId,
+          reason,
+        });
+      } else {
+        return jsonResponse(400, { error: "Invalid transition" });
+      }
+      return jsonResponse(200, { received: true });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Internal error";
+      console.error(`[Generation Callback] Transition failed: ${message}`);
+      if (message.toLowerCase().includes("insufficient credits")) {
+        return jsonResponse(402, { error: "Insufficient credits" });
+      }
+      return jsonResponse(409, { error: "Invalid generation transition" });
+    }
+  }),
+});
 
-  // === IDEMPOTENCY: Skip if already in payment_failed state ===
-  const user = await ctx.runQuery(api.users.getCurrentUser, { clerkId });
-  if (user && user.subscriptionStatus === "payment_failed") {
-    console.log(`[Whop] subscription.payment_failed: User ${clerkId.slice(0, 8)}... already flagged, skipping`);
-    return;
-  }
+http.route({
+  path: "/api/webhooks/whop",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    const webhookSecret = env.WHOP_WEBHOOK_SECRET?.trim();
+    if (!webhookSecret) {
+      console.error("[Whop Webhook] WHOP_WEBHOOK_SECRET is not configured");
+      return jsonResponse(500, { error: "Webhook not configured" });
+    }
 
-  await ctx.runMutation(api.users.handleSubscriptionPaymentFailed, { clerkId });
-  console.log(`[Whop] Payment failed for ${clerkId.slice(0, 8)}...`);
-}
+    const contentLength = Number(request.headers.get("content-length") ?? "0");
+    if (Number.isFinite(contentLength) && contentLength > MAX_WEBHOOK_BODY_BYTES) {
+      return jsonResponse(413, { error: "Webhook body is too large" });
+    }
+    const body = await request.text();
+    if (new TextEncoder().encode(body).byteLength > MAX_WEBHOOK_BODY_BYTES) {
+      return jsonResponse(413, { error: "Webhook body is too large" });
+    }
+    if (!(await verifyWebhookSignature(body, request.headers, webhookSecret))) {
+      return jsonResponse(401, { error: "Invalid signature" });
+    }
 
-async function handleSubscriptionPending(ctx: any, data: any) {
-  const clerkId = extractClerkId(data);
-  if (!clerkId) {
-    console.error("[Whop] subscription.pending: No clerk_id in signed event");
-    return;
-  }
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(body) as unknown;
+    } catch {
+      return jsonResponse(400, { error: "Invalid JSON" });
+    }
+    const event = asRecord(parsed);
+    const data = event ? asRecord(event.data) : null;
+    const eventType = event ? optionalString(event.type ?? event.event) : undefined;
+    const eventId = request.headers.get("webhook-id")?.trim();
+    if (!event || !data || !eventType || !eventId) {
+      return jsonResponse(400, { error: "Missing event fields" });
+    }
+    if (!SUBSCRIPTION_EVENTS.has(eventType)) {
+      return jsonResponse(200, { received: true, ignored: true });
+    }
 
-  // === IDEMPOTENCY: Skip if already pending ===
-  const user = await ctx.runQuery(api.users.getCurrentUser, { clerkId });
-  if (user && user.subscriptionStatus === "pending") {
-    console.log(`[Whop] subscription.pending: User ${clerkId.slice(0, 8)}... already pending, skipping`);
-    return;
-  }
+    const headerTimestamp = normalizeTimestamp(request.headers.get("webhook-timestamp"));
+    const eventCreatedAt = normalizeTimestamp(event.created_at) ?? headerTimestamp;
+    if (!eventCreatedAt) return jsonResponse(400, { error: "Missing event timestamp" });
 
-  await ctx.runMutation(api.users.handleSubscriptionPending, { clerkId });
-  console.log(`[Whop] Subscription pending for ${clerkId.slice(0, 8)}...`);
-}
+    try {
+      const outcome = await processSubscriptionEvent(
+        ctx,
+        eventId,
+        eventCreatedAt,
+        eventType as SubscriptionEvent,
+        data,
+      );
+      return jsonResponse(200, { received: true, outcome });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Internal error";
+      console.error(`[Whop Webhook] Failed to process ${eventType}: ${message}`);
+      return jsonResponse(500, { error: message });
+    }
+  }),
+});
+
+http.route({
+  path: "/api/webhooks/clerk",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    const webhookSecret = env.CLERK_WEBHOOK_SECRET?.trim();
+    if (!webhookSecret) {
+      console.error("[Clerk Webhook] CLERK_WEBHOOK_SECRET is not configured");
+      return jsonResponse(500, { error: "Webhook not configured" });
+    }
+
+    const contentLength = Number(request.headers.get("content-length") ?? "0");
+    if (Number.isFinite(contentLength) && contentLength > MAX_WEBHOOK_BODY_BYTES) {
+      return jsonResponse(413, { error: "Webhook body is too large" });
+    }
+    const body = await request.text();
+    if (new TextEncoder().encode(body).byteLength > MAX_WEBHOOK_BODY_BYTES) {
+      return jsonResponse(413, { error: "Webhook body is too large" });
+    }
+    if (!(await verifyWebhookSignature(body, request.headers, webhookSecret))) {
+      return jsonResponse(401, { error: "Invalid signature" });
+    }
+
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(body) as unknown;
+    } catch {
+      return jsonResponse(400, { error: "Invalid JSON" });
+    }
+    const event = asRecord(parsed);
+    const data = event ? asRecord(event.data) : null;
+    const eventType = event ? optionalString(event.type) : undefined;
+    const eventId = request.headers.get("webhook-id")?.trim();
+    if (!event || !data || !eventType || !eventId) {
+      return jsonResponse(400, { error: "Missing event fields" });
+    }
+    if (eventType !== "user.deleted") {
+      return jsonResponse(200, { received: true, ignored: true });
+    }
+    const clerkId = optionalString(data.id);
+    const eventCreatedAt = normalizeTimestamp(event.created_at)
+      ?? normalizeTimestamp(request.headers.get("webhook-timestamp"));
+    if (!clerkId || !eventCreatedAt) {
+      return jsonResponse(400, { error: "Missing deletion event fields" });
+    }
+
+    try {
+      const outcome: string = await ctx.runMutation(
+        internal.accountDeletion.startAccountDeletionFromClerk,
+        { clerkId, eventId, eventCreatedAt },
+      );
+      return jsonResponse(200, { received: true, outcome });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Internal error";
+      console.error(`[Clerk Webhook] Failed to process user.deleted: ${message}`);
+      return jsonResponse(500, { error: message });
+    }
+  }),
+});
 
 export default http;

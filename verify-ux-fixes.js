@@ -1,6 +1,8 @@
 const { chromium } = require('playwright');
+const { siteOrigin } = require('./scripts/test-config');
 
 (async () => {
+  const baseUrl = siteOrigin();
   const browser = await chromium.launch({ headless: true });
   const checks = [['mobile-workspace', 390, 844, '/design']];
   const results = [];
@@ -8,7 +10,7 @@ const { chromium } = require('playwright');
     const context = await browser.newContext({ viewport: { width, height } });
     await context.addInitScript(`localStorage.setItem('housora-consent-v1','{"necessary":true}')`);
     const page = await context.newPage();
-    await page.goto('http://127.0.0.1:8082' + path, { waitUntil: 'networkidle' });
+    await page.goto(baseUrl + path, { waitUntil: 'networkidle' });
     await page.screenshot({ path: '/tmp/' + name + '.png', fullPage: true });
     results.push(await page.evaluate(name => ({
       name,
@@ -32,7 +34,7 @@ const { chromium } = require('playwright');
   }
   const redirectContext = await browser.newContext();
   const redirectPage = await redirectContext.newPage();
-  await redirectPage.goto('http://127.0.0.1:8082/inspirations', { waitUntil: 'domcontentloaded' });
+  await redirectPage.goto(baseUrl + '/inspirations', { waitUntil: 'domcontentloaded' });
   results.push({ name: 'placeholder-redirect', url: new URL(redirectPage.url()).pathname });
   await redirectContext.close();
   console.log(JSON.stringify(results, null, 2));

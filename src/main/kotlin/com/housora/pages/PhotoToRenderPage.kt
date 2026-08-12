@@ -37,9 +37,9 @@ fun HTML.photoToRenderPage() {
         galleryThumbPrefix = "gallery",
         galleryStyles = listOf("Photorealistic", "Warm Interior", "Cool Modern", "Luxury", "Natural Light", "Dramatic"),
         problemHeading = "Renders Are Expensive and Slow to Produce",
-        problemDescription = "Professional renders cost $500-2,000 and take days or weeks to produce. For small projects and personal use, this cost is prohibitive.",
+        problemDescription = "Professional rendering workflows can be difficult to scope for small projects. Use a visual concept to explore a direction before deciding what level of production you need.",
         problemCards = listOf(Triple("home", "Homeowners", "You have a rough idea or a 3D model view but need a polished render to share with contractors. Professional renders are too expensive for personal projects."), Triple("building", "Real Estate Agents", "A basic photo doesn't sell the potential of a space. A photorealistic render makes listings stand out and sell faster."), Triple("users", "Architects & Designers", "Rough drafts and 3D model views need polishing before client presentations. Manual rendering is time-consuming and costly.")),
-        solutionText = "Upload any draft, sketch, or basic 3D model view and Housora AI turns it into a photorealistic render in seconds. Professional quality at a fraction of the cost.",
+        solutionText = "Upload a draft, sketch, or basic 3D model view to explore a photorealistic visual direction. Treat the output as a concept and verify materials, scale, and construction details separately.",
         statsLabel = "A growing toolkit for clearer design decisions",
 
         stats = emptyList(),

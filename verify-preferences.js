@@ -1,5 +1,6 @@
 const { chromium } = require('playwright');
 const assert = require('node:assert/strict');
+const { siteOrigin } = require('./scripts/test-config');
 
 (async () => {
   const browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] });
@@ -8,7 +9,8 @@ const assert = require('node:assert/strict');
     localStorage.setItem('housora-consent-v1', '{"necessary":true}');
   });
   const page = await context.newPage();
-  await page.goto('http://127.0.0.1:8082/', { waitUntil: 'domcontentloaded' });
+  const baseUrl = siteOrigin();
+  await page.goto(baseUrl + '/', { waitUntil: 'domcontentloaded' });
 
   const touchTargets = await page.evaluate(() => {
     const size = (selector) => {
@@ -50,7 +52,7 @@ const assert = require('node:assert/strict');
   assert.ok(overflow <= 1, `RTL page overflows horizontally by ${overflow}px`);
 
   await page.evaluate(() => window.HousoraI18n.setTheme('dark'));
-  await page.goto('http://127.0.0.1:8082/interior-design', { waitUntil: 'domcontentloaded' });
+  await page.goto(baseUrl + '/interior-design', { waitUntil: 'domcontentloaded' });
   const toolColors = await page.evaluate(() => ({
     hero: getComputedStyle(document.querySelector('.hero-mobile-banner')).backgroundColor,
     canvas: getComputedStyle(document.querySelector('.id-configure-right')).backgroundColor,
@@ -69,7 +71,7 @@ const assert = require('node:assert/strict');
     localStorage.setItem('housora-lang', 'en');
   });
   const desktopPage = await desktopContext.newPage();
-  await desktopPage.goto('http://127.0.0.1:8082/interior-design', { waitUntil: 'domcontentloaded' });
+  await desktopPage.goto(baseUrl + '/interior-design', { waitUntil: 'domcontentloaded' });
   await desktopPage.waitForTimeout(400);
   const desktop = await desktopPage.evaluate(() => {
     const header = document.querySelector('.create-header');

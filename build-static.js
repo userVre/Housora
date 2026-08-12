@@ -1,11 +1,9 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const { siteOrigin } = require('./scripts/test-config');
 
-const BASE_URL = (process.env.BUILD_ORIGIN || 'http://localhost:8081').replace(/\/$/, '');
-// Use a public origin in SEO metadata when generating the Pages bundle.
-// Override this at build time with PUBLIC_SITE_URL for a custom domain.
-const PUBLIC_SITE_URL = (process.env.PUBLIC_SITE_URL || 'https://housora.pages.dev').replace(/\/$/, '');
+const BASE_URL = siteOrigin();
 const DIST_DIR = path.join(__dirname, 'dist');
 const STATIC_SRC = path.join(__dirname, 'static');
 
@@ -25,6 +23,22 @@ function loadBuildEnv() {
 
 const BUILD_ENV = loadBuildEnv();
 
+function requiredPublicSiteUrl() {
+  const value = String(BUILD_ENV.PUBLIC_SITE_URL || '').trim().replace(/\/$/, '');
+  if (!value) throw new Error('PUBLIC_SITE_URL is required for a production static build (for example, https://housora.app).');
+  let parsed;
+  try { parsed = new URL(value); } catch (_) { throw new Error('PUBLIC_SITE_URL must be a valid absolute URL.'); }
+  if (!['http:', 'https:'].includes(parsed.protocol) || parsed.username || parsed.password || parsed.search || parsed.hash) {
+    throw new Error('PUBLIC_SITE_URL must be an absolute http(s) origin without credentials, query, or hash.');
+  }
+  if (parsed.protocol !== 'https:' && !['localhost', '127.0.0.1'].includes(parsed.hostname)) {
+    throw new Error('PUBLIC_SITE_URL must use HTTPS outside localhost.');
+  }
+  return value;
+}
+
+const PUBLIC_SITE_URL = requiredPublicSiteUrl();
+
 function clerkFrontendDomain(publishableKey) {
   try {
     const encoded = publishableKey.replace(/^pk_(?:test|live)_/, '');
@@ -34,89 +48,33 @@ function clerkFrontendDomain(publishableKey) {
   }
 }
 
-// All routes from Routing.kt (GET only - POST endpoints won't work on static hosting)
-const routes = [
-  '/',
-  '/create',
-  '/pricing',
-  '/subscription',
-  '/workspace',
-  '/interior-design',
-  '/layout-boost',
-  '/exterior-design',
-  '/garden-design',
-  '/floor-restyle',
-  '/wall-texture',
-  '/video-walkthrough',
-  '/floorplan-to-3d',
-  '/photo-to-render',
-  '/ai-stairs-design',
-  '/ai-doors-design',
-  '/ai-windows-design',
-  '/ai-kitchen-design',
-  '/ai-bathroom-design',
-  '/sign-in',
-  '/sign-up',
-  '/delete-account',
-  '/blog',
-  '/blog/exterior-colour-palettes',
-  '/blog/planning-a-room-redesign',
-  '/blog/photo-to-video-room-tour',
-  '/blog/architecture-prompt-basics',
-  '/blog/choosing-furniture-with-confidence',
-  '/blog/garden-design-brief',
-  '/blog/room-walkthrough-storytelling',
-  '/blog/comparing-ai-design-tools',
-  '/blog/black-doors-without-regret',
-  '/examples',
-  '/faq',
-  '/contact',
-  '/compare/housora-vs-reimaginehome',
-  '/compare/housora-vs-homedesigns',
-  '/compare/housora-vs-mnml',
-  '/compare/housora-vs-homestyler',
-  '/compare/housora-vs-planner5d',
-  '/enterprise',
-  '/privacy',
-  '/terms',
-  '/refund-policy',
-  '/cookies',
-  '/projects',
-  '/inspirations',
-  '/referral',
-  '/ai-interior-design-prompts',
-  '/furniture-fit-calculator',
-  '/api',
-  '/cli',
-  '/mcp',
-  '/partnerships',
-  '/case-studies',
-  '/affiliates',
-  '/answers',
-];
-
-function fetchPage(urlPath, redirectCount = 0) {
+function fetchPage(urlPath, options = {}, redirectChain = []) {
   return new Promise((resolve, reject) => {
     const url = BASE_URL + urlPath;
     http.get(url, (res) => {
       if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
         res.resume();
-        if (redirectCount >= 5) {
+        const nextUrl = new URL(res.headers.location, url);
+        const redirect = { status: res.statusCode, from: urlPath, to: nextUrl.pathname + nextUrl.search + nextUrl.hash };
+        if (!options.followRedirects) {
+          resolve({ status: res.statusCode, body: '', finalPath: urlPath, location: redirect.to, redirects: [...redirectChain, redirect] });
+          return;
+        }
+        if (redirectChain.length >= 5) {
           reject(new Error(`Too many redirects while fetching ${urlPath}`));
           return;
         }
-        const nextUrl = new URL(res.headers.location, url);
         const buildOrigin = new URL(BASE_URL);
         if (nextUrl.origin !== buildOrigin.origin) {
           reject(new Error(`Refusing cross-origin build redirect to ${nextUrl.origin}`));
           return;
         }
-        fetchPage(nextUrl.pathname + nextUrl.search, redirectCount + 1).then(resolve, reject);
+        fetchPage(nextUrl.pathname + nextUrl.search, options, [...redirectChain, redirect]).then(resolve, reject);
         return;
       }
       let data = '';
       res.on('data', chunk => data += chunk);
-      res.on('end', () => resolve({ status: res.statusCode, body: data }));
+      res.on('end', () => resolve({ status: res.statusCode, body: data, finalPath: urlPath, redirects: redirectChain }));
     }).on('error', reject).setTimeout(15000, function() {
       this.destroy(new Error(`Timed out while fetching ${urlPath}`));
     });
@@ -246,6 +204,22 @@ function repairMojibake(text) {
 async function build() {
   console.log('=== Housora Static Site Builder ===\n');
 
+  const manifestResponse = await fetchPage('/route-manifest.json');
+  if (manifestResponse.status !== 200) {
+    throw new Error(`Could not load canonical route manifest (HTTP ${manifestResponse.status}).`);
+  }
+  const manifest = JSON.parse(manifestResponse.body);
+  if (manifest.version !== 1 || !Array.isArray(manifest.routes)) {
+    throw new Error('Canonical route manifest has an unsupported shape.');
+  }
+  const routes = manifest.routes;
+  const duplicatePaths = routes.filter((route, index) => routes.findIndex(candidate => candidate.path === route.path) !== index);
+  if (duplicatePaths.length) throw new Error(`Duplicate manifest routes: ${duplicatePaths.map(route => route.path).join(', ')}`);
+  const exportRoutes = routes.filter(route => route.export);
+  const pageRoutes = exportRoutes.filter(route => route.behavior === 'page');
+  const assetRoutes = exportRoutes.filter(route => route.behavior === 'asset');
+  const redirectRoutes = routes.filter(route => route.behavior === 'redirect');
+
   // Clean dist
   if (fs.existsSync(DIST_DIR)) {
     fs.rmSync(DIST_DIR, { recursive: true });
@@ -256,6 +230,11 @@ async function build() {
   console.log('Copying static assets...');
   copyDirSync(STATIC_SRC, path.join(DIST_DIR, 'static'));
   console.log('  static/ copied.');
+  // Root metadata assets are referenced directly by HTML and must exist before
+  // the parity crawler runs (the publish step also copies these for deploys).
+  const rootMeta = ['favicon.ico', 'favicon.svg', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png', 'og-image.png', 'site.webmanifest'];
+  rootMeta.forEach(name => fs.copyFileSync(path.join(STATIC_SRC, 'meta', name), path.join(DIST_DIR, name)));
+  console.log('  root metadata copied.');
 
   // Copy Cloudflare Pages Functions
   const functionsSrc = path.join(__dirname, 'functions');
@@ -265,12 +244,14 @@ async function build() {
   }
   console.log('');
 
-  // Fetch and save each page
-  console.log(`Fetching ${routes.length} pages from ${BASE_URL}...\n`);
+  // Fetch only canonical rendered pages. Redirect aliases must never become
+  // duplicate 200 HTML files.
+  console.log(`Fetching ${pageRoutes.length} canonical pages from ${BASE_URL}...\n`);
   let success = 0;
   let failed = 0;
 
-  for (const route of routes) {
+  for (const routeDefinition of pageRoutes) {
+    const route = routeDefinition.path;
     try {
       const { status, body } = await fetchPage(route);
       if (status !== 200) {
@@ -298,31 +279,34 @@ async function build() {
     }
   }
 
-  // Save llms.txt as plain text
-  try {
-    const { status, body } = await fetchPage('/llms.txt');
-    if (status === 200) {
-      fs.writeFileSync(path.join(DIST_DIR, 'llms.txt'), repairMojibake(body), 'utf-8');
-      console.log(`  OK   /llms.txt -> llms.txt`);
+  for (const routeDefinition of assetRoutes) {
+    try {
+      const { status, body, redirects } = await fetchPage(routeDefinition.path);
+      if (status !== 200 || redirects.length) {
+        throw new Error(`Expected direct HTTP 200, got ${status}${redirects.length ? ' after redirect' : ''}`);
+      }
+      const filePath = path.join(DIST_DIR, routeDefinition.path.replace(/^\//, ''));
+      ensureDir(filePath);
+      fs.writeFileSync(filePath, repairMojibake(body.replaceAll(BASE_URL, PUBLIC_SITE_URL)), 'utf-8');
+      console.log(`  OK   ${routeDefinition.path} -> ${path.relative(DIST_DIR, filePath)}`);
       success++;
+    } catch (err) {
+      console.log(`  FAIL ${routeDefinition.path} (${err.message})`);
+      failed++;
     }
-  } catch (err) {}
+  }
 
-  // Create _redirects for Cloudflare Pages (aliases)
-  const redirects = [
-    '/design /create.html 200',
-    '/subscription /pricing.html 200',
-    '/stairs-design /ai-stairs-design.html 200',
-    '/doors-design /ai-doors-design.html 200',
-    '/windows-design /ai-windows-design.html 200',
-    '/kitchen-design /ai-kitchen-design.html 200',
-    '/bathroom-design /ai-bathroom-design.html 200',
-    '/sign-out /sign-in.html 200',
-    '/interior-design-examples /examples.html 200',
-    '/embed-ai-interior-design /partnerships.html 200',
-  ];
-  fs.writeFileSync(path.join(DIST_DIR, '_redirects'), redirects.join('\n'), 'utf-8');
-  console.log('\n  _redirects created for route aliases.');
+  const unknown = await fetchPage('/__housora_route_verification_missing__');
+  if (unknown.status !== 404) {
+    throw new Error(`Unknown Ktor route returned HTTP ${unknown.status}; expected 404.`);
+  }
+  fs.writeFileSync(path.join(DIST_DIR, '404.html'), repairMojibake(sanitizeLegacyMarkup(unknown.body)), 'utf-8');
+  console.log('  OK   unknown route -> 404.html');
+
+  const redirects = redirectRoutes.map(route => `${route.path} ${route.target} 301`);
+  fs.writeFileSync(path.join(DIST_DIR, '_redirects'), redirects.join('\n') + '\n', 'utf-8');
+  fs.writeFileSync(path.join(DIST_DIR, 'route-manifest.json'), JSON.stringify(manifest, null, 2) + '\n', 'utf-8');
+  console.log(`\n  _redirects created for ${redirectRoutes.length} aliases; route-manifest.json copied.`);
 
   console.log(`\n=== Done! ${success} pages built, ${failed} failed ===`);
   console.log(`\nUpload the "dist/" folder to Cloudflare Pages.`);

@@ -1,82 +1,49 @@
 import { v } from "convex/values";
-import { query, mutation } from "./_generated/server";
+import { internal } from "./_generated/api";
+import { internalMutation, mutation, query } from "./_generated/server";
+import {
+  assertOwnClerkId,
+  findUserForIdentity,
+  requireIdentity,
+  requireUser,
+} from "./lib/auth";
+import { PLAN_CREDITS } from "./lib/plans";
+import {
+  boundedString,
+  boundedEmail,
+  optionalBoundedString,
+  positiveSafeInteger,
+} from "./lib/validation";
+import {
+  generationStatusResultValidator,
+  subscriptionStatusResultValidator,
+} from "./lib/validators";
 
-/**
- * Helper: get the verified Clerk user ID from the Convex auth context.
- * Throws if not authenticated — never returns null for user-facing operations.
- */
-async function getVerifiedUserId(ctx: any): Promise<string> {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) {
-    throw new Error("Unauthorized: authentication required. Please sign in.");
-  }
-  return identity.subject;
-}
-
-/**
- * Helper: verify that the authenticated user owns the resource.
- * Throws if not authenticated or if the IDs don't match.
- */
-async function assertOwnership(ctx: any, clerkId: string): Promise<void> {
-  const verifiedId = await getVerifiedUserId(ctx);
-  if (verifiedId !== clerkId) {
-    throw new Error("Unauthorized: you can only access your own data");
-  }
-}
-
-/**
- * Helper: verify the call comes from a trusted server context (webhook, internal).
- * HTTP actions from Convex's httpRouter run as system mutations — they have no
- * user identity but are trusted. We check that there is NO user identity (i.e.,
- * it's a system call, not a user-supplied browser call).
- */
-function assertSystemContext(ctx: any): void {
-  // In HTTP actions invoked by the httpRouter, getUserIdentity() returns null
-  // because there's no Clerk session — the call is from the server itself.
-  // This is the correct way to verify a webhook-triggered mutation.
-  // We do NOT throw here because httpAction context doesn't have userIdentity.
-  // The real auth is the HMAC webhook signature verified in http.ts.
-}
-
-// ==================== USER-FACING QUERIES ====================
-
-export const getCurrentUser = query({
-  args: { clerkId: v.string() },
-  handler: async (ctx, args) => {
-    await assertOwnership(ctx, args.clerkId);
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
-      .unique();
-    return user;
-  },
-});
+const GENERATION_COST = 1;
+const GENERATION_TIMEOUT_MS = 30 * 60 * 1000;
 
 export const getCredits = query({
+  // Kept for compatibility with the current browser; never used as authority.
   args: { clerkId: v.string() },
+  returns: v.number(),
   handler: async (ctx, args) => {
-    await assertOwnership(ctx, args.clerkId);
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
-      .unique();
+    const identity = await requireIdentity(ctx);
+    assertOwnClerkId(identity, boundedString(args.clerkId, "clerkId", 1, 256));
+    const user = await findUserForIdentity(ctx, identity);
+    if (user?.deletionRequestedAt !== undefined) return 0;
     return user?.credits ?? 0;
   },
 });
 
 export const getSubscriptionStatus = query({
+  // Kept for compatibility with the current browser; never used as authority.
   args: { clerkId: v.string() },
+  returns: subscriptionStatusResultValidator,
   handler: async (ctx, args) => {
-    await assertOwnership(ctx, args.clerkId);
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
-      .unique();
-
-    if (!user) return null;
+    const identity = await requireIdentity(ctx);
+    assertOwnClerkId(identity, boundedString(args.clerkId, "clerkId", 1, 256));
+    const user = await findUserForIdentity(ctx, identity);
+    if (!user || user.deletionRequestedAt !== undefined) return null;
 
     return {
       plan: user.plan ?? "free",
@@ -85,42 +52,44 @@ export const getSubscriptionStatus = query({
       subscriptionType: user.subscriptionType,
       subscriptionStartedAt: user.subscriptionStartedAt,
       subscriptionEnd: user.subscriptionEnd,
-      whopCustomerId: user.whopCustomerId,
-      whopSubscriptionId: user.whopSubscriptionId,
     };
   },
 });
 
-// ==================== USER-FACING MUTATIONS ====================
-
+/** Creates or refreshes only the signed-in user's non-billing profile fields. */
 export const createOrUpdateUser = mutation({
   args: {
     clerkId: v.string(),
     email: v.string(),
     name: v.optional(v.string()),
   },
+  returns: v.id("users"),
   handler: async (ctx, args) => {
-    await assertOwnership(ctx, args.clerkId);
-
-    const existing = await ctx.db
-      .query("users")
-      .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
-      .unique();
+    const identity = await requireIdentity(ctx);
+    assertOwnClerkId(identity, boundedString(args.clerkId, "clerkId", 1, 256));
+    const email = boundedEmail(identity.email ?? args.email);
+    const name = optionalBoundedString(identity.name ?? args.name, "name", 120);
+    const existing = await findUserForIdentity(ctx, identity);
 
     if (existing) {
-      await ctx.db.patch(existing._id, {
-        email: args.email,
-        name: args.name ?? existing.name,
+      if (existing.deletionRequestedAt !== undefined) {
+        throw new Error("Account deletion is in progress");
+      }
+      await ctx.db.patch("users", existing._id, {
+        authId: identity.tokenIdentifier,
+        clerkId: identity.subject,
+        email,
+        name: name ?? existing.name,
       });
       return existing._id;
     }
 
-    // Insert with ALL required schema fields and safe defaults
     return await ctx.db.insert("users", {
-      clerkId: args.clerkId,
-      email: args.email,
-      name: args.name,
-      credits: 5,
+      authId: identity.tokenIdentifier,
+      clerkId: identity.subject,
+      email,
+      name,
+      credits: PLAN_CREDITS.free,
       plan: "free",
       createdAt: Date.now(),
       lastClaimAt: Date.now(),
@@ -129,350 +98,235 @@ export const createOrUpdateUser = mutation({
   },
 });
 
-/** Create a user from the signature-verified Cloudflare/Whop webhook path. */
-export const ensureUserFromWebhook = mutation({
+export const deductCredits = internalMutation({
   args: {
-    clerkId: v.string(),
-    email: v.string(),
-    name: v.optional(v.string()),
-    webhookSecret: v.string(),
-  },
-  handler: async (ctx, args) => {
-    const configuredSecret = process.env.WHOP_WEBHOOK_SECRET ?? "";
-    if (!configuredSecret || args.webhookSecret !== configuredSecret) {
-      throw new Error("Unauthorized webhook request");
-    }
-
-    const existing = await ctx.db
-      .query("users")
-      .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
-      .unique();
-    if (existing) return existing._id;
-
-    return await ctx.db.insert("users", {
-      clerkId: args.clerkId,
-      email: args.email,
-      name: args.name,
-      credits: 5,
-      plan: "free",
-      createdAt: Date.now(),
-      lastClaimAt: Date.now(),
-      proTrialExpiresAt: 0,
-    });
-  },
-});
-
-export const deductCredits = mutation({
-  args: {
+    eventId: v.string(),
     clerkId: v.string(),
     amount: v.number(),
-    toolType: v.string(),
-    projectId: v.optional(v.string()),
+    toolType: v.literal("design"),
+    projectId: v.optional(v.id("projects")),
+    inputStorageId: v.optional(v.id("_storage")),
   },
+  returns: v.object({
+    generationId: v.id("generations"),
+    remainingCredits: v.number(),
+  }),
   handler: async (ctx, args) => {
-    await assertOwnership(ctx, args.clerkId);
-
+    const eventId = boundedString(args.eventId, "eventId", 1, 256);
+    const clerkId = boundedString(args.clerkId, "clerkId", 1, 256);
+    const duplicate = await ctx.db
+      .query("generationEvents")
+      .withIndex("by_eventId", (q) => q.eq("eventId", eventId))
+      .unique();
+    if (duplicate) {
+      if (duplicate.userId !== clerkId) throw new Error("Invalid generation event");
+      return {
+        generationId: duplicate.generationId,
+        remainingCredits: duplicate.remainingCredits,
+      };
+    }
     const user = await ctx.db
       .query("users")
-      .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", clerkId))
       .unique();
+    if (!user || user.deletionRequestedAt !== undefined) throw new Error("User not found");
+    const ownerId = clerkId;
+    const amount = positiveSafeInteger(args.amount, "amount", GENERATION_COST);
+    if (amount !== GENERATION_COST) throw new Error("Invalid generation credit cost");
+    if (!Number.isSafeInteger(user.credits) || user.credits < 0) {
+      throw new Error("Account credit balance is invalid");
+    }
+    if (user.credits < amount) throw new Error("Insufficient credits");
 
-    if (!user) throw new Error("User not found");
-    if (user.credits < args.amount) throw new Error("Insufficient credits");
+    if (args.projectId !== undefined) {
+      const project = await ctx.db.get("projects", args.projectId);
+      if (!project || project.userId !== ownerId) throw new Error("Project not found");
+    }
+    if (args.inputStorageId !== undefined) {
+      const upload = await ctx.db
+        .query("uploads")
+        .withIndex("by_storageId", (q) => q.eq("storageId", args.inputStorageId!))
+        .unique();
+      if (!upload || upload.userId !== ownerId) throw new Error("Uploaded file not found");
+    }
 
-    await ctx.db.patch(user._id, {
-      credits: user.credits - args.amount,
-    });
-
+    const remainingCredits = user.credits - amount;
+    await ctx.db.patch("users", user._id, { credits: remainingCredits });
     const generationId = await ctx.db.insert("generations", {
-      userId: args.clerkId,
+      userId: ownerId,
       projectId: args.projectId,
       toolType: args.toolType,
-      creditsUsed: args.amount,
+      inputStorageId: args.inputStorageId,
+      creditsUsed: amount,
       status: "pending",
       createdAt: Date.now(),
     });
-
-    return { generationId, remainingCredits: user.credits - args.amount };
-  },
-});
-
-export const addCredits = mutation({
-  args: {
-    clerkId: v.string(),
-    amount: v.number(),
-  },
-  handler: async (ctx, args) => {
-    await assertOwnership(ctx, args.clerkId);
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
-      .unique();
-
-    if (!user) throw new Error("User not found");
-
-    await ctx.db.patch(user._id, {
-      credits: user.credits + args.amount,
+    await ctx.scheduler.runAfter(
+      GENERATION_TIMEOUT_MS,
+      internal.users.expireGeneration,
+      { generationId },
+    );
+    await ctx.db.insert("generationEvents", {
+      userId: ownerId,
+      eventId,
+      generationId,
+      remainingCredits,
+      createdAt: Date.now(),
     });
-
-    return user.credits + args.amount;
-  },
-});
-
-export const updatePlan = mutation({
-  args: {
-    clerkId: v.string(),
-    plan: v.union(v.literal("free"), v.literal("standard"), v.literal("pro"), v.literal("growth"), v.literal("scale"), v.literal("unlimited")),
-    whopCustomerId: v.optional(v.string()),
-    whopSubscriptionId: v.optional(v.string()),
-  },
-  handler: async (ctx, args) => {
-    await assertOwnership(ctx, args.clerkId);
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
-      .unique();
-
-    if (!user) throw new Error("User not found");
-
-    const planCredits: Record<string, number> = {
-      free: 5,
-      standard: 100,
-      pro: 190,
-      growth: 1200,
-      scale: 2250,
-      unlimited: 5250,
-    };
-
-    await ctx.db.patch(user._id, {
-      plan: args.plan,
-      credits: planCredits[args.plan] ?? user.credits,
-      whopCustomerId: args.whopCustomerId ?? user.whopCustomerId,
-      whopSubscriptionId: args.whopSubscriptionId ?? user.whopSubscriptionId,
-    });
-
-    return planCredits[args.plan] ?? user.credits;
-  },
-});
-
-// ==================== GENERATION STATUS MUTATIONS ====================
-
-export const completeGeneration = mutation({
-  args: {
-    generationId: v.id("generations"),
-    outputImageUrl: v.string(),
-  },
-  handler: async (ctx, args) => {
-    const gen = await ctx.db.get(args.generationId);
-    if (!gen) throw new Error("Generation not found");
-
-    // Verify the caller owns this generation
-    const verifiedId = await getVerifiedUserId(ctx);
-    if (gen.userId !== verifiedId) {
-      throw new Error("Unauthorized: you can only complete your own generations");
-    }
-
-    if (gen.status !== "pending" && gen.status !== "processing") {
-      throw new Error("Generation already in terminal state: " + gen.status);
-    }
-    await ctx.db.patch(args.generationId, {
-      status: "completed",
-      outputImageUrl: args.outputImageUrl,
-    });
-  },
-});
-
-export const failGeneration = mutation({
-  args: {
-    generationId: v.id("generations"),
-    reason: v.optional(v.string()),
-  },
-  handler: async (ctx, args) => {
-    const gen = await ctx.db.get(args.generationId);
-    if (!gen) throw new Error("Generation not found");
-
-    // Verify the caller owns this generation
-    const verifiedId = await getVerifiedUserId(ctx);
-    if (gen.userId !== verifiedId) {
-      throw new Error("Unauthorized: you can only fail your own generations");
-    }
-
-    if (gen.status !== "pending" && gen.status !== "processing") {
-      throw new Error("Generation already in terminal state: " + gen.status);
-    }
-    await ctx.db.patch(args.generationId, {
-      status: "failed",
-    });
-    // Refund credits to user
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_clerkId", (q) => q.eq("clerkId", gen.userId))
-      .unique();
-    if (user) {
-      await ctx.db.patch(user._id, {
-        credits: user.credits + gen.creditsUsed,
-      });
-    }
+    return { generationId, remainingCredits };
   },
 });
 
 export const getGenerationStatus = query({
   args: { generationId: v.id("generations") },
+  returns: generationStatusResultValidator,
   handler: async (ctx, args) => {
-    const gen = await ctx.db.get(args.generationId);
-    if (!gen) return null;
-
-    // Verify the caller owns this generation
-    const verifiedId = await getVerifiedUserId(ctx);
-    if (gen.userId !== verifiedId) {
-      throw new Error("Unauthorized: you can only view your own generations");
+    const { ownerId } = await requireUser(ctx);
+    const generation = await ctx.db.get("generations", args.generationId);
+    if (!generation || generation.userId !== ownerId) {
+      throw new Error("Generation not found");
     }
-
+    const storedOutputUrl = generation.outputStorageId
+      ? await ctx.storage.getUrl(generation.outputStorageId)
+      : null;
     return {
-      status: gen.status,
-      outputImageUrl: gen.outputImageUrl,
-      toolType: gen.toolType,
-      creditsUsed: gen.creditsUsed,
+      status: generation.status,
+      outputImageUrl: storedOutputUrl ?? generation.outputImageUrl,
+      toolType: generation.toolType,
+      creditsUsed: generation.creditsUsed,
     };
   },
 });
 
-// ==================== WEBHOOK MUTATIONS (server-only) ====================
-// These are called from http.ts webhook handler via ctx.runMutation().
-// They are protected by HMAC webhook signature verification in http.ts,
-// NOT by Clerk auth. The webhook caller has no Clerk session.
-// We do NOT enforce assertOwnership here because the caller is the server.
+// These state transitions are intentionally internal. Only trusted server-side
+// generation orchestration may invoke them.
+export const markGenerationProcessing = internalMutation({
+  args: { generationId: v.id("generations") },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const generation = await ctx.db.get("generations", args.generationId);
+    if (!generation) throw new Error("Generation not found");
+    if (generation.status === "processing") return null;
+    if (generation.status !== "pending") {
+      throw new Error(`Invalid generation transition from ${generation.status} to processing`);
+    }
+    await ctx.db.patch("generations", args.generationId, {
+      status: "processing",
+      processingAt: Date.now(),
+    });
+    return null;
+  },
+});
 
-export const handleSubscriptionActivated = mutation({
+export const completeGeneration = internalMutation({
   args: {
-    clerkId: v.string(),
-    plan: v.union(v.literal("free"), v.literal("standard"), v.literal("pro"), v.literal("growth"), v.literal("scale"), v.literal("unlimited")),
-    credits: v.number(),
-    whopCustomerId: v.optional(v.string()),
-    whopSubscriptionId: v.optional(v.string()),
+    generationId: v.id("generations"),
+    outputStorageId: v.optional(v.id("_storage")),
   },
+  returns: v.null(),
   handler: async (ctx, args) => {
-    assertSystemContext(ctx);
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
-      .unique();
-
-    if (!user) throw new Error("User not found");
-
-    await ctx.db.patch(user._id, {
-      plan: args.plan,
-      credits: args.credits,
-      whopCustomerId: args.whopCustomerId ?? user.whopCustomerId,
-      whopSubscriptionId: args.whopSubscriptionId ?? user.whopSubscriptionId,
-      subscriptionStartedAt: Date.now(),
-      subscriptionEnd: undefined,
-      subscriptionType: "active",
-      subscriptionStatus: "active",
-      lastResetDate: Date.now(),
+    const generation = await ctx.db.get("generations", args.generationId);
+    if (!generation) throw new Error("Generation not found");
+    if (generation.status === "completed") {
+      if (generation.outputStorageId !== args.outputStorageId) {
+        throw new Error("Generation was already completed with a different output");
+      }
+      return null;
+    }
+    if (generation.status !== "pending" && generation.status !== "processing") {
+      throw new Error(`Invalid generation transition from ${generation.status} to completed`);
+    }
+    if (args.outputStorageId !== undefined) {
+      const upload = await ctx.db
+        .query("uploads")
+        .withIndex("by_storageId", (q) => q.eq("storageId", args.outputStorageId!))
+        .unique();
+      if (!upload || upload.userId !== generation.userId) {
+        throw new Error("Uploaded file not found");
+      }
+    }
+    await ctx.db.patch("generations", args.generationId, {
+      status: "completed",
+      outputStorageId: args.outputStorageId,
+      completedAt: Date.now(),
     });
-
-    return args.credits;
-  },
-});
-
-export const handleSubscriptionCanceled = mutation({
-  args: { clerkId: v.string() },
-  handler: async (ctx, args) => {
-    assertSystemContext(ctx);
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
-      .unique();
-
-    if (!user) throw new Error("User not found");
-
-    await ctx.db.patch(user._id, {
-      plan: "free",
-      credits: 5,
-      subscriptionEnd: Date.now(),
-      subscriptionStatus: "canceled",
-    });
+    return null;
   },
 });
 
-export const handleSubscriptionCancelAtPeriodEnd = mutation({
-  args: { clerkId: v.string(), subscriptionEnd: v.optional(v.number()) },
+export const failGeneration = internalMutation({
+  args: {
+    generationId: v.id("generations"),
+    reason: v.optional(v.string()),
+  },
+  returns: v.null(),
   handler: async (ctx, args) => {
-    assertSystemContext(ctx);
+    const reason = optionalBoundedString(args.reason, "reason", 500);
+    const generation = await ctx.db.get("generations", args.generationId);
+    if (!generation) throw new Error("Generation not found");
+    if (generation.status === "failed") return null;
+    if (generation.status !== "pending" && generation.status !== "processing") {
+      throw new Error(`Invalid generation transition from ${generation.status} to failed`);
+    }
+
+    const creditsUsed = positiveSafeInteger(
+      generation.creditsUsed,
+      "generation creditsUsed",
+      GENERATION_COST,
+    );
     const user = await ctx.db
       .query("users")
-      .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", generation.userId))
       .unique();
-    if (!user) throw new Error("User not found");
-    await ctx.db.patch(user._id, {
-      subscriptionType: "cancel_at_period_end",
-      subscriptionEnd: args.subscriptionEnd ?? user.subscriptionEnd,
-      subscriptionStatus: "active",
+    if (!user) throw new Error("Generation owner not found");
+    if (!Number.isSafeInteger(user.credits) || user.credits < 0) {
+      throw new Error("Account credit balance is invalid");
+    }
+
+    const now = Date.now();
+    await ctx.db.patch("generations", args.generationId, {
+      status: "failed",
+      failureReason: reason,
+      failedAt: now,
+      refundedAt: now,
     });
+    await ctx.db.patch("users", user._id, { credits: user.credits + creditsUsed });
+    return null;
   },
 });
 
-export const handleSubscriptionExpired = mutation({
-  args: { clerkId: v.string() },
+/** Refunds an abandoned reservation if the generation orchestrator never finishes it. */
+export const expireGeneration = internalMutation({
+  args: { generationId: v.id("generations") },
+  returns: v.null(),
   handler: async (ctx, args) => {
-    assertSystemContext(ctx);
+    const generation = await ctx.db.get("generations", args.generationId);
+    if (!generation || generation.status === "completed" || generation.status === "failed") {
+      return null;
+    }
 
+    const creditsUsed = positiveSafeInteger(
+      generation.creditsUsed,
+      "generation creditsUsed",
+      GENERATION_COST,
+    );
     const user = await ctx.db
       .query("users")
-      .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", generation.userId))
       .unique();
+    if (!user) return null;
+    if (!Number.isSafeInteger(user.credits) || user.credits < 0) {
+      throw new Error("Account credit balance is invalid");
+    }
 
-    if (!user) throw new Error("User not found");
-
-    await ctx.db.patch(user._id, {
-      plan: "free",
-      credits: 5,
-      subscriptionEnd: Date.now(),
-      subscriptionStatus: "expired",
+    const now = Date.now();
+    await ctx.db.patch("generations", args.generationId, {
+      status: "failed",
+      failureReason: "generation_timeout",
+      failedAt: now,
+      refundedAt: now,
     });
-  },
-});
-
-export const handleSubscriptionPaymentFailed = mutation({
-  args: { clerkId: v.string() },
-  handler: async (ctx, args) => {
-    assertSystemContext(ctx);
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
-      .unique();
-
-    if (!user) throw new Error("User not found");
-
-    // Keep current plan but flag the failure
-    await ctx.db.patch(user._id, {
-      subscriptionType: "payment_failed",
-      subscriptionStatus: "payment_failed",
-    });
-  },
-});
-
-export const handleSubscriptionPending = mutation({
-  args: { clerkId: v.string() },
-  handler: async (ctx, args) => {
-    assertSystemContext(ctx);
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
-      .unique();
-
-    if (!user) throw new Error("User not found");
-
-    await ctx.db.patch(user._id, {
-      subscriptionType: "pending",
-      subscriptionStatus: "pending",
-    });
+    await ctx.db.patch("users", user._id, { credits: user.credits + creditsUsed });
+    return null;
   },
 });

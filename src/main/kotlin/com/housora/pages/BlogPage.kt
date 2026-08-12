@@ -63,8 +63,12 @@ private val blogPosts = listOf(
     ))
 )
 
+val blogPostSlugs: List<String> = blogPosts.map { it.slug }
+
+fun blogPostExists(slug: String): Boolean = slug in blogPostSlugs
+
 fun HTML.blogPage() {
-    baseLayout("Blog | Housora AI Interior Design", bodyClass = "page-blog") {
+    baseLayout("Blog | Housora AI Interior Design", bodyClass = "page-blog", path = "/blog") {
         section(classes = "blog-hero") {
             div(classes = "blog-hero-inner") {
                 h1(classes = "blog-hero-title") { +"BLOG" }
@@ -104,7 +108,7 @@ fun HTML.blogPage() {
                 h2(classes = "cta-heading") { +"READY TO REDESIGN YOUR ROOM?" }
                 p(classes = "cta-subtext") { +"Try Housora AI and see your space transformed in seconds" }
                 div(classes = "cta-buttons") {
-                    a(href = "/create#designStudio", classes = "btn-primary btn-large") { +"TRY HOUSORA FREE" }
+                    a(href = "/design#editor", classes = "btn-primary btn-large") { +"TRY HOUSORA FREE" }
                     a(href = "/pricing", classes = "btn-secondary") { +"View Pricing" }
                 }
             }
@@ -118,7 +122,10 @@ fun HTML.blogArticlePage(slug: String) {
         blogPage()
         return
     }
-    baseLayout("${post.title} | Housora", bodyClass = "page-blog") {
+    val articleUrl = com.housora.WebsiteConfig.resolveUrl("/blog/${post.slug}")
+    val publishedDay = post.date.substringAfter("July ").substringBefore(",").padStart(2, '0')
+    val articleSchema = """{"@context":"https://schema.org","@type":"Article","headline":"${post.title.replace("\"", "\\\"")}","description":"${post.excerpt.replace("\"", "\\\"")}","datePublished":"2026-07-$publishedDay","author":{"@type":"Organization","name":"Housora"},"publisher":{"@type":"Organization","name":"Housora"},"image":"${com.housora.WebsiteConfig.resolveUrl(post.img)}","mainEntityOfPage":"$articleUrl"}"""
+    baseLayout("${post.title} | Housora", bodyClass = "page-blog", path = "/blog/${post.slug}", structuredData = articleSchema) {
         article(classes = "blog-article") {
             div(classes = "blog-article-inner") {
                 a(href = "/blog", classes = "blog-article-back") { +"← Back to blog" }
@@ -129,7 +136,19 @@ fun HTML.blogArticlePage(slug: String) {
                 div(classes = "blog-article-copy") {
                     post.paragraphs.forEach { paragraph -> p { +paragraph } }
                 }
-                a(href = "/create#designStudio", classes = "btn-primary btn-large") { +"Explore this idea with Housora" }
+                a(href = "/design#editor", classes = "btn-primary btn-large") { +"Explore this idea with Housora" }
+            }
+        }
+    }
+}
+
+fun HTML.blogNotFoundPage() {
+    baseLayout("Article Not Found | Housora", bodyClass = "page-blog") {
+        section(classes = "blog-hero") {
+            div(classes = "blog-hero-inner") {
+                h1(classes = "blog-hero-title") { +"ARTICLE NOT FOUND" }
+                p(classes = "blog-hero-sub") { +"That article does not exist or is no longer available." }
+                a(href = "/blog", classes = "btn-primary") { +"BACK TO THE BLOG" }
             }
         }
     }

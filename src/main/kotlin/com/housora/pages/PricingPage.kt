@@ -25,21 +25,17 @@ fun HTML.pricingPage() {
             "Save and manage projects" to true,
             "Standard export quality" to true,
             "Email support" to true,
-            "4K image generation" to false,
-            "Priority support" to false,
-            "Team access" to false
+            "Email support" to true
         )),
         HousoraPlan("Pro", "€29", "€299", "€24.92", WhopConfig.proMonthly, WhopConfig.proYearly, "pro", listOf(
             "190 included images" to true,
             "Access to Housora design tools" to true,
             "Save and manage projects" to true,
-            "4K image generation where available" to true,
-            "Priority support" to true,
-            "Team access" to true
+            "Priority support" to true
         ), popular = true)
     )
 
-    baseLayout("Pricing & Plans | Housora", path = "/pricing") {
+    baseLayout("Pricing & Plans | Housora", bodyClass = "page-pricing", path = "/pricing") {
         section("pricing-section") { div("pricing-inner") {
             h1("pricing-title") { +"Choose your Housora plan" }
             p("pricing-subtitle") { +"Start monthly, or switch to yearly billing when you are ready to save." }
@@ -49,15 +45,49 @@ fun HTML.pricingPage() {
                 button(classes = "toggle-option active") { id = "monthlyBtn"; type = ButtonType.button; attributes["aria-pressed"] = "true"; +"Monthly Billing" }
             }
             p("save-text") { id = "billing-caption"; +"Pay monthly and cancel future renewals anytime." }
+            div("checkout-legal-notice") {
+                h2 { +"Before checkout" }
+                p { +"Review the plan price, billing period, included images, renewal, cancellation, and refund information before continuing." }
+                label("checkout-legal-choice") {
+                    checkBoxInput {
+                        id = "checkout-terms-accepted"
+                        attributes["required"] = "required"
+                    }
+                    span {
+                        +"I have read and agree to the "
+                        a(href = "/terms", target = "_blank") { attributes["rel"] = "noopener"; +"Terms & Conditions" }
+                        +" and "
+                        a(href = "/refund-policy", target = "_blank") { attributes["rel"] = "noopener"; +"Refund & Withdrawal Policy" }
+                        +"."
+                    }
+                }
+                label("checkout-legal-choice") {
+                    checkBoxInput {
+                        id = "checkout-immediate-performance"
+                        attributes["required"] = "required"
+                    }
+                    span { +"I expressly request immediate access during any withdrawal period and acknowledge that supplying or using digital content may affect my withdrawal right only as permitted by applicable law." }
+                }
+                p("checkout-legal-error") {
+                    id = "checkout-legal-error"
+                    attributes["role"] = "alert"
+                    attributes["aria-live"] = "polite"
+                    attributes["hidden"] = "hidden"
+                }
+            }
             div("pricing-grid pricing-grid-three") {
                 plans.forEach { plan ->
                     div(classes = if (plan.popular) "pricing-card card-popular" else "pricing-card") {
                         if (plan.popular) div("popular-badge") { +"MOST POPULAR" }
-                        h3("plan-name") { +plan.name }
+                        h2("plan-name") { +plan.name }
                         div("plan-price") {
                             span("price-monthly") { +plan.monthly }
                             span("price-annual") { +plan.annualEquivalent }
-                            span("price-period") { +" / month" }
+                            span("price-period") {
+                                attributes["data-billing-period"] = "month"
+                                attributes["data-i18n"] = "pricing.per_month"
+                                +" / month"
+                            }
                         }
                         p("annual-equivalent") {
                             span("annual-total-label") { +"Annual total: " }
@@ -81,14 +111,14 @@ fun HTML.pricingPage() {
                     }
                 }
                 div("pricing-card pricing-card-enterprise") {
-                    h3("plan-name") { +"Enterprise" }
-                    div("plan-price") { span("price-current") { +"Custom" }; span("price-period") { +" plans" } }
+                    h2("plan-name") { +"Enterprise" }
+                    div("plan-price") { span("price-current") { +"Custom" }; span("enterprise-price-suffix") { +" plans" } }
                     p("annual-equivalent") { +"Growth, Scale, and Unlimited tiers with higher allowances." }
                     a(href = "/enterprise", classes = "btn-primary btn-full") { +"SEE ENTERPRISE PLANS" }
                     ul("plan-features") {
-                        li { span("check") { +"✓" }; +" Team access and sharing" }
-                        li { span("check") { +"✓" }; +" Priority support and API options" }
-                        li { span("check") { +"✓" }; +" Custom export options" }
+                        li { span("check") { +"✓" }; +" Access to Housora design tools" }
+                        li { span("check") { +"✓" }; +" Support by email" }
+                        li { span("check") { +"✓" }; +" Higher included image allowances" }
                     }
                     p("cancel-text") { +"Talk to us about the right workspace size." }
                 }

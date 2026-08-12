@@ -12,14 +12,14 @@ fun HTML.appHomePage() {
                     h1 { +"What will you design today?" }
                     p { +"Start a new room concept or continue exploring your saved designs." }
                 }
-                a(href = "/create#first-design", classes = "btn-primary") { +"NEW DESIGN" }
+                a(href = "/design#editor", classes = "btn-primary") { +"NEW DESIGN" }
             }
             div("app-home-primary") {
                 div("app-home-primary-copy") {
                     span("app-card-label") { +"START A NEW DESIGN" }
                     h2 { +"Turn a room photo into a clear direction." }
                     p { +"Upload your room, choose a style, and generate a photorealistic concept." }
-                    a(href = "/create#first-design", classes = "btn-primary") { +"CREATE YOUR FIRST DESIGN" }
+                    a(href = "/design#editor", classes = "btn-primary") { +"CREATE YOUR FIRST DESIGN" }
                 }
                 img(src = "/static/images/room-after.jpg", alt = "AI redesigned living room")
             }

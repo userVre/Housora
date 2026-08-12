@@ -30,6 +30,104 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
 
+data class PublicRoute(
+    val path: String,
+    val behavior: String,
+    val target: String? = null,
+    val export: Boolean = behavior == "page" || behavior == "asset"
+)
+
+/**
+ * Canonical public route contract for Ktor and the static exporter.
+ *
+ * `page` and `asset` routes are exported, `redirect` routes are emitted as
+ * real HTTP redirects, and `unavailable` routes deliberately remain 404s.
+ * Project restoration uses /design?project=<id>; legacy
+ * /create#project-<id> bookmarks are normalized by WorkspacePage.
+ */
+val publicRouteManifest: List<PublicRoute> = buildList {
+    listOf(
+        "/", "/design", "/reference-style", "/pricing", "/app/home",
+        "/interior-design", "/layout-boost", "/exterior-design", "/garden-design",
+        "/floor-restyle", "/wall-texture", "/video-walkthrough", "/floorplan-to-3d",
+        "/photo-to-render", "/ai-stairs-design", "/ai-doors-design",
+        "/ai-windows-design", "/ai-kitchen-design", "/ai-bathroom-design",
+        "/sign-in", "/sign-up", "/sign-out", "/delete-account", "/blog",
+        "/examples", "/faq", "/contact", "/compare/housora-vs-reimaginehome",
+        "/compare/housora-vs-homedesigns", "/compare/housora-vs-mnml",
+        "/compare/housora-vs-homestyler", "/compare/housora-vs-planner5d",
+        "/enterprise", "/privacy", "/terms", "/refund-policy", "/cookies", "/projects"
+    ).forEach { add(PublicRoute(it, "page")) }
+    blogPostSlugs.forEach { add(PublicRoute("/blog/$it", "page")) }
+    add(PublicRoute("/llms.txt", "asset"))
+    add(PublicRoute("/robots.txt", "asset"))
+    add(PublicRoute("/sitemap.xml", "asset"))
+
+    listOf(
+        "/create" to "/design",
+        "/subscription" to "/pricing",
+        "/workspace" to "/design",
+        "/app" to "/app/home",
+        "/floorplan-3d" to "/floorplan-to-3d",
+        "/stairs-design" to "/ai-stairs-design",
+        "/doors-design" to "/ai-doors-design",
+        "/windows-design" to "/ai-windows-design",
+        "/kitchen-design" to "/ai-kitchen-design",
+        "/bathroom-design" to "/ai-bathroom-design",
+        "/interior-design-examples" to "/examples",
+        "/inspirations" to "/examples",
+        "/referral" to "/pricing",
+        "/ai-interior-design-prompts" to "/interior-design",
+        "/furniture-fit-calculator" to "/interior-design",
+        "/api" to "/contact",
+        "/cli" to "/contact",
+        "/mcp" to "/contact",
+        "/partnerships" to "/contact",
+        "/embed-ai-interior-design" to "/contact",
+        "/case-studies" to "/enterprise",
+        "/affiliates" to "/contact",
+        "/answers" to "/faq",
+        "/affiliate" to "/contact",
+        "/b2b" to "/enterprise",
+        "/cookie-policy" to "/cookies",
+        "/creations" to "/projects",
+        "/fit-calculator" to "/interior-design",
+        "/prompt-generator" to "/interior-design",
+        "/refund" to "/refund-policy"
+    ).forEach { (path, target) -> add(PublicRoute(path, "redirect", target, export = false)) }
+
+    listOf(
+        "/ai-information", "/style-quiz"
+    ).forEach { add(PublicRoute(it, "unavailable", export = false)) }
+}.also { routes ->
+    require(routes.map { it.path }.distinct().size == routes.size) { "Duplicate path in public route manifest" }
+}
+
+private fun String.jsonEscape(): String = buildString {
+    this@jsonEscape.forEach { character ->
+        when (character) {
+            '\\' -> append("\\\\")
+            '"' -> append("\\\"")
+            '\n' -> append("\\n")
+            '\r' -> append("\\r")
+            '\t' -> append("\\t")
+            else -> append(character)
+        }
+    }
+}
+
+private fun publicRouteManifestJson(): String = buildString {
+    append("{\"version\":1,\"projectRoute\":\"/design?project={id}\",\"routes\":[")
+    publicRouteManifest.forEachIndexed { index, route ->
+        if (index > 0) append(',')
+        append("{\"path\":\"").append(route.path.jsonEscape())
+        append("\",\"behavior\":\"").append(route.behavior).append('"')
+        route.target?.let { append(",\"target\":\"").append(it.jsonEscape()).append('"') }
+        append(",\"export\":").append(route.export).append('}')
+    }
+    append("]}")
+}
+
 private fun detectImageType(bytes: ByteArray): String? {
     if (bytes.size < 4) return null
     if (bytes[0] == 0xFF.toByte() && bytes[1] == 0xD8.toByte() && bytes[2] == 0xFF.toByte()) return "image/jpeg"
@@ -116,19 +214,26 @@ fun Application.configureRouting() {
         static("/uploads") {
             if (uploadRoot.exists()) files(uploadRoot)
         }
+        listOf("favicon.ico", "favicon.svg", "apple-touch-icon.png", "icon-192.png", "icon-512.png", "og-image.png", "site.webmanifest").forEach { assetName ->
+            get("/$assetName") {
+                val asset = File(staticRoot, "meta/$assetName")
+                if (asset.exists()) call.respondFile(asset) else call.respond(HttpStatusCode.NotFound)
+            }
+        }
+        get("/route-manifest.json") {
+            call.respondText(publicRouteManifestJson(), contentType = ContentType.Application.Json)
+        }
+        publicRouteManifest.filter { it.behavior == "redirect" }.forEach { route ->
+            get(route.path) {
+                val query = call.request.queryString()
+                val destination = route.target!! + if (query.isBlank()) "" else "?$query"
+                call.respondRedirect(destination, permanent = true)
+            }
+        }
         get("/") { call.respondHtml { homePage() } }
-        get("/create") { call.respondRedirect("/#first-design", permanent = true) }
-        // The homepage configurator hands users into the real interior-design
-        // workspace after they choose a photo and direction.
-        get("/design") { call.respondHtml { workspacePage() } }
+        get("/design") { call.respondHtml { workspacePage(call.request.queryParameters["project"]) } }
         get("/reference-style") { call.respondHtml { referenceStylePage(call.request.queryParameters["reference"]) } }
         get("/pricing") { call.respondHtml { pricingPage() } }
-        get("/subscription") {
-            val query = call.request.queryString()
-            call.respondRedirect("/pricing" + if (query.isBlank()) "" else "?$query", permanent = true)
-        }
-        get("/workspace") { call.respondRedirect("/design", permanent = true) }
-        get("/app") { call.respondRedirect("/app/home", permanent = true) }
         get("/app/home") { call.respondHtml { appHomePage() } }
 
         // AI Tool Pages
@@ -141,15 +246,10 @@ fun Application.configureRouting() {
         get("/video-walkthrough") { call.respondHtml { videoWalkthroughPage() } }
         get("/floorplan-to-3d") { call.respondHtml { floorplanTo3DPage() } }
         get("/photo-to-render") { call.respondHtml { photoToRenderPage() } }
-        get("/stairs-design") { call.respondHtml { stairsDesignPage() } }
         get("/ai-stairs-design") { call.respondHtml { stairsDesignPage() } }
-        get("/doors-design") { call.respondHtml { doorsDesignPage() } }
         get("/ai-doors-design") { call.respondHtml { doorsDesignPage() } }
-        get("/windows-design") { call.respondHtml { windowsDesignPage() } }
         get("/ai-windows-design") { call.respondHtml { windowsDesignPage() } }
-        get("/kitchen-design") { call.respondHtml { kitchenDesignPage() } }
         get("/ai-kitchen-design") { call.respondHtml { kitchenDesignPage() } }
-        get("/bathroom-design") { call.respondHtml { bathroomDesignPage() } }
         get("/ai-bathroom-design") { call.respondHtml { bathroomDesignPage() } }
 
         // Auth
@@ -224,9 +324,15 @@ fun Application.configureRouting() {
 
         // Blog
         get("/blog") { call.respondHtml { blogPage() } }
-        get("/blog/{slug}") { call.respondHtml { blogArticlePage(call.parameters["slug"].orEmpty()) } }
+        get("/blog/{slug}") {
+            val slug = call.parameters["slug"].orEmpty()
+            if (blogPostExists(slug)) {
+                call.respondHtml { blogArticlePage(slug) }
+            } else {
+                call.respondHtml(HttpStatusCode.NotFound) { blogNotFoundPage() }
+            }
+        }
         get("/examples") { call.respondHtml { examplesPage() } }
-        get("/interior-design-examples") { call.respondHtml { examplesPage() } }
         get("/faq") { call.respondHtml { faqPage() } }
         get("/contact") { call.respondHtml { contactPage() } }
 
@@ -243,36 +349,21 @@ fun Application.configureRouting() {
         get("/refund-policy") { call.respondHtml { refundPage() } }
         get("/cookies") { call.respondHtml { cookiePolicyPage() } }
         get("/projects") { call.respondHtml { projectsPage() } }
-        // Keep unfinished destinations out of the public experience until their
-        // real content is ready. Existing bookmarks land on a useful page.
-        get("/inspirations") { call.respondRedirect("/examples", permanent = true) }
-        get("/referral") { call.respondRedirect("/pricing", permanent = true) }
-        get("/ai-interior-design-prompts") { call.respondRedirect("/interior-design", permanent = true) }
-        get("/furniture-fit-calculator") { call.respondRedirect("/interior-design", permanent = true) }
-        get("/api") { call.respondRedirect("/contact", permanent = true) }
-        get("/cli") { call.respondRedirect("/contact", permanent = true) }
-        get("/mcp") { call.respondRedirect("/contact", permanent = true) }
-        get("/partnerships") { call.respondRedirect("/contact", permanent = true) }
-        get("/embed-ai-interior-design") { call.respondRedirect("/contact", permanent = true) }
-        get("/case-studies") { call.respondRedirect("/enterprise", permanent = true) }
-        get("/affiliates") { call.respondRedirect("/contact", permanent = true) }
-        get("/answers") { call.respondRedirect("/faq", permanent = true) }
         get("/llms.txt") {
             call.respondText("""
 # Housora AI
-> AI-powered interior design tool. Upload a room photo and redesign it in seconds.
+> AI-assisted home design concepts from your own room, exterior, or garden photo.
 
 ## About
-Housora is an AI interior design platform that lets users upload photos of rooms and instantly redesign them with AI-generated furniture, layouts, and styles.
+Housora is an AI-assisted visual design tool. Users can upload a photo, choose available design options, and explore concepts while keeping the original image as a reference.
 
 ## Features
 - AI Interior Design: Redesign any room with AI
 - Virtual Staging: Stage empty rooms with furniture
 - Style Transfer: Apply design styles (Scandinavian, Modern, Industrial, etc.)
-- Budget-Aware: Set a budget and get design suggestions within it
 - Multiple Room Types: Living room, bedroom, kitchen, bathroom, office, and more
 
-## AI Tools (14 total)
+## AI Tools
 1. AI Interior Design - /interior-design
 2. AI Layout Boost - /layout-boost
 3. AI Exterior Design - /exterior-design
@@ -289,9 +380,12 @@ Housora is an AI interior design platform that lets users upload photos of rooms
 14. AI Photo to Render - /photo-to-render
 
 ## Pricing
-- Standard: from EUR 9/month (yearly) or EUR 29/month
-- Pro: from EUR 39/month (yearly) or EUR 59/month
-- Enterprise: Custom pricing
+- Standard / Starter: €14 monthly or €149 annually; 100 included images.
+- Pro: €29 monthly or €299 annually; 190 included images.
+- Growth: €199 monthly; 1,200 included images.
+- Scale: €349 monthly; 2,250 included images.
+- Unlimited: €749 monthly; 5,250 included images.
+Prices, taxes, renewal terms, annual billing details, and feature limits shown at /pricing and in Whop checkout control the purchase.
 
 ## Tech Stack
 - Frontend: Kotlin/Ktor (kotlinx.html DSL)
@@ -300,12 +394,25 @@ Housora is an AI interior design platform that lets users upload photos of rooms
 - Payments: Whop
 
 ## Contact
-- Website: https://housora.app
+- Website: ${WebsiteConfig.resolveUrl()}
 - Instagram: https://www.instagram.com/housora_ai/
 - Facebook: https://www.facebook.com/profile.php?id=61590655134529
 - YouTube: https://www.youtube.com/@Housora_AI
 - LinkedIn: https://linkedin.com/company/housoraapp
 """.trimIndent(), contentType = ContentType.Text.Plain)
+        }
+        get("/robots.txt") {
+            call.respondText("User-agent: *\nAllow: /\nDisallow: /app/\nDisallow: /design\nDisallow: /projects\nDisallow: /sign-in\nDisallow: /sign-up\nDisallow: /sign-out\nDisallow: /delete-account\nSitemap: ${WebsiteConfig.resolveUrl("/sitemap.xml")}\n", contentType = ContentType.Text.Plain)
+        }
+        get("/sitemap.xml") {
+            val sitemapPaths = publicRouteManifest.filter { it.behavior == "page" && it.export && it.path !in setOf("/app/home", "/design", "/projects", "/sign-in", "/sign-up", "/sign-out", "/delete-account", "/privacy", "/terms", "/refund-policy", "/cookies") }.map { it.path }
+            val xml = buildString {
+                append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
+                append("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">")
+                sitemapPaths.forEach { sitemapPath -> append("<url><loc>").append(WebsiteConfig.resolveUrl(sitemapPath)).append("</loc></url>") }
+                append("</urlset>")
+            }
+            call.respondText(xml, contentType = ContentType.Application.Xml)
         }
 
         // File upload endpoint — accepts raw image bytes in body

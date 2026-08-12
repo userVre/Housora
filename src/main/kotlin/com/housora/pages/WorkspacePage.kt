@@ -4,10 +4,24 @@ import kotlinx.html.*
 import kotlinx.html.dom.*
 import com.housora.templates.baseLayout
 
-fun HTML.workspacePage() {
-    baseLayout("Housora - Workspace", bodyClass = "page-workspace") {
+fun HTML.workspacePage(projectId: String? = null) {
+    val restoredProjectId = projectId?.takeIf { it.matches(Regex("[A-Za-z0-9_-]{1,160}")) }
+    baseLayout("Housora - Workspace", bodyClass = "page-workspace", path = "/design") {
         h1("sr-only") { +"Housora design workspace" }
         section("workspace-section") {
+            id = "editor"
+            attributes["tabindex"] = "-1"
+            restoredProjectId?.let { attributes["data-project-id"] = it }
+            span("sr-only") {
+                id = "first-design"
+                attributes["tabindex"] = "-1"
+                +"Start a design"
+            }
+            span("sr-only") {
+                id = "designStudio"
+                attributes["tabindex"] = "-1"
+                +"Design studio"
+            }
             div("workspace-layout") {
                 // Main canvas area
                 div("workspace-canvas") {
@@ -15,10 +29,10 @@ fun HTML.workspacePage() {
                         a(href = "/interior-design", classes = "back-link") { +"\u2190 AI INTERIOR DESIGN" }
                     }
                     div("workspace-tabs-bar") {
-                        span("tab-item") { +"+" }
-                        span("tab-item tab-label") { +"Furniture" }
-                        span("tab-item tab-label") { +"List" }
-                        span("tab-item tab-label tab-active") { +"Design" }
+                        button(classes = "tab-item") { type = ButtonType.button; attributes["aria-label"] = "Add workspace tab"; +"+" }
+                        button(classes = "tab-item tab-label") { type = ButtonType.button; +"Furniture" }
+                        button(classes = "tab-item tab-label") { type = ButtonType.button; +"List" }
+                        button(classes = "tab-item tab-label tab-active") { type = ButtonType.button; attributes["aria-current"] = "page"; +"Design" }
                     }
                     div("workspace-modify-header") {
                         span("modify-title") { +"MODIFY THIS IMAGE" }
@@ -28,11 +42,11 @@ fun HTML.workspacePage() {
                     div("canvas-area") {
                         div("analyzing-overlay empty-state") {
                             p("analyzing-title") { attributes["id"] = "workspaceStatusTitle"; +"UPLOAD A ROOM TO BEGIN" }
-                            p("analyzing-pct") { attributes["id"] = "analyzePct"; +"0%" }
-                            p("analyzing-sub") { attributes["id"] = "workspaceStatusText"; +"Start on the home page, upload a room photo, then choose your design direction here." }
+                            p("analyzing-pct") { attributes["id"] = "analyzePct"; +"No photo selected" }
+                            p("analyzing-sub") { attributes["id"] = "workspaceStatusText"; +"Upload a room photo first. Then choose a direction and describe the design you want." }
                             a(href = "/#first-design", classes = "btn-primary workspace-upload-cta") { +"UPLOAD ROOM PHOTO" }
                             div("analyzing-image") {
-                                img(src = "/static/images/room-before.jpg", alt = "Room being analyzed", classes = "workspace-input-photo") {
+                                img(src = "/static/images/room-before.jpg", alt = "Example room photo placeholder", classes = "workspace-input-photo") {
                                     attributes["width"] = "300"
                                     attributes["height"] = "225"
                                     attributes["loading"] = "lazy"
@@ -71,20 +85,25 @@ fun HTML.workspacePage() {
                                 attributes["aria-label"] = "Edit design"
                                 +"Edit"
                             }
-                            span("action-btn") { +"⬇" }
-                            span("action-btn") { +"⤴" }
+                            button(classes = "action-btn") { type = ButtonType.button; attributes["aria-label"] = "Download design"; +"⬇" }
+                            button(classes = "action-btn") { type = ButtonType.button; attributes["aria-label"] = "Share design"; +"⤴" }
                         }
                     }
                     div("workspace-prompt-bar") {
                         div("prompt-input-area") {
+                            label("prompt-input-label") { htmlFor = "workspacePrompt"; +"Describe your design" }
                             input(InputType.text, classes = "prompt-input-field") {
                                 id = "workspacePrompt"
-                                attributes["aria-label"] = "Describe an edit to make"
-                                attributes["placeholder"] = "Add"
+                                attributes["aria-describedby"] = "workspacePromptHelp workspacePromptError"
+                                attributes["placeholder"] = "Describe the style, materials, or changes you want"
+                                attributes["maxlength"] = "500"
                             }
+                            p("prompt-input-help") { id = "workspacePromptHelp"; +"A room photo and a description are both required." }
+                            p("workspace-field-error") { id = "workspacePromptError"; attributes["role"] = "alert"; attributes["aria-live"] = "polite" }
                         }
                         div("prompt-controls") {
                             button(classes = "upload-furniture-btn") {
+                                type = ButtonType.button
                                 img(src = "/static/images/tools/interior-design-hero.jpg", alt = "Upload furniture reference photo") {
                                     attributes["width"] = "16"
                                     attributes["height"] = "16"
@@ -96,7 +115,7 @@ fun HTML.workspacePage() {
                             }
                             span("quality-badge") { +"Quick \u00B7 1x \u00B7 1K" }
                             span("quality-arrow") { +"⌄" }
-                            button(classes = "send-btn") { +"\u2191" }
+                            button(classes = "send-btn") { type = ButtonType.button; attributes["aria-label"] = "Generate design"; attributes["disabled"] = "true"; +"\u2191" }
                         }
                     }
                 }
@@ -277,8 +296,42 @@ fun HTML.workspacePage() {
                     }
 
                     // Generate Button
-                    button(classes = "btn-design-room") { attributes["data-i18n"] = "workspace.design_now"; +"DESIGN NOW" }
+                    button(classes = "btn-design-room") {
+                        id = "workspaceGenerateBtn"
+                        type = ButtonType.button
+                        attributes["data-i18n"] = "workspace.design_now"
+                        attributes["disabled"] = "true"
+                        attributes["aria-describedby"] = "workspacePromptError"
+                        +"DESIGN NOW"
+                    }
                 }
+            }
+        }
+        script {
+            unsafe {
+                +"""
+                (function () {
+                    var url = new URL(window.location.href);
+                    var projectId = url.searchParams.get('project');
+                    var legacyMatch = window.location.hash.match(/^#project-(.+)$/);
+                    var editor = document.getElementById('editor');
+                    if (!projectId && legacyMatch) {
+                        try { projectId = decodeURIComponent(legacyMatch[1]); } catch (_) { projectId = legacyMatch[1]; }
+                    }
+                    if (projectId && /^[A-Za-z0-9_-]{1,160}$/.test(projectId)) {
+                        try { localStorage.setItem('housora_current_project', projectId); } catch (_) {}
+                        if (legacyMatch) {
+                            url.hash = '';
+                            url.searchParams.set('project', projectId);
+                            history.replaceState(null, '', url.pathname + url.search);
+                        }
+                        if (editor) editor.setAttribute('data-project-id', projectId);
+                    }
+                    if (editor && projectId && !window.location.hash) {
+                        requestAnimationFrame(function () { editor.focus({ preventScroll: true }); });
+                    }
+                })();
+                """
             }
         }
     }

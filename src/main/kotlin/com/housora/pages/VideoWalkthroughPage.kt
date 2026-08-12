@@ -40,7 +40,7 @@ fun HTML.videoWalkthroughPage() {
         problemHeading = "Static Renders Don't Capture How a Space Feels",
         problemDescription = "Photos are flat. Clients need to feel like they are in the room. Static images miss the flow, the light changes, the spatial relationships.",
         problemCards = listOf(Triple("home", "Homeowners", "You designed a beautiful room but photos don't always communicate how it feels to move through the space."), Triple("building", "Real Estate Agents", "A short walkthrough can help prospective buyers understand a listing's layout before visiting."), Triple("users", "Designers & Architects", "A moving preview can complement static renders and make a design direction easier to discuss.")),
-        solutionText = "Upload your designed room and Housora AI generates a smooth, cinematic video walkthrough in seconds. Share on Instagram, TikTok, YouTube, or client presentations.",
+        solutionText = "Upload your designed room to explore a smooth, cinematic video walkthrough concept. Check the result against the original room before sharing it in a listing or presentation.",
         statsLabel = "A growing toolkit for clearer design decisions",
 
         stats = emptyList(),

@@ -1,0 +1,1653 @@
+{
+  "baseUrl": "http://127.0.0.1:8082",
+  "generatedAt": "2026-08-10T09:05:48.454Z",
+  "pages": [
+    {
+      "viewport": "desktop",
+      "group": "01-core",
+      "route": "/",
+      "status": 200,
+      "file": "desktop/01-core/01-home.png",
+      "bytes": 450869
+    },
+    {
+      "viewport": "desktop",
+      "group": "01-core",
+      "route": "/create",
+      "status": 200,
+      "file": "desktop/01-core/02-create.png",
+      "bytes": 450869
+    },
+    {
+      "viewport": "desktop",
+      "group": "01-core",
+      "route": "/design",
+      "status": 200,
+      "file": "desktop/01-core/03-design.png",
+      "bytes": 146247
+    },
+    {
+      "viewport": "desktop",
+      "group": "01-core",
+      "route": "/workspace",
+      "status": 200,
+      "file": "desktop/01-core/04-workspace.png",
+      "bytes": 147406
+    },
+    {
+      "viewport": "desktop",
+      "group": "01-core",
+      "route": "/app",
+      "status": 200,
+      "file": "desktop/01-core/05-app.png",
+      "bytes": 144096
+    },
+    {
+      "viewport": "desktop",
+      "group": "01-core",
+      "route": "/app/home",
+      "status": 200,
+      "file": "desktop/01-core/06-app-home.png",
+      "bytes": 144096
+    },
+    {
+      "viewport": "desktop",
+      "group": "01-core",
+      "route": "/reference-style",
+      "status": 200,
+      "file": "desktop/01-core/07-reference-style.png",
+      "bytes": 121327
+    },
+    {
+      "viewport": "desktop",
+      "group": "01-core",
+      "route": "/pricing",
+      "status": 200,
+      "file": "desktop/01-core/08-pricing.png",
+      "bytes": 180110
+    },
+    {
+      "viewport": "desktop",
+      "group": "01-core",
+      "route": "/subscription",
+      "status": 200,
+      "file": "desktop/01-core/09-subscription.png",
+      "bytes": 180110
+    },
+    {
+      "viewport": "desktop",
+      "group": "02-ai-tools",
+      "route": "/interior-design",
+      "status": 200,
+      "file": "desktop/02-ai-tools/01-interior-design.png",
+      "bytes": 267764
+    },
+    {
+      "viewport": "desktop",
+      "group": "02-ai-tools",
+      "route": "/layout-boost",
+      "status": 200,
+      "file": "desktop/02-ai-tools/02-layout-boost.png",
+      "bytes": 270928
+    },
+    {
+      "viewport": "desktop",
+      "group": "02-ai-tools",
+      "route": "/exterior-design",
+      "status": 200,
+      "file": "desktop/02-ai-tools/03-exterior-design.png",
+      "bytes": 273015
+    },
+    {
+      "viewport": "desktop",
+      "group": "02-ai-tools",
+      "route": "/garden-design",
+      "status": 200,
+      "file": "desktop/02-ai-tools/04-garden-design.png",
+      "bytes": 265992
+    },
+    {
+      "viewport": "desktop",
+      "group": "02-ai-tools",
+      "route": "/floor-restyle",
+      "status": 200,
+      "file": "desktop/02-ai-tools/05-floor-restyle.png",
+      "bytes": 267180
+    },
+    {
+      "viewport": "desktop",
+      "group": "02-ai-tools",
+      "route": "/wall-texture",
+      "status": 200,
+      "file": "desktop/02-ai-tools/06-wall-texture.png",
+      "bytes": 260094
+    },
+    {
+      "viewport": "desktop",
+      "group": "02-ai-tools",
+      "route": "/video-walkthrough",
+      "status": 200,
+      "file": "desktop/02-ai-tools/07-video-walkthrough.png",
+      "bytes": 268488
+    },
+    {
+      "viewport": "desktop",
+      "group": "02-ai-tools",
+      "route": "/floorplan-to-3d",
+      "status": 200,
+      "file": "desktop/02-ai-tools/08-floorplan-to-3d.png",
+      "bytes": 261148
+    },
+    {
+      "viewport": "desktop",
+      "group": "02-ai-tools",
+      "route": "/photo-to-render",
+      "status": 200,
+      "file": "desktop/02-ai-tools/09-photo-to-render.png",
+      "bytes": 262063
+    },
+    {
+      "viewport": "desktop",
+      "group": "02-ai-tools",
+      "route": "/ai-stairs-design",
+      "status": 200,
+      "file": "desktop/02-ai-tools/10-ai-stairs-design.png",
+      "bytes": 262996
+    },
+    {
+      "viewport": "desktop",
+      "group": "02-ai-tools",
+      "route": "/ai-doors-design",
+      "status": 200,
+      "file": "desktop/02-ai-tools/11-ai-doors-design.png",
+      "bytes": 271475
+    },
+    {
+      "viewport": "desktop",
+      "group": "02-ai-tools",
+      "route": "/ai-windows-design",
+      "status": 200,
+      "file": "desktop/02-ai-tools/12-ai-windows-design.png",
+      "bytes": 283432
+    },
+    {
+      "viewport": "desktop",
+      "group": "02-ai-tools",
+      "route": "/ai-kitchen-design",
+      "status": 200,
+      "file": "desktop/02-ai-tools/13-ai-kitchen-design.png",
+      "bytes": 291193
+    },
+    {
+      "viewport": "desktop",
+      "group": "02-ai-tools",
+      "route": "/ai-bathroom-design",
+      "status": 200,
+      "file": "desktop/02-ai-tools/14-ai-bathroom-design.png",
+      "bytes": 273770
+    },
+    {
+      "viewport": "desktop",
+      "group": "03-account",
+      "route": "/sign-in",
+      "status": 200,
+      "file": "desktop/03-account/01-sign-in.png",
+      "bytes": 107161
+    },
+    {
+      "viewport": "desktop",
+      "group": "03-account",
+      "route": "/sign-up",
+      "status": 200,
+      "file": "desktop/03-account/02-sign-up.png",
+      "bytes": 109716
+    },
+    {
+      "viewport": "desktop",
+      "group": "03-account",
+      "route": "/delete-account",
+      "status": 200,
+      "file": "desktop/03-account/03-delete-account.png",
+      "bytes": 99727
+    },
+    {
+      "viewport": "desktop",
+      "group": "03-account",
+      "route": "/projects",
+      "status": 200,
+      "file": "desktop/03-account/04-projects.png",
+      "bytes": 92792
+    },
+    {
+      "viewport": "desktop",
+      "group": "03-account",
+      "route": "/inspirations",
+      "status": 200,
+      "file": "desktop/03-account/05-inspirations.png",
+      "bytes": 92563
+    },
+    {
+      "viewport": "desktop",
+      "group": "03-account",
+      "route": "/referral",
+      "status": 200,
+      "file": "desktop/03-account/06-referral.png",
+      "bytes": 93859
+    },
+    {
+      "viewport": "desktop",
+      "group": "04-discover",
+      "route": "/examples",
+      "status": 200,
+      "file": "desktop/04-discover/01-examples.png",
+      "bytes": 281282
+    },
+    {
+      "viewport": "desktop",
+      "group": "04-discover",
+      "route": "/faq",
+      "status": 200,
+      "file": "desktop/04-discover/02-faq.png",
+      "bytes": 129984
+    },
+    {
+      "viewport": "desktop",
+      "group": "04-discover",
+      "route": "/contact",
+      "status": 200,
+      "file": "desktop/04-discover/03-contact.png",
+      "bytes": 138771
+    },
+    {
+      "viewport": "desktop",
+      "group": "04-discover",
+      "route": "/ai-interior-design-prompts",
+      "status": 200,
+      "file": "desktop/04-discover/04-ai-interior-design-prompts.png",
+      "bytes": 94824
+    },
+    {
+      "viewport": "desktop",
+      "group": "04-discover",
+      "route": "/furniture-fit-calculator",
+      "status": 200,
+      "file": "desktop/04-discover/05-furniture-fit-calculator.png",
+      "bytes": 92664
+    },
+    {
+      "viewport": "desktop",
+      "group": "04-discover",
+      "route": "/answers",
+      "status": 200,
+      "file": "desktop/04-discover/06-answers.png",
+      "bytes": 94185
+    },
+    {
+      "viewport": "desktop",
+      "group": "05-blog",
+      "route": "/blog",
+      "status": 200,
+      "file": "desktop/05-blog/01-blog.png",
+      "bytes": 180975
+    },
+    {
+      "viewport": "desktop",
+      "group": "05-blog",
+      "route": "/blog/exterior-colour-palettes",
+      "status": 200,
+      "file": "desktop/05-blog/02-blog-exterior-colour-palettes.png",
+      "bytes": 146027
+    },
+    {
+      "viewport": "desktop",
+      "group": "05-blog",
+      "route": "/blog/planning-a-room-redesign",
+      "status": 200,
+      "file": "desktop/05-blog/03-blog-planning-a-room-redesign.png",
+      "bytes": 142714
+    },
+    {
+      "viewport": "desktop",
+      "group": "05-blog",
+      "route": "/blog/photo-to-video-room-tour",
+      "status": 200,
+      "file": "desktop/05-blog/04-blog-photo-to-video-room-tour.png",
+      "bytes": 139216
+    },
+    {
+      "viewport": "desktop",
+      "group": "05-blog",
+      "route": "/blog/architecture-prompt-basics",
+      "status": 200,
+      "file": "desktop/05-blog/05-blog-architecture-prompt-basics.png",
+      "bytes": 141714
+    },
+    {
+      "viewport": "desktop",
+      "group": "05-blog",
+      "route": "/blog/choosing-furniture-with-confidence",
+      "status": 200,
+      "file": "desktop/05-blog/06-blog-choosing-furniture-with-confidence.png",
+      "bytes": 133739
+    },
+    {
+      "viewport": "desktop",
+      "group": "05-blog",
+      "route": "/blog/garden-design-brief",
+      "status": 200,
+      "file": "desktop/05-blog/07-blog-garden-design-brief.png",
+      "bytes": 137729
+    },
+    {
+      "viewport": "desktop",
+      "group": "05-blog",
+      "route": "/blog/room-walkthrough-storytelling",
+      "status": 200,
+      "file": "desktop/05-blog/08-blog-room-walkthrough-storytelling.png",
+      "bytes": 139399
+    },
+    {
+      "viewport": "desktop",
+      "group": "05-blog",
+      "route": "/blog/comparing-ai-design-tools",
+      "status": 200,
+      "file": "desktop/05-blog/09-blog-comparing-ai-design-tools.png",
+      "bytes": 139026
+    },
+    {
+      "viewport": "desktop",
+      "group": "05-blog",
+      "route": "/blog/black-doors-without-regret",
+      "status": 200,
+      "file": "desktop/05-blog/10-blog-black-doors-without-regret.png",
+      "bytes": 136656
+    },
+    {
+      "viewport": "desktop",
+      "group": "06-compare",
+      "route": "/compare/housora-vs-reimaginehome",
+      "status": 200,
+      "file": "desktop/06-compare/01-compare-housora-vs-reimaginehome.png",
+      "bytes": 141592
+    },
+    {
+      "viewport": "desktop",
+      "group": "06-compare",
+      "route": "/compare/housora-vs-homedesigns",
+      "status": 200,
+      "file": "desktop/06-compare/02-compare-housora-vs-homedesigns.png",
+      "bytes": 141592
+    },
+    {
+      "viewport": "desktop",
+      "group": "06-compare",
+      "route": "/compare/housora-vs-mnml",
+      "status": 200,
+      "file": "desktop/06-compare/03-compare-housora-vs-mnml.png",
+      "bytes": 136825
+    },
+    {
+      "viewport": "desktop",
+      "group": "06-compare",
+      "route": "/compare/housora-vs-homestyler",
+      "status": 200,
+      "file": "desktop/06-compare/04-compare-housora-vs-homestyler.png",
+      "bytes": 140580
+    },
+    {
+      "viewport": "desktop",
+      "group": "06-compare",
+      "route": "/compare/housora-vs-planner5d",
+      "status": 200,
+      "file": "desktop/06-compare/05-compare-housora-vs-planner5d.png",
+      "bytes": 142717
+    },
+    {
+      "viewport": "desktop",
+      "group": "07-business-developers",
+      "route": "/enterprise",
+      "status": 200,
+      "file": "desktop/07-business-developers/01-enterprise.png",
+      "bytes": 124868
+    },
+    {
+      "viewport": "desktop",
+      "group": "07-business-developers",
+      "route": "/partnerships",
+      "status": 200,
+      "file": "desktop/07-business-developers/02-partnerships.png",
+      "bytes": 93386
+    },
+    {
+      "viewport": "desktop",
+      "group": "07-business-developers",
+      "route": "/case-studies",
+      "status": 200,
+      "file": "desktop/07-business-developers/03-case-studies.png",
+      "bytes": 93511
+    },
+    {
+      "viewport": "desktop",
+      "group": "07-business-developers",
+      "route": "/affiliates",
+      "status": 200,
+      "file": "desktop/07-business-developers/04-affiliates.png",
+      "bytes": 93762
+    },
+    {
+      "viewport": "desktop",
+      "group": "07-business-developers",
+      "route": "/api",
+      "status": 200,
+      "file": "desktop/07-business-developers/05-api.png",
+      "bytes": 92610
+    },
+    {
+      "viewport": "desktop",
+      "group": "07-business-developers",
+      "route": "/cli",
+      "status": 200,
+      "file": "desktop/07-business-developers/06-cli.png",
+      "bytes": 91962
+    },
+    {
+      "viewport": "desktop",
+      "group": "07-business-developers",
+      "route": "/mcp",
+      "status": 200,
+      "file": "desktop/07-business-developers/07-mcp.png",
+      "bytes": 93109
+    },
+    {
+      "viewport": "desktop",
+      "group": "08-legal",
+      "route": "/privacy",
+      "status": 200,
+      "file": "desktop/08-legal/01-privacy.png",
+      "bytes": 275210
+    },
+    {
+      "viewport": "desktop",
+      "group": "08-legal",
+      "route": "/terms",
+      "status": 200,
+      "file": "desktop/08-legal/02-terms.png",
+      "bytes": 284746
+    },
+    {
+      "viewport": "desktop",
+      "group": "08-legal",
+      "route": "/refund-policy",
+      "status": 200,
+      "file": "desktop/08-legal/03-refund-policy.png",
+      "bytes": 133595
+    },
+    {
+      "viewport": "desktop",
+      "group": "08-legal",
+      "route": "/cookies",
+      "status": 200,
+      "file": "desktop/08-legal/04-cookies.png",
+      "bytes": 161570
+    },
+    {
+      "viewport": "tablet",
+      "group": "01-core",
+      "route": "/",
+      "status": 200,
+      "file": "tablet/01-core/01-home.png",
+      "bytes": 437573
+    },
+    {
+      "viewport": "tablet",
+      "group": "01-core",
+      "route": "/create",
+      "status": 200,
+      "file": "tablet/01-core/02-create.png",
+      "bytes": 437573
+    },
+    {
+      "viewport": "tablet",
+      "group": "01-core",
+      "route": "/design",
+      "status": 200,
+      "file": "tablet/01-core/03-design.png",
+      "bytes": 141842
+    },
+    {
+      "viewport": "tablet",
+      "group": "01-core",
+      "route": "/workspace",
+      "status": 200,
+      "file": "tablet/01-core/04-workspace.png",
+      "bytes": 142101
+    },
+    {
+      "viewport": "tablet",
+      "group": "01-core",
+      "route": "/app",
+      "status": 200,
+      "file": "tablet/01-core/05-app.png",
+      "bytes": 135591
+    },
+    {
+      "viewport": "tablet",
+      "group": "01-core",
+      "route": "/app/home",
+      "status": 200,
+      "file": "tablet/01-core/06-app-home.png",
+      "bytes": 135591
+    },
+    {
+      "viewport": "tablet",
+      "group": "01-core",
+      "route": "/reference-style",
+      "status": 200,
+      "file": "tablet/01-core/07-reference-style.png",
+      "bytes": 118590
+    },
+    {
+      "viewport": "tablet",
+      "group": "01-core",
+      "route": "/pricing",
+      "status": 200,
+      "file": "tablet/01-core/08-pricing.png",
+      "bytes": 178389
+    },
+    {
+      "viewport": "tablet",
+      "group": "01-core",
+      "route": "/subscription",
+      "status": 200,
+      "file": "tablet/01-core/09-subscription.png",
+      "bytes": 178389
+    },
+    {
+      "viewport": "tablet",
+      "group": "02-ai-tools",
+      "route": "/interior-design",
+      "status": 200,
+      "file": "tablet/02-ai-tools/01-interior-design.png",
+      "bytes": 237867
+    },
+    {
+      "viewport": "tablet",
+      "group": "02-ai-tools",
+      "route": "/layout-boost",
+      "status": 200,
+      "file": "tablet/02-ai-tools/02-layout-boost.png",
+      "bytes": 252368
+    },
+    {
+      "viewport": "tablet",
+      "group": "02-ai-tools",
+      "route": "/exterior-design",
+      "status": 200,
+      "file": "tablet/02-ai-tools/03-exterior-design.png",
+      "bytes": 246700
+    },
+    {
+      "viewport": "tablet",
+      "group": "02-ai-tools",
+      "route": "/garden-design",
+      "status": 200,
+      "file": "tablet/02-ai-tools/04-garden-design.png",
+      "bytes": 246659
+    },
+    {
+      "viewport": "tablet",
+      "group": "02-ai-tools",
+      "route": "/floor-restyle",
+      "status": 200,
+      "file": "tablet/02-ai-tools/05-floor-restyle.png",
+      "bytes": 238592
+    },
+    {
+      "viewport": "tablet",
+      "group": "02-ai-tools",
+      "route": "/wall-texture",
+      "status": 200,
+      "file": "tablet/02-ai-tools/06-wall-texture.png",
+      "bytes": 235055
+    },
+    {
+      "viewport": "tablet",
+      "group": "02-ai-tools",
+      "route": "/video-walkthrough",
+      "status": 200,
+      "file": "tablet/02-ai-tools/07-video-walkthrough.png",
+      "bytes": 246717
+    },
+    {
+      "viewport": "tablet",
+      "group": "02-ai-tools",
+      "route": "/floorplan-to-3d",
+      "status": 200,
+      "file": "tablet/02-ai-tools/08-floorplan-to-3d.png",
+      "bytes": 238764
+    },
+    {
+      "viewport": "tablet",
+      "group": "02-ai-tools",
+      "route": "/photo-to-render",
+      "status": 200,
+      "file": "tablet/02-ai-tools/09-photo-to-render.png",
+      "bytes": 237963
+    },
+    {
+      "viewport": "tablet",
+      "group": "02-ai-tools",
+      "route": "/ai-stairs-design",
+      "status": 200,
+      "file": "tablet/02-ai-tools/10-ai-stairs-design.png",
+      "bytes": 239692
+    },
+    {
+      "viewport": "tablet",
+      "group": "02-ai-tools",
+      "route": "/ai-doors-design",
+      "status": 200,
+      "file": "tablet/02-ai-tools/11-ai-doors-design.png",
+      "bytes": 251468
+    },
+    {
+      "viewport": "tablet",
+      "group": "02-ai-tools",
+      "route": "/ai-windows-design",
+      "status": 200,
+      "file": "tablet/02-ai-tools/12-ai-windows-design.png",
+      "bytes": 253357
+    },
+    {
+      "viewport": "tablet",
+      "group": "02-ai-tools",
+      "route": "/ai-kitchen-design",
+      "status": 200,
+      "file": "tablet/02-ai-tools/13-ai-kitchen-design.png",
+      "bytes": 257839
+    },
+    {
+      "viewport": "tablet",
+      "group": "02-ai-tools",
+      "route": "/ai-bathroom-design",
+      "status": 200,
+      "file": "tablet/02-ai-tools/14-ai-bathroom-design.png",
+      "bytes": 245276
+    },
+    {
+      "viewport": "tablet",
+      "group": "03-account",
+      "route": "/sign-in",
+      "status": 200,
+      "file": "tablet/03-account/01-sign-in.png",
+      "bytes": 104362
+    },
+    {
+      "viewport": "tablet",
+      "group": "03-account",
+      "route": "/sign-up",
+      "status": 200,
+      "file": "tablet/03-account/02-sign-up.png",
+      "bytes": 108286
+    },
+    {
+      "viewport": "tablet",
+      "group": "03-account",
+      "route": "/delete-account",
+      "status": 200,
+      "file": "tablet/03-account/03-delete-account.png",
+      "bytes": 97491
+    },
+    {
+      "viewport": "tablet",
+      "group": "03-account",
+      "route": "/projects",
+      "status": 200,
+      "file": "tablet/03-account/04-projects.png",
+      "bytes": 90891
+    },
+    {
+      "viewport": "tablet",
+      "group": "03-account",
+      "route": "/inspirations",
+      "status": 200,
+      "file": "tablet/03-account/05-inspirations.png",
+      "bytes": 90777
+    },
+    {
+      "viewport": "tablet",
+      "group": "03-account",
+      "route": "/referral",
+      "status": 200,
+      "file": "tablet/03-account/06-referral.png",
+      "bytes": 91930
+    },
+    {
+      "viewport": "tablet",
+      "group": "04-discover",
+      "route": "/examples",
+      "status": 200,
+      "file": "tablet/04-discover/01-examples.png",
+      "bytes": 269519
+    },
+    {
+      "viewport": "tablet",
+      "group": "04-discover",
+      "route": "/faq",
+      "status": 200,
+      "file": "tablet/04-discover/02-faq.png",
+      "bytes": 125281
+    },
+    {
+      "viewport": "tablet",
+      "group": "04-discover",
+      "route": "/contact",
+      "status": 200,
+      "file": "tablet/04-discover/03-contact.png",
+      "bytes": 133394
+    },
+    {
+      "viewport": "tablet",
+      "group": "04-discover",
+      "route": "/ai-interior-design-prompts",
+      "status": 200,
+      "file": "tablet/04-discover/04-ai-interior-design-prompts.png",
+      "bytes": 92808
+    },
+    {
+      "viewport": "tablet",
+      "group": "04-discover",
+      "route": "/furniture-fit-calculator",
+      "status": 200,
+      "file": "tablet/04-discover/05-furniture-fit-calculator.png",
+      "bytes": 90874
+    },
+    {
+      "viewport": "tablet",
+      "group": "04-discover",
+      "route": "/answers",
+      "status": 200,
+      "file": "tablet/04-discover/06-answers.png",
+      "bytes": 92283
+    },
+    {
+      "viewport": "tablet",
+      "group": "05-blog",
+      "route": "/blog",
+      "status": 200,
+      "file": "tablet/05-blog/01-blog.png",
+      "bytes": 201571
+    },
+    {
+      "viewport": "tablet",
+      "group": "05-blog",
+      "route": "/blog/exterior-colour-palettes",
+      "status": 200,
+      "file": "tablet/05-blog/02-blog-exterior-colour-palettes.png",
+      "bytes": 136126
+    },
+    {
+      "viewport": "tablet",
+      "group": "05-blog",
+      "route": "/blog/planning-a-room-redesign",
+      "status": 200,
+      "file": "tablet/05-blog/03-blog-planning-a-room-redesign.png",
+      "bytes": 133149
+    },
+    {
+      "viewport": "tablet",
+      "group": "05-blog",
+      "route": "/blog/photo-to-video-room-tour",
+      "status": 200,
+      "file": "tablet/05-blog/04-blog-photo-to-video-room-tour.png",
+      "bytes": 129755
+    },
+    {
+      "viewport": "tablet",
+      "group": "05-blog",
+      "route": "/blog/architecture-prompt-basics",
+      "status": 200,
+      "file": "tablet/05-blog/05-blog-architecture-prompt-basics.png",
+      "bytes": 131650
+    },
+    {
+      "viewport": "tablet",
+      "group": "05-blog",
+      "route": "/blog/choosing-furniture-with-confidence",
+      "status": 200,
+      "file": "tablet/05-blog/06-blog-choosing-furniture-with-confidence.png",
+      "bytes": 126228
+    },
+    {
+      "viewport": "tablet",
+      "group": "05-blog",
+      "route": "/blog/garden-design-brief",
+      "status": 200,
+      "file": "tablet/05-blog/07-blog-garden-design-brief.png",
+      "bytes": 127676
+    },
+    {
+      "viewport": "tablet",
+      "group": "05-blog",
+      "route": "/blog/room-walkthrough-storytelling",
+      "status": 200,
+      "file": "tablet/05-blog/08-blog-room-walkthrough-storytelling.png",
+      "bytes": 130992
+    },
+    {
+      "viewport": "tablet",
+      "group": "05-blog",
+      "route": "/blog/comparing-ai-design-tools",
+      "status": 200,
+      "file": "tablet/05-blog/09-blog-comparing-ai-design-tools.png",
+      "bytes": 127872
+    },
+    {
+      "viewport": "tablet",
+      "group": "05-blog",
+      "route": "/blog/black-doors-without-regret",
+      "status": 200,
+      "file": "tablet/05-blog/10-blog-black-doors-without-regret.png",
+      "bytes": 126976
+    },
+    {
+      "viewport": "tablet",
+      "group": "06-compare",
+      "route": "/compare/housora-vs-reimaginehome",
+      "status": 200,
+      "file": "tablet/06-compare/01-compare-housora-vs-reimaginehome.png",
+      "bytes": 135289
+    },
+    {
+      "viewport": "tablet",
+      "group": "06-compare",
+      "route": "/compare/housora-vs-homedesigns",
+      "status": 200,
+      "file": "tablet/06-compare/02-compare-housora-vs-homedesigns.png",
+      "bytes": 135289
+    },
+    {
+      "viewport": "tablet",
+      "group": "06-compare",
+      "route": "/compare/housora-vs-mnml",
+      "status": 200,
+      "file": "tablet/06-compare/03-compare-housora-vs-mnml.png",
+      "bytes": 132605
+    },
+    {
+      "viewport": "tablet",
+      "group": "06-compare",
+      "route": "/compare/housora-vs-homestyler",
+      "status": 200,
+      "file": "tablet/06-compare/04-compare-housora-vs-homestyler.png",
+      "bytes": 134732
+    },
+    {
+      "viewport": "tablet",
+      "group": "06-compare",
+      "route": "/compare/housora-vs-planner5d",
+      "status": 200,
+      "file": "tablet/06-compare/05-compare-housora-vs-planner5d.png",
+      "bytes": 137817
+    },
+    {
+      "viewport": "tablet",
+      "group": "07-business-developers",
+      "route": "/enterprise",
+      "status": 200,
+      "file": "tablet/07-business-developers/01-enterprise.png",
+      "bytes": 139660
+    },
+    {
+      "viewport": "tablet",
+      "group": "07-business-developers",
+      "route": "/partnerships",
+      "status": 200,
+      "file": "tablet/07-business-developers/02-partnerships.png",
+      "bytes": 91516
+    },
+    {
+      "viewport": "tablet",
+      "group": "07-business-developers",
+      "route": "/case-studies",
+      "status": 200,
+      "file": "tablet/07-business-developers/03-case-studies.png",
+      "bytes": 91606
+    },
+    {
+      "viewport": "tablet",
+      "group": "07-business-developers",
+      "route": "/affiliates",
+      "status": 200,
+      "file": "tablet/07-business-developers/04-affiliates.png",
+      "bytes": 91822
+    },
+    {
+      "viewport": "tablet",
+      "group": "07-business-developers",
+      "route": "/api",
+      "status": 200,
+      "file": "tablet/07-business-developers/05-api.png",
+      "bytes": 90841
+    },
+    {
+      "viewport": "tablet",
+      "group": "07-business-developers",
+      "route": "/cli",
+      "status": 200,
+      "file": "tablet/07-business-developers/06-cli.png",
+      "bytes": 90225
+    },
+    {
+      "viewport": "tablet",
+      "group": "07-business-developers",
+      "route": "/mcp",
+      "status": 200,
+      "file": "tablet/07-business-developers/07-mcp.png",
+      "bytes": 91223
+    },
+    {
+      "viewport": "tablet",
+      "group": "08-legal",
+      "route": "/privacy",
+      "status": 200,
+      "file": "tablet/08-legal/01-privacy.png",
+      "bytes": 261076
+    },
+    {
+      "viewport": "tablet",
+      "group": "08-legal",
+      "route": "/terms",
+      "status": 200,
+      "file": "tablet/08-legal/02-terms.png",
+      "bytes": 269739
+    },
+    {
+      "viewport": "tablet",
+      "group": "08-legal",
+      "route": "/refund-policy",
+      "status": 200,
+      "file": "tablet/08-legal/03-refund-policy.png",
+      "bytes": 130639
+    },
+    {
+      "viewport": "tablet",
+      "group": "08-legal",
+      "route": "/cookies",
+      "status": 200,
+      "file": "tablet/08-legal/04-cookies.png",
+      "bytes": 154680
+    },
+    {
+      "viewport": "mobile",
+      "group": "01-core",
+      "route": "/",
+      "status": 200,
+      "file": "mobile/01-core/01-home.png",
+      "bytes": 363718
+    },
+    {
+      "viewport": "mobile",
+      "group": "01-core",
+      "route": "/create",
+      "status": 200,
+      "file": "mobile/01-core/02-create.png",
+      "bytes": 363718
+    },
+    {
+      "viewport": "mobile",
+      "group": "01-core",
+      "route": "/design",
+      "status": 200,
+      "file": "mobile/01-core/03-design.png",
+      "bytes": 140703
+    },
+    {
+      "viewport": "mobile",
+      "group": "01-core",
+      "route": "/workspace",
+      "status": 200,
+      "file": "mobile/01-core/04-workspace.png",
+      "bytes": 141035
+    },
+    {
+      "viewport": "mobile",
+      "group": "01-core",
+      "route": "/app",
+      "status": 200,
+      "file": "mobile/01-core/05-app.png",
+      "bytes": 126328
+    },
+    {
+      "viewport": "mobile",
+      "group": "01-core",
+      "route": "/app/home",
+      "status": 200,
+      "file": "mobile/01-core/06-app-home.png",
+      "bytes": 126328
+    },
+    {
+      "viewport": "mobile",
+      "group": "01-core",
+      "route": "/reference-style",
+      "status": 200,
+      "file": "mobile/01-core/07-reference-style.png",
+      "bytes": 108058
+    },
+    {
+      "viewport": "mobile",
+      "group": "01-core",
+      "route": "/pricing",
+      "status": 200,
+      "file": "mobile/01-core/08-pricing.png",
+      "bytes": 162680
+    },
+    {
+      "viewport": "mobile",
+      "group": "01-core",
+      "route": "/subscription",
+      "status": 200,
+      "file": "mobile/01-core/09-subscription.png",
+      "bytes": 162680
+    },
+    {
+      "viewport": "mobile",
+      "group": "02-ai-tools",
+      "route": "/interior-design",
+      "status": 200,
+      "file": "mobile/02-ai-tools/01-interior-design.png",
+      "bytes": 195639
+    },
+    {
+      "viewport": "mobile",
+      "group": "02-ai-tools",
+      "route": "/layout-boost",
+      "status": 200,
+      "file": "mobile/02-ai-tools/02-layout-boost.png",
+      "bytes": 205027
+    },
+    {
+      "viewport": "mobile",
+      "group": "02-ai-tools",
+      "route": "/exterior-design",
+      "status": 200,
+      "file": "mobile/02-ai-tools/03-exterior-design.png",
+      "bytes": 208564
+    },
+    {
+      "viewport": "mobile",
+      "group": "02-ai-tools",
+      "route": "/garden-design",
+      "status": 200,
+      "file": "mobile/02-ai-tools/04-garden-design.png",
+      "bytes": 204993
+    },
+    {
+      "viewport": "mobile",
+      "group": "02-ai-tools",
+      "route": "/floor-restyle",
+      "status": 200,
+      "file": "mobile/02-ai-tools/05-floor-restyle.png",
+      "bytes": 201496
+    },
+    {
+      "viewport": "mobile",
+      "group": "02-ai-tools",
+      "route": "/wall-texture",
+      "status": 200,
+      "file": "mobile/02-ai-tools/06-wall-texture.png",
+      "bytes": 199076
+    },
+    {
+      "viewport": "mobile",
+      "group": "02-ai-tools",
+      "route": "/video-walkthrough",
+      "status": 200,
+      "file": "mobile/02-ai-tools/07-video-walkthrough.png",
+      "bytes": 204927
+    },
+    {
+      "viewport": "mobile",
+      "group": "02-ai-tools",
+      "route": "/floorplan-to-3d",
+      "status": 200,
+      "file": "mobile/02-ai-tools/08-floorplan-to-3d.png",
+      "bytes": 200779
+    },
+    {
+      "viewport": "mobile",
+      "group": "02-ai-tools",
+      "route": "/photo-to-render",
+      "status": 200,
+      "file": "mobile/02-ai-tools/09-photo-to-render.png",
+      "bytes": 199655
+    },
+    {
+      "viewport": "mobile",
+      "group": "02-ai-tools",
+      "route": "/ai-stairs-design",
+      "status": 200,
+      "file": "mobile/02-ai-tools/10-ai-stairs-design.png",
+      "bytes": 200030
+    },
+    {
+      "viewport": "mobile",
+      "group": "02-ai-tools",
+      "route": "/ai-doors-design",
+      "status": 200,
+      "file": "mobile/02-ai-tools/11-ai-doors-design.png",
+      "bytes": 209928
+    },
+    {
+      "viewport": "mobile",
+      "group": "02-ai-tools",
+      "route": "/ai-windows-design",
+      "status": 200,
+      "file": "mobile/02-ai-tools/12-ai-windows-design.png",
+      "bytes": 211079
+    },
+    {
+      "viewport": "mobile",
+      "group": "02-ai-tools",
+      "route": "/ai-kitchen-design",
+      "status": 200,
+      "file": "mobile/02-ai-tools/13-ai-kitchen-design.png",
+      "bytes": 217691
+    },
+    {
+      "viewport": "mobile",
+      "group": "02-ai-tools",
+      "route": "/ai-bathroom-design",
+      "status": 200,
+      "file": "mobile/02-ai-tools/14-ai-bathroom-design.png",
+      "bytes": 205304
+    },
+    {
+      "viewport": "mobile",
+      "group": "03-account",
+      "route": "/sign-in",
+      "status": 200,
+      "file": "mobile/03-account/01-sign-in.png",
+      "bytes": 87595
+    },
+    {
+      "viewport": "mobile",
+      "group": "03-account",
+      "route": "/sign-up",
+      "status": 200,
+      "file": "mobile/03-account/02-sign-up.png",
+      "bytes": 90532
+    },
+    {
+      "viewport": "mobile",
+      "group": "03-account",
+      "route": "/delete-account",
+      "status": 200,
+      "file": "mobile/03-account/03-delete-account.png",
+      "bytes": 77080
+    },
+    {
+      "viewport": "mobile",
+      "group": "03-account",
+      "route": "/projects",
+      "status": 200,
+      "file": "mobile/03-account/04-projects.png",
+      "bytes": 78763
+    },
+    {
+      "viewport": "mobile",
+      "group": "03-account",
+      "route": "/inspirations",
+      "status": 200,
+      "file": "mobile/03-account/05-inspirations.png",
+      "bytes": 75533
+    },
+    {
+      "viewport": "mobile",
+      "group": "03-account",
+      "route": "/referral",
+      "status": 200,
+      "file": "mobile/03-account/06-referral.png",
+      "bytes": 75952
+    },
+    {
+      "viewport": "mobile",
+      "group": "04-discover",
+      "route": "/examples",
+      "status": 200,
+      "file": "mobile/04-discover/01-examples.png",
+      "bytes": 233717
+    },
+    {
+      "viewport": "mobile",
+      "group": "04-discover",
+      "route": "/faq",
+      "status": 200,
+      "file": "mobile/04-discover/02-faq.png",
+      "bytes": 106145
+    },
+    {
+      "viewport": "mobile",
+      "group": "04-discover",
+      "route": "/contact",
+      "status": 200,
+      "file": "mobile/04-discover/03-contact.png",
+      "bytes": 114065
+    },
+    {
+      "viewport": "mobile",
+      "group": "04-discover",
+      "route": "/ai-interior-design-prompts",
+      "status": 200,
+      "file": "mobile/04-discover/04-ai-interior-design-prompts.png",
+      "bytes": 76687
+    },
+    {
+      "viewport": "mobile",
+      "group": "04-discover",
+      "route": "/furniture-fit-calculator",
+      "status": 200,
+      "file": "mobile/04-discover/05-furniture-fit-calculator.png",
+      "bytes": 75372
+    },
+    {
+      "viewport": "mobile",
+      "group": "04-discover",
+      "route": "/answers",
+      "status": 200,
+      "file": "mobile/04-discover/06-answers.png",
+      "bytes": 76327
+    },
+    {
+      "viewport": "mobile",
+      "group": "05-blog",
+      "route": "/blog",
+      "status": 200,
+      "file": "mobile/05-blog/01-blog.png",
+      "bytes": 195750
+    },
+    {
+      "viewport": "mobile",
+      "group": "05-blog",
+      "route": "/blog/exterior-colour-palettes",
+      "status": 200,
+      "file": "mobile/05-blog/02-blog-exterior-colour-palettes.png",
+      "bytes": 132987
+    },
+    {
+      "viewport": "mobile",
+      "group": "05-blog",
+      "route": "/blog/planning-a-room-redesign",
+      "status": 200,
+      "file": "mobile/05-blog/03-blog-planning-a-room-redesign.png",
+      "bytes": 126904
+    },
+    {
+      "viewport": "mobile",
+      "group": "05-blog",
+      "route": "/blog/photo-to-video-room-tour",
+      "status": 200,
+      "file": "mobile/05-blog/04-blog-photo-to-video-room-tour.png",
+      "bytes": 125444
+    },
+    {
+      "viewport": "mobile",
+      "group": "05-blog",
+      "route": "/blog/architecture-prompt-basics",
+      "status": 200,
+      "file": "mobile/05-blog/05-blog-architecture-prompt-basics.png",
+      "bytes": 128090
+    },
+    {
+      "viewport": "mobile",
+      "group": "05-blog",
+      "route": "/blog/choosing-furniture-with-confidence",
+      "status": 200,
+      "file": "mobile/05-blog/06-blog-choosing-furniture-with-confidence.png",
+      "bytes": 121737
+    },
+    {
+      "viewport": "mobile",
+      "group": "05-blog",
+      "route": "/blog/garden-design-brief",
+      "status": 200,
+      "file": "mobile/05-blog/07-blog-garden-design-brief.png",
+      "bytes": 123492
+    },
+    {
+      "viewport": "mobile",
+      "group": "05-blog",
+      "route": "/blog/room-walkthrough-storytelling",
+      "status": 200,
+      "file": "mobile/05-blog/08-blog-room-walkthrough-storytelling.png",
+      "bytes": 126226
+    },
+    {
+      "viewport": "mobile",
+      "group": "05-blog",
+      "route": "/blog/comparing-ai-design-tools",
+      "status": 200,
+      "file": "mobile/05-blog/09-blog-comparing-ai-design-tools.png",
+      "bytes": 125299
+    },
+    {
+      "viewport": "mobile",
+      "group": "05-blog",
+      "route": "/blog/black-doors-without-regret",
+      "status": 200,
+      "file": "mobile/05-blog/10-blog-black-doors-without-regret.png",
+      "bytes": 122190
+    },
+    {
+      "viewport": "mobile",
+      "group": "06-compare",
+      "route": "/compare/housora-vs-reimaginehome",
+      "status": 200,
+      "file": "mobile/06-compare/01-compare-housora-vs-reimaginehome.png",
+      "bytes": 129116
+    },
+    {
+      "viewport": "mobile",
+      "group": "06-compare",
+      "route": "/compare/housora-vs-homedesigns",
+      "status": 200,
+      "file": "mobile/06-compare/02-compare-housora-vs-homedesigns.png",
+      "bytes": 129116
+    },
+    {
+      "viewport": "mobile",
+      "group": "06-compare",
+      "route": "/compare/housora-vs-mnml",
+      "status": 200,
+      "file": "mobile/06-compare/03-compare-housora-vs-mnml.png",
+      "bytes": 124278
+    },
+    {
+      "viewport": "mobile",
+      "group": "06-compare",
+      "route": "/compare/housora-vs-homestyler",
+      "status": 200,
+      "file": "mobile/06-compare/04-compare-housora-vs-homestyler.png",
+      "bytes": 128732
+    },
+    {
+      "viewport": "mobile",
+      "group": "06-compare",
+      "route": "/compare/housora-vs-planner5d",
+      "status": 200,
+      "file": "mobile/06-compare/05-compare-housora-vs-planner5d.png",
+      "bytes": 130998
+    },
+    {
+      "viewport": "mobile",
+      "group": "07-business-developers",
+      "route": "/enterprise",
+      "status": 200,
+      "file": "mobile/07-business-developers/01-enterprise.png",
+      "bytes": 115779
+    },
+    {
+      "viewport": "mobile",
+      "group": "07-business-developers",
+      "route": "/partnerships",
+      "status": 200,
+      "file": "mobile/07-business-developers/02-partnerships.png",
+      "bytes": 75908
+    },
+    {
+      "viewport": "mobile",
+      "group": "07-business-developers",
+      "route": "/case-studies",
+      "status": 200,
+      "file": "mobile/07-business-developers/03-case-studies.png",
+      "bytes": 75055
+    },
+    {
+      "viewport": "mobile",
+      "group": "07-business-developers",
+      "route": "/affiliates",
+      "status": 200,
+      "file": "mobile/07-business-developers/04-affiliates.png",
+      "bytes": 75431
+    },
+    {
+      "viewport": "mobile",
+      "group": "07-business-developers",
+      "route": "/api",
+      "status": 200,
+      "file": "mobile/07-business-developers/05-api.png",
+      "bytes": 75406
+    },
+    {
+      "viewport": "mobile",
+      "group": "07-business-developers",
+      "route": "/cli",
+      "status": 200,
+      "file": "mobile/07-business-developers/06-cli.png",
+      "bytes": 74774
+    },
+    {
+      "viewport": "mobile",
+      "group": "07-business-developers",
+      "route": "/mcp",
+      "status": 200,
+      "file": "mobile/07-business-developers/07-mcp.png",
+      "bytes": 74941
+    },
+    {
+      "viewport": "mobile",
+      "group": "08-legal",
+      "route": "/privacy",
+      "status": 200,
+      "file": "mobile/08-legal/01-privacy.png",
+      "bytes": 202745
+    },
+    {
+      "viewport": "mobile",
+      "group": "08-legal",
+      "route": "/terms",
+      "status": 200,
+      "file": "mobile/08-legal/02-terms.png",
+      "bytes": 203818
+    },
+    {
+      "viewport": "mobile",
+      "group": "08-legal",
+      "route": "/refund-policy",
+      "status": 200,
+      "file": "mobile/08-legal/03-refund-policy.png",
+      "bytes": 99947
+    },
+    {
+      "viewport": "mobile",
+      "group": "08-legal",
+      "route": "/cookies",
+      "status": 200,
+      "file": "mobile/08-legal/04-cookies.png",
+      "bytes": 120306
+    }
+  ],
+  "states": [
+    {
+      "viewport": "desktop",
+      "slug": "cookie-consent",
+      "note": "First-visit cookie consent choices",
+      "file": "desktop/00-flows/01-cookie-consent.png"
+    },
+    {
+      "viewport": "desktop",
+      "slug": "navigation-open",
+      "note": "Responsive navigation/sidebar opened",
+      "file": "desktop/00-flows/02-navigation-open.png"
+    },
+    {
+      "viewport": "desktop",
+      "slug": "create-upload-preview",
+      "note": "Create flow after selecting a room image",
+      "file": "desktop/00-flows/03-create-upload-preview.png"
+    },
+    {
+      "viewport": "desktop",
+      "slug": "create-configurator-start",
+      "note": "Room configurator: upload, room, style, budget",
+      "file": "desktop/00-flows/04-create-configurator-start.png"
+    },
+    {
+      "viewport": "desktop",
+      "slug": "create-configurator-complete",
+      "note": "Configurator with photo and design choices selected",
+      "file": "desktop/00-flows/05-create-configurator-complete.png"
+    },
+    {
+      "viewport": "desktop",
+      "slug": "workspace-selections",
+      "note": "Workspace after room, style, palette, and budget selection",
+      "file": "desktop/00-flows/06-workspace-selections.png"
+    },
+    {
+      "viewport": "desktop",
+      "slug": "reference-images-selected",
+      "note": "Reference style flow after image selection",
+      "file": "desktop/00-flows/07-reference-images-selected.png"
+    },
+    {
+      "viewport": "desktop",
+      "slug": "pricing-yearly",
+      "note": "Pricing switched to yearly billing",
+      "file": "desktop/00-flows/08-pricing-yearly.png"
+    },
+    {
+      "viewport": "desktop",
+      "slug": "faq-expanded",
+      "note": "FAQ with an answer expanded",
+      "file": "desktop/00-flows/09-faq-expanded.png"
+    },
+    {
+      "viewport": "desktop",
+      "slug": "sign-in-email-entered",
+      "note": "Sign-in flow before external authentication",
+      "file": "desktop/00-flows/10-sign-in-email-entered.png"
+    },
+    {
+      "viewport": "tablet",
+      "slug": "cookie-consent",
+      "note": "First-visit cookie consent choices",
+      "file": "tablet/00-flows/01-cookie-consent.png"
+    },
+    {
+      "viewport": "tablet",
+      "slug": "navigation-open",
+      "note": "Responsive navigation/sidebar opened",
+      "file": "tablet/00-flows/02-navigation-open.png"
+    },
+    {
+      "viewport": "tablet",
+      "slug": "create-upload-preview",
+      "note": "Create flow after selecting a room image",
+      "file": "tablet/00-flows/03-create-upload-preview.png"
+    },
+    {
+      "viewport": "tablet",
+      "slug": "create-configurator-start",
+      "note": "Room configurator: upload, room, style, budget",
+      "file": "tablet/00-flows/04-create-configurator-start.png"
+    },
+    {
+      "viewport": "tablet",
+      "slug": "create-configurator-complete",
+      "note": "Configurator with photo and design choices selected",
+      "file": "tablet/00-flows/05-create-configurator-complete.png"
+    },
+    {
+      "viewport": "tablet",
+      "slug": "workspace-selections",
+      "note": "Workspace after room, style, palette, and budget selection",
+      "file": "tablet/00-flows/06-workspace-selections.png"
+    },
+    {
+      "viewport": "tablet",
+      "slug": "reference-images-selected",
+      "note": "Reference style flow after image selection",
+      "file": "tablet/00-flows/07-reference-images-selected.png"
+    },
+    {
+      "viewport": "tablet",
+      "slug": "pricing-yearly",
+      "note": "Pricing switched to yearly billing",
+      "file": "tablet/00-flows/08-pricing-yearly.png"
+    },
+    {
+      "viewport": "tablet",
+      "slug": "faq-expanded",
+      "note": "FAQ with an answer expanded",
+      "file": "tablet/00-flows/09-faq-expanded.png"
+    },
+    {
+      "viewport": "tablet",
+      "slug": "sign-in-email-entered",
+      "note": "Sign-in flow before external authentication",
+      "file": "tablet/00-flows/10-sign-in-email-entered.png"
+    },
+    {
+      "viewport": "mobile",
+      "slug": "cookie-consent",
+      "note": "First-visit cookie consent choices",
+      "file": "mobile/00-flows/01-cookie-consent.png"
+    },
+    {
+      "viewport": "mobile",
+      "slug": "navigation-open",
+      "note": "Responsive navigation/sidebar opened",
+      "file": "mobile/00-flows/02-navigation-open.png"
+    },
+    {
+      "viewport": "mobile",
+      "slug": "create-upload-preview",
+      "note": "Create flow after selecting a room image",
+      "file": "mobile/00-flows/03-create-upload-preview.png"
+    },
+    {
+      "viewport": "mobile",
+      "slug": "create-configurator-start",
+      "note": "Room configurator: upload, room, style, budget",
+      "file": "mobile/00-flows/04-create-configurator-start.png"
+    },
+    {
+      "viewport": "mobile",
+      "slug": "create-configurator-complete",
+      "note": "Configurator with photo and design choices selected",
+      "file": "mobile/00-flows/05-create-configurator-complete.png"
+    },
+    {
+      "viewport": "mobile",
+      "slug": "workspace-selections",
+      "note": "Workspace after room, style, palette, and budget selection",
+      "file": "mobile/00-flows/06-workspace-selections.png"
+    },
+    {
+      "viewport": "mobile",
+      "slug": "reference-images-selected",
+      "note": "Reference style flow after image selection",
+      "file": "mobile/00-flows/07-reference-images-selected.png"
+    },
+    {
+      "viewport": "mobile",
+      "slug": "pricing-yearly",
+      "note": "Pricing switched to yearly billing",
+      "file": "mobile/00-flows/08-pricing-yearly.png"
+    },
+    {
+      "viewport": "mobile",
+      "slug": "faq-expanded",
+      "note": "FAQ with an answer expanded",
+      "file": "mobile/00-flows/09-faq-expanded.png"
+    },
+    {
+      "viewport": "mobile",
+      "slug": "sign-in-email-entered",
+      "note": "Sign-in flow before external authentication",
+      "file": "mobile/00-flows/10-sign-in-email-entered.png"
+    }
+  ],
+  "failures": []
+}

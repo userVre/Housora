@@ -38,7 +38,7 @@ fun HTML.floorplanTo3DPage() {
         problemHeading = "2D Floorplans Are Hard for Clients to Interpret",
         problemDescription = "A flat blueprint doesn't sell the vision. Clients struggle to imagine a 3D space from a 2D drawing, leading to slow approvals and missed opportunities.",
         problemCards = listOf(Triple("home", "Homeowners", "You have a floorplan from the architect but cannot picture what the finished space will actually look like. Visualizing from lines on paper is nearly impossible."), Triple("building", "Real Estate Agents", "A 2D floorplan in a listing gets skipped. A photorealistic 3D render gets saved, shared, and generates inquiries."), Triple("users", "Architects & Designers", "Clients need to see the finished result before approving a build. Converting floorplans to 3D renders closes deals faster.")),
-        solutionText = "Upload any 2D floor plan - hand-drawn sketches, PDF plans, or blueprint images - and Housora AI converts it to a furnished, photorealistic 3D render in seconds.",
+        solutionText = "Upload a 2D floor plan, sketch, PDF plan, or blueprint image to explore a furnished 3D design concept. Verify dimensions and construction details against the source plan.",
         statsLabel = "A growing toolkit for clearer design decisions",
 
         stats = emptyList(),

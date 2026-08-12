@@ -1,8 +1,9 @@
 const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
+const { siteOrigin } = require('./scripts/test-config');
 
-const BASE = process.env.SITE_URL || 'http://127.0.0.1:8082';
+const BASE = siteOrigin();
 const ROOT = path.join(__dirname, 'website-screenshots-complete');
 const SAMPLE = path.join(__dirname, 'inspiration', "Capture d'écran 2026-07-19 231335.png");
 
