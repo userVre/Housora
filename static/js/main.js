@@ -2,6 +2,7 @@
 (function() {
     var analytics = window.HousoraAnalytics = window.HousoraAnalytics || {};
     var initialized = false;
+    var pageviewCaptured = false;
     var identifiedUserId = null;
     var CONSENT_KEY = 'housora-consent-v2';
     var CONSENT_VERSION = 2;
@@ -55,7 +56,10 @@
         }
         try {
             window.posthog.opt_in_capturing();
-            window.posthog.capture('$pageview', { $current_url: window.location.origin + window.location.pathname });
+            if (!pageviewCaptured) {
+                pageviewCaptured = true;
+                window.posthog.capture('$pageview', { $current_url: window.location.origin + window.location.pathname });
+            }
         } catch (_) {}
         if (window.Clerk && window.Clerk.user) analytics.identify(window.Clerk.user);
     };
@@ -275,10 +279,12 @@ async function generateImage(prompt, file) {
             reader.onerror = function() { reject(new Error('Could not prepare the generated image.')); };
             reader.readAsDataURL(blob);
         });
-        window.HousoraAnalytics.track('generation_succeeded', { duration_ms: Date.now() - startedAt });
+        var elapsed = Date.now() - startedAt;
+        window.HousoraAnalytics.track('generation_succeeded', { duration_bucket: elapsed < 10000 ? 'under_10s' : elapsed < 30000 ? '10_to_30s' : elapsed < 60000 ? '30_to_60s' : 'over_60s' });
         return resultUrl;
     } catch (error) {
-        window.HousoraAnalytics.track('generation_failed', { duration_ms: Date.now() - startedAt, error_code: error && error.message ? String(error.message).slice(0, 80) : 'unknown' });
+        var elapsed = Date.now() - startedAt;
+        window.HousoraAnalytics.track('generation_failed', { duration_bucket: elapsed < 10000 ? 'under_10s' : elapsed < 30000 ? '10_to_30s' : elapsed < 60000 ? '30_to_60s' : 'over_60s' });
         throw error;
     }
 }
@@ -1523,6 +1529,22 @@ function initWhopCheckout() {
         btn.addEventListener('click', async function(e) {
             e.preventDefault();
             var self = this;
+            var termsAccepted = document.getElementById('checkout-terms-accepted');
+            var immediatePerformance = document.getElementById('checkout-immediate-performance');
+            var legalError = document.getElementById('checkout-legal-error');
+            if (!termsAccepted || !immediatePerformance || !termsAccepted.checked || !immediatePerformance.checked) {
+                if (legalError) {
+                    legalError.textContent = 'Please accept both checkout acknowledgements before continuing.';
+                    legalError.hidden = false;
+                }
+                var firstUnchecked = !termsAccepted || !termsAccepted.checked ? termsAccepted : immediatePerformance;
+                if (firstUnchecked && typeof firstUnchecked.focus === 'function') firstUnchecked.focus();
+                return;
+            }
+            if (legalError) {
+                legalError.textContent = '';
+                legalError.hidden = true;
+            }
             var monthlyPlan = self.getAttribute('data-plan-monthly');
             var yearlyPlan = self.getAttribute('data-plan-yearly');
             var isYearly = document.getElementById('yearlyBtn') && document.getElementById('yearlyBtn').classList.contains('active');
@@ -1565,12 +1587,19 @@ function initWhopCheckout() {
                         'Authorization': 'Bearer ' + sessionToken,
                         'X-Housora-Analytics-Consent': window.HousoraAnalytics.consentHeader()
                     },
-                    body: 'planId=' + encodeURIComponent(planId)
+                    body: new URLSearchParams({
+                        planId: planId,
+                        termsAccepted: 'true',
+                        immediatePerformanceRequested: 'true',
+                        legalVersion: '2026-08-13'
+                    }).toString()
                 });
                 var data = await res.json();
                 if (data.error) {
-                    window.HousoraAnalytics.track('checkout_failed', { error_code: String(data.error).slice(0, 80) });
-                    showCheckoutError(data.error);
+                    var checkoutErrorCode = data.error.code || 'checkout_failed';
+                    var checkoutErrorMessage = data.error.message || (typeof data.error === 'string' ? data.error : 'Checkout could not be started.');
+                    window.HousoraAnalytics.track('checkout_failed', { error_code: String(checkoutErrorCode).slice(0, 80) });
+                    showCheckoutError(checkoutErrorMessage);
                     self.textContent = originalText;
                     self.style.opacity = '1';
                     self.style.pointerEvents = '';

@@ -48,6 +48,7 @@ fun HTML.signInPage() {
                         input(type = InputType.email, classes = "auth-email-input") {
                             attributes["id"] = "clerk-email-input"
                             attributes["placeholder"] = "you@example.com"
+                            attributes["aria-label"] = "Email address"
                             attributes["data-i18n-placeholder"] = "auth.email_placeholder"
                             attributes["required"] = "required"
                             attributes["autocomplete"] = "email"
@@ -64,8 +65,7 @@ fun HTML.signInPage() {
 
                     p("auth-safe-notice") {
                         attributes["data-i18n"] = "auth.data_safe"
-                        i("lucide") { attributes["data-lucide"] = "lock"; attributes["style"] = "width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:4px;" }
-                        +"Your data is safe, secure and fully private."
+                        +"We use security controls to protect your account and private uploads."
                     }
                 }
                 div("auth-right") {
@@ -98,11 +98,11 @@ fun HTML.signInPage() {
                         }
                         div("auth-review") {
                             div("auth-review-stars") {
-                                span("star") { +"â˜…" }
-                                span("star") { +"â˜…" }
-                                span("star") { +"â˜…" }
-                                span("star") { +"â˜…" }
-                                span("star") { +"â˜…" }
+                                span("star") { +"★" }
+                                span("star") { +"★" }
+                                span("star") { +"★" }
+                                span("star") { +"★" }
+                                span("star") { +"★" }
                                 span("auth-review-count") { +" Product preview" }
                             }
                             p("auth-review-text") { +"Explore a visual direction from your own room photo." }
@@ -113,7 +113,7 @@ fun HTML.signInPage() {
             }
         }
 
-        // Auth-specific script â€” Clerk SDK is already loaded by baseLayout.
+        // Auth-specific script — Clerk SDK is already loaded by baseLayout.
         // Listen for the clerk:ready event dispatched by Layout.kt.
         script {
             unsafe {

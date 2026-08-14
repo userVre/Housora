@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-11T17:47:42.273Z",
+  "generatedAt": "2026-08-13T18:50:44.273Z",
   "publicSiteUrl": "https://housora.app",
   "routes": [
     {
@@ -851,19 +851,19 @@
       "status": 200,
       "canonical": "https://housora.app/refund-policy",
       "indexability": "noindex",
-      "title": "Refund Policy | Housora",
+      "title": "Refund &amp; Withdrawal Policy | Housora",
       "description": "Housora",
       "h1Count": 1,
       "lang": "en",
       "structuredData": [],
       "og": {
         "url": "https://housora.app/refund-policy",
-        "title": "Refund Policy | Housora",
+        "title": "Refund &amp; Withdrawal Policy | Housora",
         "description": "Housora",
         "image": "https://housora.app/og-image.png"
       },
       "twitter": {
-        "title": "Refund Policy | Housora",
+        "title": "Refund &amp; Withdrawal Policy | Housora",
         "description": "Housora",
         "image": "https://housora.app/og-image.png"
       },
@@ -874,19 +874,19 @@
       "status": 200,
       "canonical": "https://housora.app/cookies",
       "indexability": "noindex",
-      "title": "Cookie Policy | Housora",
+      "title": "Cookie &amp; Storage Policy | Housora",
       "description": "Housora",
       "h1Count": 1,
       "lang": "en",
       "structuredData": [],
       "og": {
         "url": "https://housora.app/cookies",
-        "title": "Cookie Policy | Housora",
+        "title": "Cookie &amp; Storage Policy | Housora",
         "description": "Housora",
         "image": "https://housora.app/og-image.png"
       },
       "twitter": {
-        "title": "Cookie Policy | Housora",
+        "title": "Cookie &amp; Storage Policy | Housora",
         "description": "Housora",
         "image": "https://housora.app/og-image.png"
       },

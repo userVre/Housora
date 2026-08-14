@@ -11,7 +11,8 @@ const {
 } = require('./asset-lib');
 
 const CLERK_VERSION = '6.25.7';
-const POSTHOG_VERSION = '1.407.3';
+const POSTHOG_VERSION = '1.416.0';
+const CONVEX_VERSION = '1.43.0';
 const TOOL_KEYS = [
   'bathroom-design', 'doors-design', 'exterior-design', 'floor-restyle',
   'floorplan-to-3d', 'garden-design', 'interior-design', 'kitchen-design',
@@ -57,16 +58,20 @@ function stripSourceMapComment(source) {
 }
 
 function buildVendorAssets() {
-  const clerkRoot = assertVersion('@clerk/clerk-js', CLERK_VERSION);
-  const clerkDist = path.join(clerkRoot, 'dist');
   const clerkOutput = path.join(STATIC_DIR, 'vendor', 'clerk-js');
-  fs.rmSync(clerkOutput, { recursive: true, force: true });
-  const clerkFiles = fs.readdirSync(clerkDist).filter(file =>
+  if (!fs.existsSync(clerkOutput)) {
+    throw new Error(`The vendored Clerk ${CLERK_VERSION} browser bundle is missing.`);
+  }
+  const clerkFiles = fs.readdirSync(clerkOutput).filter(file =>
     file === 'clerk.browser.js' || /_clerk\.browser_[a-f0-9]+_6\.25\.7\.js$/.test(file)
   );
-  if (!clerkFiles.includes('clerk.browser.js')) throw new Error('The pinned Clerk browser entrypoint is missing.');
-  for (const file of clerkFiles) copy(path.join(clerkDist, file), path.join(clerkOutput, file));
-  copy(path.join(clerkRoot, 'LICENSE'), path.join(clerkOutput, 'LICENSE.txt'));
+  const clerkEntry = path.join(clerkOutput, 'clerk.browser.js');
+  if (!clerkFiles.includes('clerk.browser.js') || !fs.readFileSync(clerkEntry, 'utf8').includes(CLERK_VERSION)) {
+    throw new Error(`The pinned Clerk browser entrypoint must be version ${CLERK_VERSION}.`);
+  }
+  if (!fs.existsSync(path.join(clerkOutput, 'LICENSE.txt'))) {
+    throw new Error('The vendored Clerk browser license is missing.');
+  }
 
   // Clerk 6 includes its component UI in clerk.browser.js. The Kotlin layout
   // still loads this historical path first, so keep an explicit no-op shim
@@ -85,9 +90,19 @@ function buildVendorAssets() {
   write(path.join(posthogOutput, 'posthog.js'), stripSourceMapComment(posthogSource));
   copy(path.join(posthogRoot, 'LICENSE'), path.join(posthogOutput, 'LICENSE.txt'));
 
+  const convexRoot = assertVersion('convex', CONVEX_VERSION);
+  const convexOutput = path.join(STATIC_DIR, 'vendor', 'convex');
+  fs.rmSync(convexOutput, { recursive: true, force: true });
+  write(
+    path.join(convexOutput, 'browser.js'),
+    stripSourceMapComment(fs.readFileSync(path.join(convexRoot, 'dist', 'browser.bundle.js'), 'utf8'))
+  );
+  copy(path.join(convexRoot, 'LICENSE'), path.join(convexOutput, 'LICENSE.txt'));
+
   return {
-    clerk: { version: CLERK_VERSION, files: clerkFiles.length + 2 },
-    posthog: { version: POSTHOG_VERSION, files: 2, entrypoint: 'posthog-js/dist/array.js' }
+    clerk: { version: CLERK_VERSION, files: clerkFiles.length + 2, source: 'vendored' },
+    posthog: { version: POSTHOG_VERSION, files: 2, entrypoint: 'posthog-js/dist/array.js' },
+    convex: { version: CONVEX_VERSION, files: 2, entrypoint: 'convex/dist/browser.bundle.js' }
   };
 }
 

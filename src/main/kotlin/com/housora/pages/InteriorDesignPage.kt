@@ -10,7 +10,7 @@ import com.housora.templates.*
  */
 fun HTML.interiorDesignPage() {
     toolPage(ToolPageConfig(
-        pageTitle = "AI Interior Design - Transform Any Room Instantly | Housora",
+        pageTitle = "AI Interior Design From Your Own Photo | Housora",
         badge = "AI Interior Design Tool",
         heroAction = "Redesign",
         heroElement = "Bedroom",

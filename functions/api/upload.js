@@ -17,6 +17,12 @@ const MAX_FILE_BYTES = 8 * 1024 * 1024;
 const MAX_MULTIPART_OVERHEAD = 256 * 1024;
 const IMAGE_LIMITS = { maxBytes: MAX_FILE_BYTES, maxDimension: 8192, maxPixels: 32_000_000 };
 
+function fileSizeBucket(bytes) {
+  if (bytes < 1024 * 1024) return 'under_1mb';
+  if (bytes < 4 * 1024 * 1024) return '1_to_4mb';
+  return '4_to_8mb';
+}
+
 function quotaConfig(env) {
   const maxBytes = Number(env.UPLOAD_QUOTA_BYTES || 500 * 1024 * 1024);
   const maxFiles = Number(env.UPLOAD_QUOTA_FILES || 100);
@@ -97,7 +103,7 @@ export async function onRequestPost({ request, env }) {
     }
     await coordinatorJson(env.SECURITY_COORDINATOR, `upload:${ownerHash}`, '/upload/commit', { assetId });
     posthog = createPostHogClient(env, request);
-    if (posthog) posthog.capture({ distinctId: auth.userId, event: 'file uploaded', properties: { file_type: image.type, file_size: upload.bytes.byteLength } });
+    if (posthog) posthog.capture({ distinctId: auth.userId, event: 'file uploaded', properties: { file_type: image.type, file_size_bucket: fileSizeBucket(upload.bytes.byteLength) } });
     return jsonResponse(request, env, {
       assetId,
       storageId: assetId,
@@ -105,7 +111,6 @@ export async function onRequestPost({ request, env }) {
       url: `${new URL(request.url).origin}/api/assets/${encodeURIComponent(assetId)}`,
     }, { status: 201, methods: 'POST, OPTIONS' });
   } catch (error) {
-    if (posthog && auth) posthog.captureException(error, auth.userId);
     return errorResponse(request, env, error);
   } finally {
     if (posthog) {

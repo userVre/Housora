@@ -15,6 +15,7 @@ const VALID_PLAN_IDS = new Set([
   'plan_dgZnX4Ls8lhY8', 'plan_8unBaQsEW9mCk',
   'plan_lzM8trcdX71ha', 'plan_80drB7FPmQiKB',
 ]);
+const CURRENT_LEGAL_VERSION = '2026-08-13';
 
 function checkoutOrigin(env) {
   const allowlist = String(env.CHECKOUT_REDIRECT_ORIGINS || '').split(',').map((value) => value.trim()).filter(Boolean);
@@ -36,13 +37,19 @@ function checkoutOrigin(env) {
   return website.origin;
 }
 
-async function readPlanId(request) {
+async function readCheckoutIntent(request) {
   const type = (request.headers.get('Content-Type') || '').split(';', 1)[0].trim().toLowerCase();
   if (type !== 'application/x-www-form-urlencoded') {
     throw new HttpError(415, 'unsupported_content_type', 'Content-Type must be application/x-www-form-urlencoded.');
   }
   const bytes = await readBodyBytes(request, 4 * 1024);
-  return new URLSearchParams(new TextDecoder().decode(bytes)).get('planId')?.trim() || '';
+  const form = new URLSearchParams(new TextDecoder().decode(bytes));
+  return {
+    planId: form.get('planId')?.trim() || '',
+    termsAccepted: form.get('termsAccepted') === 'true',
+    immediatePerformanceRequested: form.get('immediatePerformanceRequested') === 'true',
+    legalVersion: form.get('legalVersion')?.trim() || '',
+  };
 }
 
 export async function onRequestPost({ request, env }) {
@@ -52,8 +59,12 @@ export async function onRequestPost({ request, env }) {
     assertCors(request, env);
     const auth = await requireClerkAuth(request, env);
     userId = auth.userId;
-    const planId = await readPlanId(request);
+    const intent = await readCheckoutIntent(request);
+    const { planId } = intent;
     if (!VALID_PLAN_IDS.has(planId)) throw new HttpError(400, 'invalid_plan', 'The selected plan is invalid.');
+    if (!intent.termsAccepted || !intent.immediatePerformanceRequested || intent.legalVersion !== CURRENT_LEGAL_VERSION) {
+      throw new HttpError(400, 'checkout_acknowledgement_required', 'Please review and accept the current checkout terms before continuing.');
+    }
     const origin = checkoutOrigin(env);
     const success = `${origin}/pricing?checkout=success`;
     const cancel = `${origin}/pricing?checkout=canceled`;
@@ -70,10 +81,9 @@ export async function onRequestPost({ request, env }) {
     checkout.searchParams.set('checkout[cancel_url]', cancel);
     checkout.searchParams.set('checkout[client_reference_id]', auth.userId);
     posthog = createPostHogClient(env, request);
-    if (posthog) posthog.capture({ distinctId: auth.userId, event: 'checkout initiated', properties: { plan_id: planId, billing_mode: 'live' } });
+    if (posthog) posthog.capture({ distinctId: auth.userId, event: 'checkout initiated', properties: { plan_id: planId, billing_mode: 'live', legal_version: CURRENT_LEGAL_VERSION } });
     return jsonResponse(request, env, { url: checkout.toString() });
   } catch (error) {
-    if (posthog && userId) posthog.captureException(error, userId);
     return errorResponse(request, env, error);
   } finally {
     if (posthog) {

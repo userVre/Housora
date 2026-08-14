@@ -106,7 +106,7 @@ fun HTML.blogPage() {
         section(classes = "tool-cta") {
             div(classes = "tool-cta-inner") {
                 h2(classes = "cta-heading") { +"READY TO REDESIGN YOUR ROOM?" }
-                p(classes = "cta-subtext") { +"Try Housora AI and see your space transformed in seconds" }
+                p(classes = "cta-subtext") { +"Try Housora AI and explore a new direction for your space" }
                 div(classes = "cta-buttons") {
                     a(href = "/design#editor", classes = "btn-primary btn-large") { +"TRY HOUSORA FREE" }
                     a(href = "/pricing", classes = "btn-secondary") { +"View Pricing" }

@@ -72,12 +72,17 @@ data class ToolPageConfig(
 )
 
 fun HTML.toolPage(config: ToolPageConfig) {
+    fun withoutUnverifiedSpeedClaim(text: String): String = text
+        .replace(Regex("(?:^|\\s+)in\\s+(?:under\\s+)?(?:20|30)\\s+seconds", RegexOption.IGNORE_CASE), "")
+        .replace(Regex("(?:^|\\s+)in\\s+seconds", RegexOption.IGNORE_CASE), "")
+        .replace(Regex("(?:^|\\s+)instantly", RegexOption.IGNORE_CASE), "")
+        .trim()
     val safeBadge = config.badge
-    val safeHeroLine2 = config.heroLine2
+    val safeHeroLine2 = withoutUnverifiedSpeedClaim(config.heroLine2)
+    val safeHeroLine3 = withoutUnverifiedSpeedClaim(config.heroLine3)
     val effectiveChallengeHeading = config.challengeHeading.ifEmpty { config.problemHeading }
     val effectiveChallengeIntro = config.challengeIntro.ifEmpty { config.problemDescription }
     val effectiveChallengeCards = config.challengeCards.ifEmpty { config.problemCards }
-    val effectiveStatsTagline = config.statsTagline.ifEmpty { config.statsLabel }
     // Serialize hero words as a real JavaScript array.  The previous output
     // emitted comma-separated string literals without brackets, which caused
     // `SyntaxError: Unexpected string` on every generic tool page.
@@ -94,7 +99,7 @@ fun HTML.toolPage(config: ToolPageConfig) {
     baseLayout(config.pageTitle, bodyClass = "page-tool") {
 
         // One semantic heading for the page; responsive hero variants are visual.
-        h1(classes = "sr-only") { +(config.heroHeading.ifEmpty { config.pageTitle }) }
+        h1(classes = "sr-only") { +withoutUnverifiedSpeedClaim(config.heroHeading.ifEmpty { config.pageTitle }) }
 
         // ===== HERO - MOBILE BANNER =====
         div(classes = "hero-mobile-banner mobile-only") {
@@ -115,8 +120,8 @@ fun HTML.toolPage(config: ToolPageConfig) {
                     }
                 }
                 span(classes = "hero-mobile-title-line2") { +safeHeroLine2 }
-                if (config.heroLine3.isNotBlank()) {
-                    span(classes = "hero-mobile-title-line3") { +config.heroLine3 }
+                if (safeHeroLine3.isNotBlank()) {
+                    span(classes = "hero-mobile-title-line3") { +safeHeroLine3 }
                 }
             }
             if (config.showFurnitureFrom) {
@@ -144,8 +149,8 @@ fun HTML.toolPage(config: ToolPageConfig) {
                         }
                     }
                     div(classes = "hero-split-title-line2") { +safeHeroLine2 }
-                    if (config.heroLine3.isNotBlank()) {
-                        div(classes = "hero-split-title-line3") { +config.heroLine3 }
+                    if (safeHeroLine3.isNotBlank()) {
+                        div(classes = "hero-split-title-line3") { +safeHeroLine3 }
                     }
                 }
                 if (config.showFurnitureFrom) {
@@ -235,7 +240,7 @@ fun HTML.toolPage(config: ToolPageConfig) {
                                     }
                                 }
                                 span(classes = "id-upload-title") { attributes["data-i18n"] = "tool.upload_title"; attributes["data-i18n-tool"] = config.toolName; +"AI ${config.toolName.uppercase()}" }
-                                span(classes = "id-upload-subtitle") { id = "toolUploadHelp"; +config.uploadDescription }
+                                span(classes = "id-upload-subtitle") { id = "toolUploadHelp"; +withoutUnverifiedSpeedClaim(config.uploadDescription) }
                                 span(classes = "id-upload-formats") { attributes["data-i18n"] = "tool.upload_formats"; +"FREE" }
                             }
                         }
@@ -326,6 +331,7 @@ fun HTML.toolPage(config: ToolPageConfig) {
                                 input(type = InputType.text, classes = "id-custom-prompt") {
                                     id = "customPrompt"
                                     placeholder = config.textInputPlaceholder
+                                    attributes["aria-label"] = "Describe your preferred design"
                                     attributes["aria-describedby"] = "customPromptHelp"
                                     attributes["maxlength"] = "500"
                                     attributes["autocomplete"] = "off"
@@ -434,7 +440,7 @@ fun HTML.toolPage(config: ToolPageConfig) {
                     span { +"The Solution" }
                 }
                 p(classes = "id-solution-text") {
-                    +config.solutionText.replace("in under 30 seconds", "directly on your photo")
+                    +withoutUnverifiedSpeedClaim(config.solutionText)
                 }
             }
         }
@@ -475,9 +481,11 @@ fun HTML.toolPage(config: ToolPageConfig) {
                     details(classes = "faq-item") {
                         summary(classes = "faq-question") { +question }
                         p(classes = "faq-answer") {
-                            +answer
-                                .replace("in under 30 seconds", "from your uploaded photo")
-                                .replace("About 30 seconds per render. Upload and get your result instantly.", "Processing time depends on image size and service availability.")
+                            +if (answer.contains("About 30 seconds per render", ignoreCase = true)) {
+                                "Processing time depends on image size and service availability."
+                            } else {
+                                withoutUnverifiedSpeedClaim(answer)
+                            }
                         }
                     }
                 }

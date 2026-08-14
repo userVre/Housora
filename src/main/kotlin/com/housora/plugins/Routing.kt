@@ -262,6 +262,9 @@ fun Application.configureRouting() {
         post("/whop/checkout") {
             val formParameters = call.receiveParameters()
             val planId = formParameters["planId"]?.trim() ?: ""
+            val termsAccepted = formParameters["termsAccepted"] == "true"
+            val immediatePerformanceRequested = formParameters["immediatePerformanceRequested"] == "true"
+            val legalVersion = formParameters["legalVersion"]?.trim() ?: ""
 
             if (planId.isEmpty()) {
                 println("[Checkout] WARN: Missing planId")
@@ -271,6 +274,13 @@ fun Application.configureRouting() {
             if (!WhopConfig.validPlanIds.contains(planId)) {
                 println("[Checkout] WARN: Invalid planId: ${planId.take(20)}")
                 call.respondText("""{"error":"Invalid plan ID"}""", contentType = ContentType.Application.Json)
+                return@post
+            }
+            if (!termsAccepted || !immediatePerformanceRequested || legalVersion != "2026-08-13") {
+                call.respondText(
+                    """{"error":"Please review and accept the current checkout terms before continuing."}""",
+                    contentType = ContentType.Application.Json
+                )
                 return@post
             }
 

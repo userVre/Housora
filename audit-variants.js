@@ -10,7 +10,7 @@ const BASE = siteOrigin();
   for (const [name, viewport] of Object.entries({ desktop: { width: 1440, height: 1000 }, mobile: { width: 390, height: 844 } })) {
     for (const route of ['/', '/pricing', '/interior-design']) {
       const context = await browser.newContext({ viewport });
-      await context.addInitScript(`localStorage.setItem('housora-consent-v1','{"necessary":true}');localStorage.setItem('housora-theme','dark')`);
+      await context.addInitScript(`localStorage.setItem('housora-consent-v2', JSON.stringify({necessary:true,preferences:false,analytics:false,marketing:false,version:2,timestamp:Date.now(),expiresAt:Date.now()+15552000000}));localStorage.setItem('housora-theme','dark')`);
       const page = await context.newPage();
       await page.goto(BASE + route, { waitUntil: 'domcontentloaded' });
       await page.waitForTimeout(600);
@@ -20,7 +20,7 @@ const BASE = siteOrigin();
   }
   for (const lang of ['es', 'ar']) {
     const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
-    await context.addInitScript(`localStorage.setItem('housora-consent-v1','{"necessary":true}');localStorage.setItem('housora-lang','${lang}')`);
+    await context.addInitScript(`localStorage.setItem('housora-consent-v2', JSON.stringify({necessary:true,preferences:false,analytics:false,marketing:false,version:2,timestamp:Date.now(),expiresAt:Date.now()+15552000000}));localStorage.setItem('housora-lang','${lang}')`);
     const page = await context.newPage();
     await page.goto(BASE + '/', { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(600);

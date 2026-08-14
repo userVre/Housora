@@ -1,6 +1,6 @@
 # Housora SEO crawl
 
-Generated: 2026-08-11T17:47:42.273Z
+Generated: 2026-08-13T18:50:44.273Z
 Public site URL: https://housora.app
 
 | route | status | indexability | canonical | title | description | h1Count | lang | structuredData | og | sitemapMembership |
@@ -40,8 +40,8 @@ Public site URL: https://housora.app
 | /enterprise | 200 | index | https://housora.app/enterprise | Growth, Scale &amp; Unlimited Plans \| Housora AI | Higher image allowances and support options for teams exploring home design concepts. | 1 | en | SoftwareApplication | https://housora.app/enterprise / Growth, Scale &amp; Unlimited Plans \| Housora AI / Higher image allowances and support options for teams exploring home design concepts. / https://housora.app/og-image.png | true |
 | /privacy | 200 | noindex | https://housora.app/privacy | Privacy Policy \| Housora | Housora | 1 | en |  | https://housora.app/privacy / Privacy Policy \| Housora / Housora / https://housora.app/og-image.png | false |
 | /terms | 200 | noindex | https://housora.app/terms | Terms &amp; Conditions \| Housora | Housora | 1 | en |  | https://housora.app/terms / Terms &amp; Conditions \| Housora / Housora / https://housora.app/og-image.png | false |
-| /refund-policy | 200 | noindex | https://housora.app/refund-policy | Refund Policy \| Housora | Housora | 1 | en |  | https://housora.app/refund-policy / Refund Policy \| Housora / Housora / https://housora.app/og-image.png | false |
-| /cookies | 200 | noindex | https://housora.app/cookies | Cookie Policy \| Housora | Housora | 1 | en |  | https://housora.app/cookies / Cookie Policy \| Housora / Housora / https://housora.app/og-image.png | false |
+| /refund-policy | 200 | noindex | https://housora.app/refund-policy | Refund &amp; Withdrawal Policy \| Housora | Housora | 1 | en |  | https://housora.app/refund-policy / Refund &amp; Withdrawal Policy \| Housora / Housora / https://housora.app/og-image.png | false |
+| /cookies | 200 | noindex | https://housora.app/cookies | Cookie &amp; Storage Policy \| Housora | Housora | 1 | en |  | https://housora.app/cookies / Cookie &amp; Storage Policy \| Housora / Housora / https://housora.app/og-image.png | false |
 | /projects | 200 | noindex | https://housora.app/projects | My Projects \| Housora | Use Housora to explore and manage AI-assisted home design concepts. | 1 | en |  | https://housora.app/projects / My Projects \| Housora / Use Housora to explore and manage AI-assisted home design concepts. / https://housora.app/og-image.png | false |
 | /blog/exterior-colour-palettes | 200 | index | https://housora.app/blog/exterior-colour-palettes | Exterior colour palettes that are easy to live with \| Housora | Explore an AI-assisted home design workflow using your own room, exterior, or garden photo. | 1 | en | Article | https://housora.app/blog/exterior-colour-palettes / Exterior colour palettes that are easy to live with \| Housora / Explore an AI-assisted home design workflow using your own room, exterior, or garden photo. / https://housora.app/og-image.png | true |
 | /blog/planning-a-room-redesign | 200 | index | https://housora.app/blog/planning-a-room-redesign | How to plan a room redesign without losing your way \| Housora | Explore an AI-assisted home design workflow using your own room, exterior, or garden photo. | 1 | en | Article | https://housora.app/blog/planning-a-room-redesign / How to plan a room redesign without losing your way \| Housora / Explore an AI-assisted home design workflow using your own room, exterior, or garden photo. / https://housora.app/og-image.png | true |

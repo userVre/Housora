@@ -80,14 +80,18 @@ object ImageGenerationConfig {
 
 /** Public browser configuration only. Never put a PostHog personal/private API key here. */
 object PostHogConfig {
-    val projectKey: String = (EnvConfig.get("VITE_POSTHOG_KEY").ifBlank { EnvConfig.get("POSTHOG_API_KEY") }).trim()
+    private val configuredProjectKey: String = EnvConfig.get("VITE_POSTHOG_KEY").trim()
+    // Only the public phc_ project key may be rendered into browser HTML. A
+    // private PostHog API key must never be exposed, even if an env var is
+    // accidentally misconfigured.
+    val projectKey: String = configuredProjectKey.takeIf { it.startsWith("phc_") }.orEmpty()
     // Require an explicit region/host so a missing setting cannot silently send
     // EU visitor analytics to the US endpoint.
     val host: String = EnvConfig.get("VITE_POSTHOG_HOST")
         .ifBlank { EnvConfig.get("POSTHOG_HOST") }
         .trim()
         .removeSuffix("/")
-    val isConfigured: Boolean = projectKey.startsWith("phc_") && host.startsWith("https://")
+    val isConfigured: Boolean = projectKey.isNotBlank() && host.startsWith("https://")
 }
 
 object WhopConfig {

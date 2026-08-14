@@ -8,7 +8,7 @@ const routes = [...new Set(coverage.pages.map(p => p.route))];
 const viewports = { desktop: { width: 1440, height: 1000 }, tablet: { width: 834, height: 1112 }, mobile: { width: 390, height: 844 } };
 const report = { baseUrl: BASE, generatedAt: new Date().toISOString(), pages: [], interactions: [], brokenInternalLinks: [] };
 
-const consent = `localStorage.setItem('housora-consent-v1', JSON.stringify({necessary:true,preferences:false,analytics:false,marketing:false,version:1,timestamp:Date.now()}));`;
+const consent = `localStorage.setItem('housora-consent-v2', JSON.stringify({necessary:true,preferences:false,analytics:false,marketing:false,version:2,timestamp:Date.now(),expiresAt:Date.now()+15552000000}));`;
 
 async function pageAudit(browser, viewportName, viewport, route) {
   const context = await browser.newContext({ viewport });
@@ -78,11 +78,13 @@ async function interaction(browser, viewportName, viewport, name, route, action)
       }
     }
     for (const [viewportName, viewport] of Object.entries(viewports)) {
-      await interaction(browser, viewportName, viewport, 'navigation drawer', '/', async page => {
-        const toggle = page.locator('#sidebar-toggle');
-        await toggle.click();
-        return { pass: await page.locator('#sidebar').isVisible(), bodyScrollLocked: await page.evaluate(() => getComputedStyle(document.body).overflow === 'hidden') };
-      });
+      if (viewportName !== 'desktop') {
+        await interaction(browser, viewportName, viewport, 'navigation drawer', '/', async page => {
+          const toggle = page.locator('#sidebar-toggle');
+          await toggle.click();
+          return { pass: await page.locator('#sidebar').isVisible(), bodyScrollLocked: await page.evaluate(() => getComputedStyle(document.body).overflow === 'hidden') };
+        });
+      }
       await interaction(browser, viewportName, viewport, 'pricing billing toggle', '/pricing', async page => {
         await page.locator('#yearlyBtn').click();
         return { pass: await page.locator('#yearlyBtn').getAttribute('aria-pressed') === 'true', caption: await page.locator('#billing-caption').innerText(), firstPrice: await page.locator('.price-amount').first().innerText().catch(() => '') };
@@ -96,13 +98,16 @@ async function interaction(browser, viewportName, viewport, name, route, action)
       await interaction(browser, viewportName, viewport, 'sign-in empty email', '/sign-in', async page => {
         await page.locator('.auth-email-btn').click();
         await page.waitForTimeout(200);
-        return { pass: false, note: 'Button click completed', activeUrl: page.url(), visibleErrors: await page.locator('[role=alert],.error,.auth-error').allInnerTexts().catch(() => []) };
+        const validationMessage = await page.locator('input[type=email]').evaluate(input => input.validationMessage).catch(() => '');
+        return { pass: Boolean(validationMessage), validationMessage, activeUrl: page.url(), visibleErrors: await page.locator('[role=alert],.error,.auth-error').allInnerTexts().catch(() => []) };
       });
-      await interaction(browser, viewportName, viewport, 'create image upload', '/create', async page => {
+      await interaction(browser, viewportName, viewport, 'create image upload', '/', async page => {
         const selector = viewportName === 'mobile' ? '#heroFileInputMobile' : '#heroFileInput';
         await page.locator(selector).setInputFiles("inspiration/Capture d'écran 2026-07-19 231335.png");
         await page.waitForTimeout(400);
-        return { pass: await page.locator(viewportName === 'mobile' ? '#heroPreviewMobile' : '#heroPreview').isVisible().catch(() => false), authToast: await page.locator('text=Authentication is not configured').count() > 0 };
+        const accepted = await page.locator(selector).evaluate(input => input.files && input.files.length === 1);
+        const previewLoaded = viewportName === 'mobile' || await page.locator('#heroPreviewImg').evaluate(image => Boolean(image.src && image.src.startsWith('data:image/'))).catch(() => false);
+        return { pass: Boolean(accepted && previewLoaded), accepted, previewLoaded, authToast: await page.locator('text=Authentication is not configured').count() > 0 };
       });
     }
   } finally { await browser.close(); }

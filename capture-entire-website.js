@@ -28,12 +28,13 @@ const report = { baseUrl: BASE, generatedAt: new Date().toISOString(), pages: []
 const safe = p => p === '/' ? 'home' : p.replace(/^\//, '').replace(/[^a-z0-9]+/gi, '-').replace(/-+$/, '');
 const mkdir = p => fs.mkdirSync(p, { recursive: true });
 const pause = ms => new Promise(r => setTimeout(r, ms));
-const CONSENT_SCRIPT = `localStorage.setItem('housora-consent-v1', JSON.stringify({necessary:true,preferences:false,analytics:false,marketing:false,version:1,timestamp:Date.now()}));`;
+const CONSENT_SCRIPT = `localStorage.setItem('housora-consent-v2', JSON.stringify({necessary:true,preferences:false,analytics:false,marketing:false,version:2,timestamp:Date.now(),expiresAt:Date.now()+15552000000}));`;
 
 async function settle(page) {
   await page.waitForLoadState('domcontentloaded');
   await page.waitForTimeout(700);
   await page.evaluate(async () => {
+    window.scrollTo(0, 0);
     if (document.fonts && document.fonts.ready) await document.fonts.ready;
     document.querySelectorAll('img').forEach(img => { if (img.loading === 'lazy') img.loading = 'eager'; });
   });
@@ -102,7 +103,7 @@ async function captureFlows(browser) {
         await stateCapture(page, viewportName, n++, 'navigation-open', 'Responsive navigation/sidebar opened');
       }
 
-      await visit(page, '/create');
+      await visit(page, '/');
       const createInput = page.locator(viewportName === 'mobile' ? '#heroFileInputMobile' : '#heroFileInput');
       if (await createInput.count() && fs.existsSync(SAMPLE)) {
         await createInput.setInputFiles(SAMPLE); await pause(700);

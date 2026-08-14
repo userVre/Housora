@@ -106,7 +106,11 @@ export async function onRequestPost({ request, env }) {
       await refundGeneration(env, generationId);
       throw new HttpError(502, 'invalid_provider_response', 'Image generation failed. Please try again.');
     }
-    if (posthog) posthog.capture({ distinctId: auth.userId, event: 'image generated', properties: { prompt_length: prompt.length } });
+    if (posthog) posthog.capture({
+      distinctId: auth.userId,
+      event: 'image generated',
+      properties: { prompt_length_bucket: prompt.length < 100 ? 'under_100' : prompt.length < 500 ? '100_to_499' : '500_plus' },
+    });
 
     try {
       await transitionGeneration(env, { generationId, transition: 'completed' });
@@ -118,7 +122,6 @@ export async function onRequestPost({ request, env }) {
     headers.set('Content-Type', outputInfo.type);
     return new Response(output, { status: 200, headers });
   } catch (error) {
-    if (posthog && auth) posthog.captureException(error, auth.userId);
     return errorResponse(request, env, error);
   } finally {
     if (posthog) {

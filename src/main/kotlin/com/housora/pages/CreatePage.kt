@@ -6,7 +6,10 @@ import com.housora.templates.baseLayout
 
 fun HTML.createPage() {
     baseLayout("Housora - AI Room Design | Upload a Photo & Redesign", bodyClass = "marketing-home") {
-        h1(classes = "sr-only") { +"AI interior design from your room photo" }
+        h1(classes = "sr-only") {
+            attributes["data-i18n"] = "create.seo_title"
+            +"AI room design concepts from your own photo"
+        }
         // ===== HERO SECTION =====
         section("hero-section") {
             // Desktop version
@@ -525,7 +528,7 @@ fun HTML.createPage() {
                     val tools = listOf(
                         ToolCard("/interior-design", "AI Interior Design", "Explore a new direction for any room", "interior-design"),
                         ToolCard("/wall-texture", "AI Walls Texture", "Try wall textures and paint colors", "walls-texture"),
-                        ToolCard("/floor-restyle", "AI Floor Restyle", "Restyle your floors instantly", "floor-restyle"),
+                        ToolCard("/floor-restyle", "AI Floor Restyle", "Explore new flooring finishes", "floor-restyle"),
                         ToolCard("/ai-stairs-design", "AI Stairs Design", "Redesign your staircase from a photo", "stairs-design"),
                         ToolCard("/ai-doors-design", "AI Doors Design", "Redesign your doors from a photo", "doors-design"),
                         ToolCard("/ai-windows-design", "AI Windows Design", "Redesign your windows from a photo", "windows-design"),
@@ -631,7 +634,7 @@ fun HTML.createPage() {
                             }
                         }
                         div("after-side") {
-                            img(src = "/static/images/room-after.jpg", alt = "Room after AI interior design with real furniture placed in 3D") {
+                            img(src = "/static/images/room-after.jpg", alt = "AI interior design concept showing furniture in a redesigned room") {
                                 attributes["width"] = "670"
                                 attributes["height"] = "447"
                                 attributes["loading"] = "lazy"
@@ -644,7 +647,7 @@ fun HTML.createPage() {
                     h3 { +"Preview Your Direction" }
                     p { +"Make confident decisions with realistic 3D visualization:" }
                     ul {
-                        li { +"View furniture at true scale" }
+                        li { +"Explore approximate furniture placement" }
                         li { +"Try different layouts and styles" }
                         li { +"See how pieces work together" }
                         li { +"Make decisions before spending money" }

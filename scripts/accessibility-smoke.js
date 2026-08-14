@@ -15,7 +15,14 @@ async function main() {
     for (const route of routes) {
       const context = await browser.newContext();
       await context.addInitScript(() => {
-        localStorage.setItem('housora-consent-v1', JSON.stringify({ necessary: true }));
+        const now = Date.now();
+        localStorage.setItem('housora-consent-v2', JSON.stringify({
+          necessary: true,
+          analytics: false,
+          version: 2,
+          timestamp: now,
+          expiresAt: now + (180 * 24 * 60 * 60 * 1000),
+        }));
       });
       const page = await context.newPage();
       const response = await page.goto(origin + route, { waitUntil: 'domcontentloaded', timeout: 30_000 });

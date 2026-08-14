@@ -83,6 +83,8 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
     val canonicalPath = if (path.isBlank()) inferredPath(title) else path
     val seo = seoFor(canonicalPath)
     val canonicalUrl = WebsiteConfig.resolveUrl(canonicalPath)
+    val convexPaths = aiTools.map { it.path }.toSet() + setOf("/", "/design", "/projects", "/pricing", "/app/home", "/delete-account")
+    val needsConvexClient = canonicalPath in convexPaths
     attributes["lang"] = "en"
     head {
         meta(charset = "utf-8")
@@ -134,9 +136,7 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                 """
             }
         }
-        link(rel = "stylesheet", href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap")
         link(rel = "stylesheet", href = "/static/css/style.css")
-        script(src = "https://unpkg.com/lucide@latest") { attributes["defer"] = "defer" }
         script {
             unsafe {
                 +"""
@@ -208,11 +208,11 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                     // Lucide icons loaded but not used in header (inline SVGs used instead)
                     // Expose Convex URL to client JS
                     window.CONVEX_URL = '${EnvConfig.get("EXPO_PUBLIC_CONVEX_URL")}';
-                    // AI generation status â€” disabled because no AI provider is configured
+                    // AI generation status — disabled because no AI provider is configured
                     window.__HOUSORA_AI_CONFIGURED = false;
                     // Cycle the existing rotating-word spans without replacing
                     // their markup. Replacing textContent here used to produce
-                    // â€œRedesign Redesign Bedroomâ€ and broke the reference layout.
+                    // “Redesign Redesign Bedroom” and broke the reference layout.
                     ['heroLine1', 'heroLine1Mobile'].forEach(function(id) {
                         const heroLine = document.getElementById(id);
                         if (!heroLine) return;
@@ -506,8 +506,10 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                 """
             }
         }
-        // Convex SDK
-        script(src = "https://js.convex.dev") {}
+        // Load the pinned, first-party-hosted Convex client only on product surfaces that use it.
+        // Public legal and information pages should not make this third-party
+        // request merely because a visitor reads them.
+        if (needsConvexClient) script(src = "/static/vendor/convex/browser.js") {}
         script {
             unsafe {
                 +"""
@@ -701,7 +703,10 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                                     attributes["data-i18n"] = "cookie.necessary"
                                     +"Necessary"
                                 }
-                                span(classes = "cookiebot-toggle-description") { +"Security, sign-in, privacy choices, and features you request" }
+                                span(classes = "cookiebot-toggle-description") {
+                                    attributes["data-i18n"] = "cookie.necessary_description"
+                                    +"Security, sign-in, privacy choices, and features you request"
+                                }
                             }
                             label(classes = "cookiebot-toggle") {
                                 unsafe { +"""<input type="checkbox" class="cookiebot-checkbox" name="necessary" aria-labelledby="cookie-label-necessary" checked disabled>""" }
@@ -715,7 +720,10 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                                     attributes["data-i18n"] = "cookie.analytics"
                                     +"Analytics"
                                 }
-                                span(classes = "cookiebot-toggle-description") { +"Optional PostHog page paths and product events" }
+                                span(classes = "cookiebot-toggle-description") {
+                                    attributes["data-i18n"] = "cookie.analytics_description"
+                                    +"Optional PostHog page paths and product events"
+                                }
                             }
                             label(classes = "cookiebot-toggle") {
                                 unsafe { +"""<input type="checkbox" class="cookiebot-checkbox" name="analytics" aria-labelledby="cookie-label-analytics">""" }

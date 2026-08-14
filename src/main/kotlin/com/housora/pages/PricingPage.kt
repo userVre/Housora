@@ -19,12 +19,11 @@ private data class HousoraPlan(
 
 fun HTML.pricingPage() {
     val plans = listOf(
-        HousoraPlan("Standard / Starter", "€14", "€149", "€12.42", WhopConfig.standardMonthly, WhopConfig.standardYearly, "standard", listOf(
+        HousoraPlan("Standard", "€14", "€149", "€12.42", WhopConfig.standardMonthly, WhopConfig.standardYearly, "standard", listOf(
             "100 included images" to true,
             "Access to Housora design tools" to true,
             "Save and manage projects" to true,
             "Standard export quality" to true,
-            "Email support" to true,
             "Email support" to true
         )),
         HousoraPlan("Pro", "€29", "€299", "€24.92", WhopConfig.proMonthly, WhopConfig.proYearly, "pro", listOf(
@@ -66,7 +65,7 @@ fun HTML.pricingPage() {
                         id = "checkout-immediate-performance"
                         attributes["required"] = "required"
                     }
-                    span { +"I expressly request immediate access during any withdrawal period and acknowledge that supplying or using digital content may affect my withdrawal right only as permitted by applicable law." }
+                    span { +"I expressly request immediate access to Housora during the 14-day withdrawal period. I understand that, where the law permits, I may have to pay a proportionate amount for service already supplied before I withdraw. This request does not remove rights that cannot legally be waived." }
                 }
                 p("checkout-legal-error") {
                     id = "checkout-legal-error"

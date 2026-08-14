@@ -316,7 +316,7 @@ test('CORS allows only configured origins and emits security headers', async () 
 
 test('checkout redirects require an HTTPS allowlist and mock mode requires explicit development flags', async () => {
   const token = await tokenFor('user-1');
-  const body = 'planId=plan_yxeVUCgF75vlO';
+  const body = 'planId=plan_yxeVUCgF75vlO&termsAccepted=true&immediatePerformanceRequested=true&legalVersion=2026-08-13';
   const insecure = await checkout({
     request: request('https://api.test/api/whop/checkout', token, {
       method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body,
@@ -356,6 +356,25 @@ test('checkout redirects require an HTTPS allowlist and mock mode requires expli
   });
   assert.equal(developmentMock.status, 200);
   assert.equal((await developmentMock.json()).mock, true);
+});
+
+test('checkout requires both legal acknowledgements and the current policy version', async () => {
+  const token = await tokenFor('user-1');
+  const response = await checkout({
+    request: request('https://api.test/api/whop/checkout', token, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'planId=plan_yxeVUCgF75vlO&termsAccepted=true&legalVersion=2026-08-13',
+    }),
+    env: authEnv({
+      YOUR_WEBSITE_URL: 'https://housora.test',
+      CHECKOUT_REDIRECT_ORIGINS: 'https://housora.test',
+      ENVIRONMENT: 'development',
+      ENABLE_MOCK_CHECKOUT: 'true',
+    }),
+  });
+  assert.equal(response.status, 400);
+  assert.equal((await response.json()).error.code, 'checkout_acknowledgement_required');
 });
 
 test('uploaded assets are private to their authenticated owner', async () => {

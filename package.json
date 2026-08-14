@@ -2,6 +2,9 @@
   "name": "housora-ai",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=22.22.0"
+  },
   "config": {
     "testPort": 8082
   },
@@ -28,7 +31,8 @@
     "audit:links": "node scripts/site-audit-runner.js route-crawler.js",
     "audit:assets": "node scripts/site-audit-runner.js scripts/verify-assets.js",
     "audit:a11y": "node scripts/site-audit-runner.js scripts/accessibility-smoke.js",
-    "audit:site": "npm run audit:routes && npm run audit:a11y",
+    "audit:i18n": "node scripts/site-audit-runner.js scripts/i18n-smoke.js",
+    "audit:site": "npm run audit:routes && npm run audit:a11y && npm run audit:i18n",
     "deploy:pages": "npm run assets:verify && npx wrangler pages deploy dist"
   },
   "dependencies": {
@@ -37,12 +41,11 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.12.1",
-    "@clerk/clerk-js": "6.25.7",
     "@edge-runtime/vm": "^5.0.0",
     "convex-test": "^0.0.55",
     "playwright": "^1.61.1",
-    "posthog-js": "1.407.3",
-    "sharp": "0.34.3",
+    "posthog-js": "1.416.0",
+    "sharp": "0.35.3",
     "vitest": "^4.1.10"
   }
 }

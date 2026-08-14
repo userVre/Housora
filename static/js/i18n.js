@@ -263,12 +263,96 @@
     }
     };
 
+    // Launch copy corrections. Keep performance claims out of translated UI
+    // until production telemetry can substantiate them, and repair malformed
+    // keys/phrasing found by the locale completeness audit.
+    var launchCopyCorrections = {
+        en: {
+            'create.upload_own_sub':'Upload a photo of your room and get a design concept shaped around your space.',
+            'blog.try_housora':'Try Housora AI and explore a new direction for your space.',
+            'creations.subtitle':'Explore Housora design concepts across rooms and styles.'
+        },
+        de: {
+            'promo.copy_code':'Aktionscode HOUSORA20 kopieren',
+            'footer.ideas_tagline':'Ideen für echte Häuser, passend zu Ihrem Raum.',
+            'create.with_ai':'mit KI, passend zu Ihrem Raum',
+            'create.furniture_from':'Möbel von',
+            'create.upload_own_sub':'Laden Sie ein Foto Ihres Raums hoch und erhalten Sie ein passendes Designkonzept.',
+            'create.preview_desc':'Treffen Sie fundierte Entscheidungen mit realistischer 3D-Visualisierung:',
+            'create.seo_title':'KI-Raumdesignkonzepte aus Ihrem eigenen Foto',
+            'blog.try_housora':'Probieren Sie Housora AI aus und entdecken Sie eine neue Richtung für Ihren Raum.',
+            'creations.subtitle':'Entdecken Sie Housora-Designkonzepte für verschiedene Räume und Stile.'
+        },
+        fr: {
+            'create.with_ai':'avec l’IA, adaptée à votre espace',
+            'create.upload_own_sub':'Téléchargez une photo de votre pièce et obtenez un concept adapté à votre espace.',
+            'blog.try_housora':'Essayez Housora AI et explorez une nouvelle direction pour votre espace.',
+            'creations.subtitle':'Explorez les concepts Housora pour différents espaces et styles.'
+        },
+        ja: {
+            'create.with_ai':'AIで、あなたの空間に合わせて',
+            'create.upload_own_sub':'部屋の写真をアップロードして、空間に合ったデザイン案を作成できます。',
+            'blog.try_housora':'Housora AIで、あなたの空間の新しい方向性を探しましょう。',
+            'creations.subtitle':'さまざまな部屋やスタイルのHousoraデザイン案をご覧ください。'
+        },
+        zh: {
+            'create.with_ai':'用 AI 打造，贴合您的空间',
+            'create.upload_own_sub':'上传房间照片，获取贴合您空间的设计方案。',
+            'blog.try_housora':'试用 Housora AI，探索空间的新方向。',
+            'creations.subtitle':'探索适用于不同房间和风格的 Housora 设计方案。'
+        },
+        es: {
+            'create.with_ai':'con IA, adaptado a tu espacio',
+            'create.upload_own_sub':'Sube una foto de tu habitación y obtén un concepto adaptado a tu espacio.',
+            'blog.try_housora':'Prueba Housora AI y explora una nueva dirección para tu espacio.',
+            'creations.subtitle':'Explora conceptos de Housora para diferentes habitaciones y estilos.'
+        },
+        ar: {
+            'footer.ideas_tagline':'أفكار لمنازل حقيقية، مصممة حول مساحتك.',
+            'create.with_ai':'بالذكاء الاصطناعي، بما يناسب مساحتك',
+            'create.style_scandinavian':'إسكندنافي',
+            'create.try_it_sub':'اختر غرفة ونمطاً واستكشف النتيجة — دون الحاجة إلى التسجيل.',
+            'create.upload_own_sub':'حمّل صورة لغرفتك واحصل على تصور تصميم يناسب مساحتك.',
+            'pricing.manage_desc':'تتم معالجة الاشتراكات عبر Whop. استخدم أدوات الفوترة في Whop لإلغاء التجديدات المستقبلية. لطلب استرداد أو الإبلاغ عن مشكلة فوترة، راسل ',
+            'contact.get_in_touch_desc':'هل لديك سؤال عن اشتراكك أو التصميم الداخلي بالذكاء الاصطناعي أو حسابك؟ نحن هنا للمساعدة.',
+            'error.go_home':'الذهاب إلى الصفحة الرئيسية',
+            'placeholder.go_home':'الذهاب إلى الصفحة الرئيسية',
+            'blog.explore_idea':'استكشف هذه الفكرة مع Housora',
+            'blog.try_housora':'جرّب Housora AI واستكشف اتجاهاً جديداً لمساحتك.',
+            'creations.subtitle':'استكشف تصورات Housora لمختلف الغرف والأنماط.'
+        },
+        nl: {
+            'create.with_ai':'met AI, afgestemd op uw ruimte',
+            'create.step1_desc':'Elke kamerfoto werkt. Leeg of gemeubileerd.',
+            'create.upload_own_sub':'Upload een foto van uw kamer en ontvang een concept dat bij uw ruimte past.',
+            'blog.try_housora':'Probeer Housora AI en ontdek een nieuwe richting voor uw ruimte.',
+            'creations.subtitle':'Ontdek Housora-ontwerpconcepten voor verschillende kamers en stijlen.'
+        },
+        ko: {
+            'create.with_ai':'AI로, 공간에 맞게',
+            'create.upload_own_sub':'방 사진을 업로드하고 공간에 맞는 디자인 콘셉트를 받아보세요.',
+            'blog.try_housora':'Housora AI로 공간의 새로운 방향을 탐색해 보세요.',
+            'creations.subtitle':'다양한 방과 스타일을 위한 Housora 디자인 콘셉트를 살펴보세요.'
+        },
+        pt: {
+            'create.with_ai':'com IA, adaptado ao seu espaço',
+            'create.floorplan_title':'Comece com sua planta',
+            'create.preview_li2':'Experimente diferentes layouts e estilos',
+            'create.upload_own_sub':'Envie uma foto do seu cômodo e receba um conceito adaptado ao seu espaço.',
+            'blog.try_housora':'Experimente o Housora AI e explore uma nova direção para seu espaço.',
+            'creations.subtitle':'Explore conceitos do Housora para diferentes cômodos e estilos.'
+        }
+    };
+    Object.keys(launchCopyCorrections).forEach(function(lang) {
+        translations[lang] = Object.assign(translations[lang] || {}, launchCopyCorrections[lang]);
+    });
+
     // Shared labels that are rendered by reusable cards and controls rather
     // than page-specific translation attributes.
     var extraTranslations = {
         en: {
             'promo.hours':'HRS','promo.minutes':'MIN','promo.seconds':'SEC','shared.real_homes':'Ideas for real homes, shaped around your space.',
-            'toolcard.interior-design.description':'Explore a new direction for any room','toolcard.walls-texture.description':'Try wall textures and paint colors','toolcard.floor-restyle.description':'Restyle your floors instantly','toolcard.stairs-design.description':'Redesign your staircase from a photo','toolcard.doors-design.description':'Redesign your doors from a photo','toolcard.windows-design.description':'Redesign your windows from a photo','toolcard.kitchen-design.description':'Redesign your kitchen from a photo','toolcard.bathroom-design.description':'Redesign your bathroom from a photo','toolcard.exterior-design.description':'Transform your home\'s exterior','toolcard.garden-design.description':'Design your dream garden','toolcard.layout-boost.description':'Optimize your room layout with AI','toolcard.video-walkthrough.description':'Generate cinematic video walkthroughs','toolcard.floorplan-to-3d.description':'Convert 2D floorplans to photorealistic 3D','toolcard.photo-to-render.description':'Turn any photo or 3D draft into a render'
+            'toolcard.interior-design.description':'Explore a new direction for any room','toolcard.walls-texture.description':'Try wall textures and paint colors','toolcard.floor-restyle.description':'Explore new flooring finishes','toolcard.stairs-design.description':'Redesign your staircase from a photo','toolcard.doors-design.description':'Redesign your doors from a photo','toolcard.windows-design.description':'Redesign your windows from a photo','toolcard.kitchen-design.description':'Redesign your kitchen from a photo','toolcard.bathroom-design.description':'Redesign your bathroom from a photo','toolcard.exterior-design.description':'Transform your home\'s exterior','toolcard.garden-design.description':'Design your dream garden','toolcard.layout-boost.description':'Optimize your room layout with AI','toolcard.video-walkthrough.description':'Generate cinematic video walkthroughs','toolcard.floorplan-to-3d.description':'Convert 2D floorplans to photorealistic 3D','toolcard.photo-to-render.description':'Turn any photo or 3D draft into a render'
         },
         de: {
             'promo.hours':'STD','promo.minutes':'MIN','promo.seconds':'SEK','shared.real_homes':'Ideen für echte Häuser, passend zu Ihrem Raum.',
@@ -373,6 +457,56 @@
     };
     Object.keys(referenceExtraTranslations).forEach(function(lang) {
         extraTranslations[lang] = Object.assign(extraTranslations[lang] || {}, referenceExtraTranslations[lang]);
+    });
+
+    // Compliance-sensitive copy must override older marketing translations.
+    // Keep these strings aligned with Layout.kt and the current legal policies.
+    var complianceTranslations = {
+        en: {
+            'footer.copyright':'© 2026 Housora',
+            'cookie.title':'Your privacy choices','cookie.message':'Housora uses necessary storage for security and your choices. With permission, PostHog measures page visits and product events. Analytics is off by default and never includes your uploaded images or prompts. You can change this later in the footer.','cookie.necessary':'Necessary','cookie.necessary_description':'Security, sign-in, privacy choices, and features you request','cookie.analytics':'Analytics','cookie.analytics_description':'Optional PostHog page paths and product events','cookie.show_details':'Read the Cookie & Storage Policy','cookie.necessary_only':'Reject analytics','cookie.save_choices':'Save choices','cookie.accept_all':'Allow analytics',
+            'auth.data_safe':'We use security controls to protect your account and private uploads.','contact.company_name':'Housora is operated by Ismail Abelouas, trading as Housora.','contact.email_desc':'The best way to reach us is by email. Response times can vary.','contact.response_desc':'Include your account email and Whop receipt for subscription or billing questions so we can locate the purchase.',
+            'create.with_ai':'with AI','create.upload_own_sub':'Upload a room photo and create a personalized design concept','create.floorplan_li1':'Create a visual concept from a floor plan','create.floorplan_li2':'Explore an AI-proposed furniture direction','create.preview_li1':'Explore approximate furniture placement','blog.try_housora':'Try Housora AI and explore a new direction for your space','shared.rated':'Built for clear, visual design exploration'
+        },
+        de: {
+            'footer.copyright':'© 2026 Housora','cookie.title':'Ihre Datenschutzauswahl','cookie.message':'Housora verwendet notwendige Speicherung für Sicherheit und Ihre Auswahl. Mit Ihrer Erlaubnis misst PostHog Seitenaufrufe und Produktaktivitäten. Analysen sind standardmäßig deaktiviert und enthalten nie Ihre hochgeladenen Bilder oder Prompts. Sie können dies später in der Fußzeile ändern.','cookie.necessary':'Notwendig','cookie.necessary_description':'Sicherheit, Anmeldung, Datenschutzauswahl und angeforderte Funktionen','cookie.analytics':'Analyse','cookie.analytics_description':'Optionale PostHog-Seitenpfade und Produktaktivitäten','cookie.show_details':'Cookie- und Speicherrichtlinie lesen','cookie.necessary_only':'Analyse ablehnen','cookie.save_choices':'Auswahl speichern','cookie.accept_all':'Analyse erlauben','auth.data_safe':'Wir verwenden Sicherheitsmaßnahmen zum Schutz Ihres Kontos und Ihrer privaten Uploads.','contact.company_name':'Housora wird von Ismail Abelouas unter dem Namen Housora betrieben.','contact.email_desc':'Am besten erreichen Sie uns per E-Mail. Die Antwortzeit kann variieren.','contact.response_desc':'Geben Sie bei Abonnement- oder Rechnungsfragen Ihre Konto-E-Mail und den Whop-Beleg an.','create.with_ai':'mit KI','create.upload_own_sub':'Laden Sie ein Raumfoto hoch und erstellen Sie ein persönliches Designkonzept','create.floorplan_li1':'Erstellen Sie ein visuelles Konzept aus einem Grundriss','create.floorplan_li2':'Erkunden Sie einen KI-Vorschlag für die Möblierung','create.preview_li1':'Erkunden Sie die ungefähre Möbelplatzierung','blog.try_housora':'Testen Sie Housora AI und entdecken Sie eine neue Richtung für Ihren Raum','shared.rated':'Für klare, visuelle Designideen entwickelt'
+        },
+        fr: {
+            'footer.copyright':'© 2026 Housora','cookie.title':'Vos choix de confidentialité','cookie.message':'Housora utilise un stockage nécessaire pour la sécurité et vos choix. Avec votre autorisation, PostHog mesure les visites de pages et certains événements produit. L’analyse est désactivée par défaut et n’inclut jamais vos images ou prompts. Vous pourrez modifier ce choix dans le pied de page.','cookie.necessary':'Nécessaire','cookie.necessary_description':'Sécurité, connexion, choix de confidentialité et fonctions demandées','cookie.analytics':'Analyse','cookie.analytics_description':'Chemins de pages et événements produit PostHog facultatifs','cookie.show_details':'Lire la politique relative aux cookies et au stockage','cookie.necessary_only':'Refuser l’analyse','cookie.save_choices':'Enregistrer mes choix','cookie.accept_all':'Autoriser l’analyse','auth.data_safe':'Nous utilisons des mesures de sécurité pour protéger votre compte et vos fichiers privés.','contact.company_name':'Housora est exploité par Ismail Abelouas sous le nom Housora.','contact.email_desc':'Le meilleur moyen de nous joindre est l’e-mail. Le délai de réponse peut varier.','contact.response_desc':'Pour une question d’abonnement ou de facturation, indiquez l’e-mail du compte et le reçu Whop.','create.with_ai':'avec l’IA','create.upload_own_sub':'Ajoutez une photo de votre pièce et créez un concept personnalisé','create.floorplan_li1':'Créer un concept visuel à partir d’un plan','create.floorplan_li2':'Explorer une proposition d’ameublement par IA','create.preview_li1':'Explorer un placement approximatif des meubles','blog.try_housora':'Essayez Housora AI et explorez une nouvelle direction pour votre espace','shared.rated':'Conçu pour explorer clairement des idées visuelles'
+        },
+        ja: {
+            'footer.copyright':'© 2026 Housora','cookie.title':'プライバシー設定','cookie.message':'Housoraは、セキュリティと設定の保存に必要なストレージを使用します。許可した場合、PostHogがページ閲覧と製品イベントを計測します。分析は初期状態でオフで、アップロード画像やプロンプトは含まれません。フッターから後で変更できます。','cookie.necessary':'必須','cookie.necessary_description':'セキュリティ、ログイン、プライバシー設定、要求した機能','cookie.analytics':'分析','cookie.analytics_description':'任意のPostHogページパスと製品イベント','cookie.show_details':'Cookieとストレージのポリシーを読む','cookie.necessary_only':'分析を拒否','cookie.save_choices':'設定を保存','cookie.accept_all':'分析を許可','auth.data_safe':'アカウントと非公開アップロードを保護するためのセキュリティ対策を講じています。','contact.company_name':'HousoraはIsmail AbelouasがHousoraの名称で運営しています。','contact.email_desc':'お問い合わせはメールが最適です。返信時間は状況により異なります。','contact.response_desc':'契約や請求の質問には、アカウントのメールとWhopの領収書を添えてください。','create.with_ai':'AIで','create.upload_own_sub':'部屋の写真をアップロードして、パーソナライズされたデザイン案を作成','create.floorplan_li1':'平面図からビジュアル案を作成','create.floorplan_li2':'AIが提案する家具の方向性を検討','create.preview_li1':'家具配置の目安を検討','blog.try_housora':'Housora AIで空間の新しい方向性を探す','shared.rated':'明確なビジュアルデザイン検討のために開発'
+        },
+        zh: {
+            'footer.copyright':'© 2026 Housora','cookie.title':'您的隐私选择','cookie.message':'Housora 使用必要存储来保障安全并记住您的选择。经您许可，PostHog 会衡量页面访问和产品事件。分析默认关闭，绝不会包含您上传的图片或提示词。您可稍后在页脚更改设置。','cookie.necessary':'必要','cookie.necessary_description':'安全、登录、隐私选择和您请求的功能','cookie.analytics':'分析','cookie.analytics_description':'可选的 PostHog 页面路径和产品事件','cookie.show_details':'阅读 Cookie 与存储政策','cookie.necessary_only':'拒绝分析','cookie.save_choices':'保存选择','cookie.accept_all':'允许分析','auth.data_safe':'我们采用安全措施保护您的账户和私人上传内容。','contact.company_name':'Housora 由 Ismail Abelouas 以 Housora 名义运营。','contact.email_desc':'电子邮件是联系我们的最佳方式，回复时间可能有所不同。','contact.response_desc':'如咨询订阅或账单，请提供账户邮箱和 Whop 收据。','create.with_ai':'使用 AI','create.upload_own_sub':'上传房间照片并创建个性化设计概念','create.floorplan_li1':'根据平面图创建视觉概念','create.floorplan_li2':'探索 AI 建议的家具方向','create.preview_li1':'探索大致的家具摆放','blog.try_housora':'试用 Housora AI，探索空间的新方向','shared.rated':'专为清晰的视觉设计探索而打造'
+        },
+        es: {
+            'footer.copyright':'© 2026 Housora','cookie.title':'Tus opciones de privacidad','cookie.message':'Housora usa almacenamiento necesario para la seguridad y tus elecciones. Con tu permiso, PostHog mide visitas a páginas y eventos del producto. El análisis está desactivado por defecto y nunca incluye tus imágenes ni instrucciones. Puedes cambiarlo después en el pie de página.','cookie.necessary':'Necesario','cookie.necessary_description':'Seguridad, inicio de sesión, opciones de privacidad y funciones solicitadas','cookie.analytics':'Análisis','cookie.analytics_description':'Rutas de página y eventos de producto opcionales de PostHog','cookie.show_details':'Leer la Política de cookies y almacenamiento','cookie.necessary_only':'Rechazar análisis','cookie.save_choices':'Guardar opciones','cookie.accept_all':'Permitir análisis','auth.data_safe':'Usamos medidas de seguridad para proteger tu cuenta y tus archivos privados.','contact.company_name':'Housora está operado por Ismail Abelouas, bajo el nombre Housora.','contact.email_desc':'La mejor forma de contactarnos es por correo. El tiempo de respuesta puede variar.','contact.response_desc':'Para consultas de suscripción o facturación, incluye el correo de tu cuenta y el recibo de Whop.','create.with_ai':'con IA','create.upload_own_sub':'Sube una foto de la habitación y crea un concepto personalizado','create.floorplan_li1':'Crea un concepto visual a partir de un plano','create.floorplan_li2':'Explora una propuesta de mobiliario generada por IA','create.preview_li1':'Explora una colocación aproximada de muebles','blog.try_housora':'Prueba Housora AI y explora una nueva dirección para tu espacio','shared.rated':'Creado para explorar ideas de diseño visuales y claras'
+        },
+        ar: {
+            'footer.copyright':'© 2026 Housora','cookie.title':'خيارات الخصوصية','cookie.message':'يستخدم Housora تخزيناً ضرورياً للأمان ولحفظ اختياراتك. وبإذنك، يقيس PostHog زيارات الصفحات وأحداث المنتج. التحليلات معطلة افتراضياً ولا تتضمن صورك المرفوعة أو أوامرك النصية. يمكنك تغيير اختيارك لاحقاً من التذييل.','cookie.necessary':'ضروري','cookie.necessary_description':'الأمان وتسجيل الدخول وخيارات الخصوصية والميزات التي تطلبها','cookie.analytics':'التحليلات','cookie.analytics_description':'مسارات صفحات وأحداث منتج اختيارية عبر PostHog','cookie.show_details':'قراءة سياسة ملفات الارتباط والتخزين','cookie.necessary_only':'رفض التحليلات','cookie.save_choices':'حفظ الاختيارات','cookie.accept_all':'السماح بالتحليلات','auth.data_safe':'نستخدم ضوابط أمنية لحماية حسابك وملفاتك الخاصة.','contact.company_name':'يشغّل Ismail Abelouas خدمة Housora تحت اسم Housora.','contact.email_desc':'البريد الإلكتروني هو أفضل وسيلة للتواصل، وقد يختلف وقت الرد.','contact.response_desc':'لاستفسارات الاشتراك أو الفوترة، أرفق بريد حسابك وإيصال Whop.','create.with_ai':'بالذكاء الاصطناعي','create.upload_own_sub':'ارفع صورة غرفتك وأنشئ تصوراً مخصصاً','create.floorplan_li1':'أنشئ تصوراً بصرياً من مخطط','create.floorplan_li2':'استكشف اقتراحاً للأثاث بالذكاء الاصطناعي','create.preview_li1':'استكشف مواضع تقريبية للأثاث','blog.try_housora':'جرّب Housora AI واستكشف اتجاهاً جديداً لمساحتك','shared.rated':'مصمم لاستكشاف أفكار بصرية واضحة'
+        },
+        nl: {
+            'footer.copyright':'© 2026 Housora','cookie.title':'Uw privacykeuzes','cookie.message':'Housora gebruikt noodzakelijke opslag voor beveiliging en uw keuzes. Met uw toestemming meet PostHog paginabezoeken en productgebeurtenissen. Analytics staat standaard uit en bevat nooit uw geüploade afbeeldingen of prompts. U kunt dit later in de voettekst aanpassen.','cookie.necessary':'Noodzakelijk','cookie.necessary_description':'Beveiliging, inloggen, privacykeuzes en functies die u aanvraagt','cookie.analytics':'Analytics','cookie.analytics_description':'Optionele PostHog-paginapaden en productgebeurtenissen','cookie.show_details':'Lees het Cookie- en opslagbeleid','cookie.necessary_only':'Analytics weigeren','cookie.save_choices':'Keuzes opslaan','cookie.accept_all':'Analytics toestaan','auth.data_safe':'We gebruiken beveiligingsmaatregelen om uw account en privé-uploads te beschermen.','contact.company_name':'Housora wordt geëxploiteerd door Ismail Abelouas, handelend onder de naam Housora.','contact.email_desc':'E-mail is de beste manier om ons te bereiken. De reactietijd kan variëren.','contact.response_desc':'Vermeld bij abonnements- of factuurvragen uw account-e-mail en Whop-bon.','create.with_ai':'met AI','create.upload_own_sub':'Upload een kamerfoto en maak een persoonlijk ontwerpconcept','create.floorplan_li1':'Maak een visueel concept van een plattegrond','create.floorplan_li2':'Bekijk een door AI voorgestelde meubelrichting','create.preview_li1':'Bekijk een globale meubelplaatsing','blog.try_housora':'Probeer Housora AI en ontdek een nieuwe richting voor uw ruimte','shared.rated':'Gebouwd voor heldere, visuele ontwerpverkenning'
+        },
+        ko: {
+            'footer.copyright':'© 2026 Housora','cookie.title':'개인정보 선택','cookie.message':'Housora는 보안과 선택 저장에 필요한 저장소를 사용합니다. 허용하면 PostHog가 페이지 방문과 제품 이벤트를 측정합니다. 분석은 기본적으로 꺼져 있으며 업로드 이미지나 프롬프트를 포함하지 않습니다. 바닥글에서 언제든 변경할 수 있습니다.','cookie.necessary':'필수','cookie.necessary_description':'보안, 로그인, 개인정보 선택 및 요청한 기능','cookie.analytics':'분석','cookie.analytics_description':'선택적 PostHog 페이지 경로 및 제품 이벤트','cookie.show_details':'쿠키 및 저장소 정책 읽기','cookie.necessary_only':'분석 거부','cookie.save_choices':'선택 저장','cookie.accept_all':'분석 허용','auth.data_safe':'계정과 비공개 업로드를 보호하기 위한 보안 조치를 사용합니다.','contact.company_name':'Housora는 Ismail Abelouas가 Housora라는 이름으로 운영합니다.','contact.email_desc':'이메일이 가장 좋은 문의 방법이며 답변 시간은 달라질 수 있습니다.','contact.response_desc':'구독 또는 결제 문의 시 계정 이메일과 Whop 영수증을 포함해 주세요.','create.with_ai':'AI로','create.upload_own_sub':'방 사진을 업로드하고 개인화된 디자인 콘셉트를 만드세요','create.floorplan_li1':'평면도에서 시각적 콘셉트 만들기','create.floorplan_li2':'AI가 제안한 가구 방향 살펴보기','create.preview_li1':'대략적인 가구 배치 살펴보기','blog.try_housora':'Housora AI로 공간의 새로운 방향을 살펴보세요','shared.rated':'명확한 시각적 디자인 탐색을 위해 제작'
+        },
+        pt: {
+            'footer.copyright':'© 2026 Housora','cookie.title':'Suas escolhas de privacidade','cookie.message':'A Housora usa armazenamento necessário para segurança e para guardar suas escolhas. Com sua permissão, o PostHog mede visitas e eventos do produto. A análise fica desativada por padrão e nunca inclui imagens ou prompts enviados. Você pode mudar isso depois no rodapé.','cookie.necessary':'Necessário','cookie.necessary_description':'Segurança, login, escolhas de privacidade e recursos solicitados','cookie.analytics':'Análise','cookie.analytics_description':'Caminhos de páginas e eventos opcionais do PostHog','cookie.show_details':'Ler a Política de cookies e armazenamento','cookie.necessary_only':'Recusar análise','cookie.save_choices':'Salvar escolhas','cookie.accept_all':'Permitir análise','auth.data_safe':'Usamos controles de segurança para proteger sua conta e seus envios privados.','contact.company_name':'A Housora é operada por Ismail Abelouas, sob o nome Housora.','contact.email_desc':'O e-mail é a melhor forma de contato. O tempo de resposta pode variar.','contact.response_desc':'Para dúvidas de assinatura ou cobrança, inclua o e-mail da conta e o recibo da Whop.','create.with_ai':'com IA','create.upload_own_sub':'Envie uma foto do cômodo e crie um conceito personalizado','create.floorplan_li1':'Crie um conceito visual a partir de uma planta','create.floorplan_li2':'Explore uma proposta de mobiliário gerada por IA','create.preview_li1':'Explore um posicionamento aproximado dos móveis','blog.try_housora':'Experimente a Housora AI e explore uma nova direção para seu espaço','shared.rated':'Criado para explorar ideias visuais com clareza'
+        }
+    };
+    Object.keys(complianceTranslations).forEach(function(lang) {
+        translations[lang] = Object.assign(translations[lang] || {}, complianceTranslations[lang]);
+    });
+    var copyCorrections = {
+        de: {'footer.ideas_tagline':'Ideen für echte Häuser, passend zu Ihrem Raum.'},
+        ar: {'footer.ideas_tagline':'أفكار لمنازل حقيقية، مصممة حول مساحتك.'},
+        nl: {'create.step1_desc':'Elke kamerfoto werkt, leeg of gemeubileerd.','create.preview_desc':'Neem weloverwogen beslissingen met een realistische ontwerpvisualisatie:'},
+        pt: {'create.floorplan_title':'Comece com sua planta','create.preview_li2':'Experimente diferentes layouts e estilos'}
+    };
+    Object.keys(copyCorrections).forEach(function(lang) {
+        translations[lang] = Object.assign(translations[lang] || {}, copyCorrections[lang]);
     });
 
     function translatedText(lang, dict, enDict, key) {

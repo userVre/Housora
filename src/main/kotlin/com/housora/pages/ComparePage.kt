@@ -97,7 +97,7 @@ fun HTML.housoraVsHomeDesignsAI() = comparePage(
         Triple("AI Floor Restyle", true, false),
         Triple("AI Video Walkthrough", true, false)
     ),
-    "Why is Housora AI better than HomeDesigns AI?"
+    "How do the workflows differ?"
 )
 
 fun HTML.housoraVsMnml() = comparePage(
@@ -112,7 +112,7 @@ fun HTML.housoraVsMnml() = comparePage(
         Triple("AI Floor Restyle", true, false),
         Triple("AI Video Walkthrough", true, false)
     ),
-    "Why is Housora AI better than mnml.ai?"
+    "How do the workflows differ?"
 )
 
 fun HTML.housoraVsHomestyler() = comparePage(
@@ -127,7 +127,7 @@ fun HTML.housoraVsHomestyler() = comparePage(
         Triple("AI Floor Restyle", true, false),
         Triple("AI Video Walkthrough", true, false)
     ),
-    "Why do people choose Housora over Homestyler?"
+    "How do the workflows differ?"
 )
 
 fun HTML.housoraVsPlanner5D() = comparePage(
@@ -142,5 +142,5 @@ fun HTML.housoraVsPlanner5D() = comparePage(
         Triple("AI Floor Restyle", true, false),
         Triple("AI Video Walkthrough", true, false)
     ),
-    "Why do people choose Housora over Planner 5D?"
+    "How do the workflows differ?"
 )

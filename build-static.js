@@ -147,8 +147,18 @@ function sanitizeLegacyMarkup(html) {
   html = html.replaceAll('Furniture from IKEA, Wayfair, Amazon and more.', 'Design inspiration tailored to your space.');
   const clerkKey = BUILD_ENV.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
   const convexUrl = BUILD_ENV.EXPO_PUBLIC_CONVEX_URL;
-  const posthogKey = BUILD_ENV.VITE_POSTHOG_KEY || BUILD_ENV.POSTHOG_API_KEY;
-  const posthogHost = BUILD_ENV.VITE_POSTHOG_HOST || BUILD_ENV.POSTHOG_HOST;
+  const configuredPostHogKey = String(BUILD_ENV.VITE_POSTHOG_KEY || '').trim();
+  // Static HTML may contain only PostHog's public phc_ project key. Never
+  // fall back to POSTHOG_API_KEY, which may be a private personal API key.
+  const posthogKey = configuredPostHogKey.startsWith('phc_') ? configuredPostHogKey : '';
+  const configuredPostHogHost = String(BUILD_ENV.VITE_POSTHOG_HOST || BUILD_ENV.POSTHOG_HOST || '').trim().replace(/\/$/, '');
+  let posthogHost = '';
+  try {
+    const parsedPostHogHost = new URL(configuredPostHogHost);
+    if (parsedPostHogHost.protocol === 'https:' && !parsedPostHogHost.username && !parsedPostHogHost.password) {
+      posthogHost = parsedPostHogHost.origin;
+    }
+  } catch (_) {}
   if (clerkKey) {
     html = html.replace(/(<meta name="clerk-publishable-key"\s+content=")[^"]*(")/g, `$1${clerkKey}$2`);
     html = html.replace(/(data-clerk-publishable-key=")[^"]*(")/g, `$1${clerkKey}$2`);

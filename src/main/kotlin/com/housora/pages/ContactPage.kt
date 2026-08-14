@@ -18,7 +18,7 @@ fun HTML.contactPage() {
 
                 div(classes = "contact-content-block") {
                     h2 { attributes["data-i18n"] = "contact.email"; +"Email" }
-                    p { attributes["data-i18n"] = "contact.email_desc"; +"The best way to reach us is by email. We typically respond within 24 hours." }
+                    p { attributes["data-i18n"] = "contact.email_desc"; +"The best way to reach us is by email. Response times can vary." }
                     a(href = "mailto:support@housora.app", classes = "contact-email-link") { +"support@housora.app" }
                 }
 
@@ -41,13 +41,19 @@ fun HTML.contactPage() {
 
                 div(classes = "contact-content-block") {
                     h2 { attributes["data-i18n"] = "contact.company"; +"Company Information" }
-                    p { +"Housora s.r.o." }
-                    p { +"Slovakia" }
+                    p { attributes["data-i18n"] = "contact.company_name"; +"Housora is operated by Ismail Abelouas, trading as Housora." }
+                    p {
+                        +"For the service operator, privacy controller, and contractual information, see the "
+                        a(href = "/terms") { +"Terms" }
+                        +" and "
+                        a(href = "/privacy") { +"Privacy Policy" }
+                        +"."
+                    }
                 }
 
                 div(classes = "contact-content-block") {
                     h2 { attributes["data-i18n"] = "contact.response_time"; +"Response Time" }
-                    p { attributes["data-i18n"] = "contact.response_desc"; +"We aim to respond to all inquiries within 24 hours. For urgent subscription or billing matters, please include your account email in the subject line." }
+                    p { attributes["data-i18n"] = "contact.response_desc"; +"Include your account email and Whop receipt for subscription or billing questions so we can locate the purchase." }
                 }
             }
         }
