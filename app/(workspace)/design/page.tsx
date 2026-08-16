@@ -1,0 +1,4 @@
+import Link from "next/link";
+import { SiteShell } from "@/components/layout/SiteShell";
+import { toolConfigs } from "@/lib/tool-data";
+export default function DesignPage() { return <SiteShell workspace><section className="workspace-home"><div className="workspace-home-heading"><div><span className="workspace-eyebrow">NEW DESIGN</span><h1>Choose what you want to explore</h1><p>Each tool keeps the workflow focused on one visual decision.</p></div></div><div className="workspace-tools-grid">{Object.entries(toolConfigs).map(([slug, tool]) => <Link href={`/${slug}#try-it-now`} className="workspace-tool-card" key={slug}><div className="workspace-tool-placeholder">{tool.title.replace("AI ", "")[0]}</div><div><h2>{tool.title}</h2><p>{tool.description}</p></div><span className="workspace-tool-arrow">→</span></Link>)}</div></section></SiteShell>; }

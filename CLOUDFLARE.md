@@ -27,8 +27,8 @@ The output is `dist/` and the build must finish with `0 failed` pages.
 
 ```text
 npx wrangler login
-npx wrangler pages project create
-npx wrangler pages deploy dist --project-name housora-ai
+npx wrangler pages project create housora
+npm run deploy:pages
 ```
 
 Cloudflare will provide a `housora.pages.dev` address. The repository includes `wrangler.toml` with `pages_build_output_dir = "./dist"`.
@@ -38,9 +38,19 @@ Cloudflare will provide a `housora.pages.dev` address. The repository includes `
 Configure these as Pages/Functions environment variables; never commit their values:
 
 - `YOUR_WEBSITE_URL` — the final `https://...pages.dev` or custom-domain URL.
+- `PUBLIC_SITE_URL` — the same final HTTPS URL, required during the static build.
+- `ENVIRONMENT` — `production` for the production Pages environment.
+- `API_ALLOWED_ORIGINS` — the exact Pages origin allowed to call protected APIs.
+- `CHECKOUT_REDIRECT_ORIGINS` — the exact Pages origin; required once checkout is enabled.
 - `CLERK_SECRET_KEY` — Clerk production secret.
 - `WHOP_API_KEY` — Whop server key.
 
-Create an R2 bucket and bind it to the Pages project as `MEDIA_BUCKET` for image uploads. Add the Pages domain to Clerk's allowed origins and redirect URLs, and update Convex's production site URL to the same domain.
+Image uploads use authenticated Convex Storage upload URLs; no R2 bucket or
+`MEDIA_BUCKET` binding is needed. Add the Pages domain to Clerk's allowed
+origins and redirect URLs, and update Convex's production site URL to the same
+domain.
 
-Cloudflare Pages serves the static pages, Clerk and Convex continue to run in the browser, and the Pages Functions handle upload/checkout endpoints. If the full Ktor server is needed in production, deploy the JVM server separately and keep the Pages domain in front of the public frontend.
+Cloudflare Pages serves the static pages, Clerk and Convex continue to run in
+the browser, and Pages Functions handle generation and checkout endpoints. If
+the full Ktor server is needed in production, deploy the JVM server separately
+and keep the Pages domain in front of the public frontend.

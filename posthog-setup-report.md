@@ -6,7 +6,6 @@ The wizard has completed a server-side PostHog integration for Housora AI, an AI
 |---|---|---|
 | `image generated` | AI room design generation request completed successfully | `functions/api/generate.js` |
 | `image generation failed` | AI room design generation request failed (upstream or server error) | `functions/api/generate.js` |
-| `file uploaded` | User uploaded a room photo to cloud storage | `functions/api/upload.js` |
 | `checkout initiated` | Authenticated user started a Whop checkout for a plan | `functions/api/whop/checkout.js` |
 | `payment succeeded` | Whop webhook confirmed a successful payment or invoice | `functions/api/webhooks/whop.js` |
 | `subscription activated` | User's Whop membership activated and credits assigned | `functions/api/webhooks/whop.js` |

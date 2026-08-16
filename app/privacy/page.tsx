@@ -1,0 +1,11 @@
+import type { Metadata } from "next";
+import { LegalPage } from "@/components/legal/LegalPage";
+export const metadata: Metadata = { title: "Privacy Policy", robots: { index: false } };
+const sections = [
+  { heading: "Information we process", paragraphs: ["We process account and authentication details supplied through Clerk, project and subscription data stored through Convex, images and prompts you submit for requested design features, support correspondence, and transaction status supplied by Whop."], items: ["Optional analytics: sanitized page paths and selected product events only after analytics consent.", "Technical security data: network and request information processed by hosting, authentication, and abuse-prevention providers.", "We do not intentionally send uploaded image contents, prompt text, payment-card data, email addresses, or names to PostHog."] },
+  { heading: "Why we process it", paragraphs: ["Account, upload, generation, billing, and security data is processed to provide the service you request, secure it, meet legal obligations, and support your account. Optional product analytics is based on consent and can be withdrawn at any time."] },
+  { heading: "Service providers", paragraphs: ["Providers may include Clerk for authentication, Convex for application data and file storage, Cloudflare for delivery and security, Whop for checkout and subscriptions, PostHog for consent-based analytics, and the configured image-generation provider for a generation you request."] },
+  { heading: "Analytics safeguards", paragraphs: ["PostHog is configured without session replay, click or form autocapture, automatic exception capture, heatmaps, or marketing profiling. Query strings are excluded from page URLs. Withdrawing consent stops future browser analytics and consent-gated server events on that device."] },
+  { heading: "Retention and your rights", paragraphs: ["Data is retained only as long as needed for the stated purpose, security, disputes, and legal obligations. Depending on where you live, you may request access, correction, deletion, restriction, objection, or portability, and may complain to your data-protection authority."] },
+];
+export default function PrivacyPage() { return <LegalPage title="Privacy Policy" sections={sections} />; }

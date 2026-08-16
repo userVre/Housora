@@ -56,8 +56,8 @@ object ConvexConfig {
     private val rawUrl = EnvConfig.get("EXPO_PUBLIC_CONVEX_URL")
     val siteUrl: String = EnvConfig.get("EXPO_PUBLIC_CONVEX_SITE_URL")
     val deployment: String = EnvConfig.get("CONVEX_DEPLOYMENT")
-    val url: String = rawUrl.trim()
-    val isConfigured: Boolean = url.startsWith("https://") && url.endsWith(".convex.cloud/")
+    val url: String = rawUrl.trim().trimEnd('/')
+    val isConfigured: Boolean = url.startsWith("https://") && url.endsWith(".convex.cloud")
 
     init {
         println("[Convex] Initializing Convex configuration...")

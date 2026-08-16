@@ -320,7 +320,7 @@ async function build() {
 
   console.log(`\n=== Done! ${success} pages built, ${failed} failed ===`);
   console.log(`\nUpload the "dist/" folder to Cloudflare Pages.`);
-  console.log(`\nNOTE: Cloudflare Pages Functions are included for upload, image generation, and Whop checkout.`);
+  console.log(`\nNOTE: Cloudflare Pages Functions are included for image generation and Whop checkout. Uploads use Convex Storage.`);
   console.log('Configure the required Pages secrets/bindings before using those features in production. Clerk auth and Convex work client-side.\n');
 
   if (failed > 0) {

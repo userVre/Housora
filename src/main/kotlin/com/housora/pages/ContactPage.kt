@@ -1,7 +1,6 @@
 package com.housora.pages
 
 import kotlinx.html.*
-import kotlinx.html.dom.*
 import com.housora.templates.baseLayout
 
 fun HTML.contactPage() {
@@ -33,9 +32,9 @@ fun HTML.contactPage() {
                     h2 { attributes["data-i18n"] = "contact.social"; +"Social Media" }
                     p { attributes["data-i18n"] = "contact.social_desc"; +"Follow us and send us a message on our social channels:" }
                     ul(classes = "contact-social-links") {
-                        li { +"Instagram - "; a(href = "https://instagram.com/housoraapp", target = "_blank") { +"@housoraapp" } }
-                        li { +"TikTok - "; a(href = "https://tiktok.com/@housoraapp", target = "_blank") { +"@housoraapp" } }
-                        li { +"LinkedIn - "; a(href = "https://linkedin.com/company/housoraapp", target = "_blank") { +"Housora" } }
+                        li { +"Instagram - "; a(href = "https://www.instagram.com/housora_ai/", target = "_blank") { +"@housora_ai" } }
+                        li { +"Facebook - "; a(href = "https://www.facebook.com/profile.php?id=61590655134529", target = "_blank") { +"Housora" } }
+                        li { +"YouTube - "; a(href = "https://www.youtube.com/@Housora_AI", target = "_blank") { +"@Housora_AI" } }
                     }
                 }
 

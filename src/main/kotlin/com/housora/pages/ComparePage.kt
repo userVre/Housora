@@ -1,7 +1,6 @@
 package com.housora.pages
 
 import kotlinx.html.*
-import kotlinx.html.dom.*
 import com.housora.templates.baseLayout
 
 fun HTML.comparePage(competitorName: String, description: String, features: List<Triple<String, Boolean, Boolean>>, whySection: String) {
@@ -20,7 +19,7 @@ fun HTML.comparePage(competitorName: String, description: String, features: List
                     div(classes = "compare-page-left") {
                         h1(classes = "compare-page-title") { +"Housora AI vs $competitorName" }
                         p(classes = "compare-page-desc") { +description }
-                        a(href = "/create#designStudio", classes = "btn-primary btn-large") { +"Start now "; i("lucide arrow-right") {} }
+                        a(href = "/sign-up?redirect=/app/home", classes = "btn-primary btn-large") { +"Start now "; i("lucide arrow-right") {} }
                         p(classes = "compare-page-meta") { +"Product capabilities can change. Confirm current availability on each provider's website before purchasing." }
                     }
                     div(classes = "compare-page-right") {
@@ -56,6 +55,7 @@ fun HTML.comparePage(competitorName: String, description: String, features: List
                 }
                 div(classes = "compare-why-section") {
                     h2(classes = "compare-why-title") { +whySection }
+                    p { +"Housora starts from a photo of your own space and organizes focused tools for rooms, layouts, surfaces, exteriors, and visual walkthrough concepts. Compare the input requirements, editing controls, output handling, privacy terms, and current pricing on each provider's website before choosing a workflow." }
                 }
                 div(classes = "compare-cta") {
                     h2 { +"See which workflow fits your project" }

@@ -64,9 +64,15 @@ async function build() {
 
   const executable = path.join(root, 'build', 'install', 'housora-ai', 'bin', isWindows ? 'housora-ai.bat' : 'housora-ai');
   console.log(`Starting the build server at ${buildOrigin}...`);
+  const serverEnv = { ...process.env, PORT: String(port) };
+  const shellWebsiteUrl = process.env.PUBLIC_SITE_URL || process.env.YOUR_WEBSITE_URL;
+  // When neither variable exists in the shell, leave YOUR_WEBSITE_URL unset so
+  // the Kotlin dotenv loader can read the value from .env. Passing an empty
+  // string here overrides a valid .env value.
+  if (shellWebsiteUrl) serverEnv.YOUR_WEBSITE_URL = shellWebsiteUrl;
   const server = spawn(executable, [], {
     cwd: root,
-    env: { ...process.env, PORT: String(port), YOUR_WEBSITE_URL: process.env.PUBLIC_SITE_URL || process.env.YOUR_WEBSITE_URL || '' },
+    env: serverEnv,
     stdio: 'inherit',
     shell: isWindows
   });

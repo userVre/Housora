@@ -11,6 +11,7 @@ const {
 } = require('./asset-lib');
 
 const CLERK_VERSION = '6.25.7';
+const CLERK_UI_VERSION = '1.25.7';
 const POSTHOG_VERSION = '1.416.0';
 const CONVEX_VERSION = '1.43.0';
 const TOOL_KEYS = [
@@ -73,15 +74,16 @@ function buildVendorAssets() {
     throw new Error('The vendored Clerk browser license is missing.');
   }
 
-  // Clerk 6 includes its component UI in clerk.browser.js. The Kotlin layout
-  // still loads this historical path first, so keep an explicit no-op shim
-  // instead of executing the full SDK twice.
+  // Clerk's prebuilt components are versioned separately from clerk-js. Copy
+  // the browser bundle and every lazy-loaded chunk so the auth UI remains
+  // first-party hosted and works without depending on Clerk's CDN at runtime.
+  const clerkUiRoot = assertVersion('@clerk/ui', CLERK_UI_VERSION);
   const clerkUiOutput = path.join(STATIC_DIR, 'vendor', 'clerk-ui');
   fs.rmSync(clerkUiOutput, { recursive: true, force: true });
-  write(
-    path.join(clerkUiOutput, 'ui.browser.js'),
-    `/*! Compatibility shim: UI is bundled in @clerk/clerk-js ${CLERK_VERSION}. */\n`
-  );
+  const clerkUiDist = path.join(clerkUiRoot, 'dist');
+  const clerkUiFiles = fs.readdirSync(clerkUiDist).filter(file => file.endsWith('.js'));
+  for (const file of clerkUiFiles) copy(path.join(clerkUiDist, file), path.join(clerkUiOutput, file));
+  copy(path.join(clerkUiRoot, 'LICENSE'), path.join(clerkUiOutput, 'LICENSE.txt'));
 
   const posthogRoot = assertVersion('posthog-js', POSTHOG_VERSION);
   const posthogOutput = path.join(STATIC_DIR, 'vendor', 'posthog');
@@ -100,7 +102,12 @@ function buildVendorAssets() {
   copy(path.join(convexRoot, 'LICENSE'), path.join(convexOutput, 'LICENSE.txt'));
 
   return {
-    clerk: { version: CLERK_VERSION, files: clerkFiles.length + 2, source: 'vendored' },
+    clerk: {
+      version: CLERK_VERSION,
+      uiVersion: CLERK_UI_VERSION,
+      files: clerkFiles.length + clerkUiFiles.length + 3,
+      source: 'vendored'
+    },
     posthog: { version: POSTHOG_VERSION, files: 2, entrypoint: 'posthog-js/dist/array.js' },
     convex: { version: CONVEX_VERSION, files: 2, entrypoint: 'convex/dist/browser.bundle.js' }
   };

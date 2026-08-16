@@ -17,6 +17,23 @@ const VALID_PLAN_IDS = new Set([
 ]);
 const CURRENT_LEGAL_VERSION = '2026-08-13';
 
+function isConfiguredPlan(env, planId) {
+  const configured = [
+    env.WHOP_STANDARD_MONTHLY_PLAN_ID,
+    env.WHOP_STANDARD_YEARLY_PLAN_ID,
+    env.WHOP_PRO_MONTHLY_PLAN_ID,
+    env.WHOP_PRO_YEARLY_PLAN_ID,
+    env.WHOP_ENTREPRISE_STARTER_MONTHLY_PLAN_ID,
+    env.WHOP_ENTREPRISE_STARTER_YEARLY_PLAN_ID,
+    env.WHOP_ENTREPRISE_PLUS_MONTHLY_PLAN_ID,
+    env.WHOP_ENTREPRISE_PLUS_YEARLY_PLAN_ID,
+    env.WHOP_ENTREPRISE_PRO_MONTHLY_PLAN_ID,
+    env.WHOP_ENTREPRISE_PRO_YEARLY_PLAN_ID,
+    env.WHOP_ENTREPRISE_MAX_YEARLY_PLAN_ID,
+  ].filter(Boolean);
+  return configured.length ? configured.includes(planId) : VALID_PLAN_IDS.has(planId);
+}
+
 function checkoutOrigin(env) {
   const allowlist = String(env.CHECKOUT_REDIRECT_ORIGINS || '').split(',').map((value) => value.trim()).filter(Boolean);
   let website;
@@ -61,7 +78,7 @@ export async function onRequestPost({ request, env }) {
     userId = auth.userId;
     const intent = await readCheckoutIntent(request);
     const { planId } = intent;
-    if (!VALID_PLAN_IDS.has(planId)) throw new HttpError(400, 'invalid_plan', 'The selected plan is invalid.');
+    if (!isConfiguredPlan(env, planId)) throw new HttpError(400, 'invalid_plan', 'The selected plan is invalid.');
     if (!intent.termsAccepted || !intent.immediatePerformanceRequested || intent.legalVersion !== CURRENT_LEGAL_VERSION) {
       throw new HttpError(400, 'checkout_acknowledgement_required', 'Please review and accept the current checkout terms before continuing.');
     }

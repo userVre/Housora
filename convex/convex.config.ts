@@ -6,7 +6,9 @@ export default defineApp({
     CLERK_JWT_ISSUER_DOMAIN: v.string(),
     CLERK_WEBHOOK_SECRET: v.optional(v.string()),
     GENERATION_CALLBACK_SECRET: v.optional(v.string()),
-    WHOP_WEBHOOK_SECRET: v.string(),
+    // Optional so development deployments can run before Whop is configured.
+    // The webhook endpoint fails closed when this is absent.
+    WHOP_WEBHOOK_SECRET: v.optional(v.string()),
     WHOP_STANDARD_MONTHLY_PLAN_ID: v.optional(v.string()),
     WHOP_STANDARD_YEARLY_PLAN_ID: v.optional(v.string()),
     WHOP_PRO_MONTHLY_PLAN_ID: v.optional(v.string()),

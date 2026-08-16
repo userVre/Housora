@@ -1,7 +1,6 @@
 package com.housora.pages
 
 import kotlinx.html.*
-import kotlinx.html.dom.*
 import com.housora.templates.baseLayout
 import com.housora.WhopConfig
 
@@ -9,7 +8,7 @@ fun HTML.enterprisePage() {
     baseLayout("Growth, Scale & Unlimited Plans | Housora AI") {
         section(classes = "enterprise-hero") {
             div(classes = "enterprise-hero-inner") {
-                h1(classes = "enterprise-hero-subtitle") { +"More room to create, without unsupported promises" }
+                h1(classes = "enterprise-hero-subtitle") { +"More room to create for larger projects" }
                 p { +"Choose a higher image allowance when your projects need more exploration." }
                 a(href = "/pricing", classes = "enterprise-back-link") { +"< Back to all plans" }
             }
@@ -37,11 +36,11 @@ fun HTML.enterprisePage() {
                                         min = "750"
                                         max = "2250"
                                         step = "500"
-                                        value = "750"
+                                    value = "749"
                                         attributes["aria-label"] = "Unlimited plan monthly price"
                                     }
                                     div("slider-labels") {
-                                        span { +"€750" }; span { +"€1,250" }; span { +"€1,750" }; span { +"€2,250" }
+                                        span { +"€749" }; span { +"€1,249" }; span { +"€1,749" }; span { +"€2,249" }
                                     }
                                     div("slider-credits") { +"35,000 images / month" }
                                 }

@@ -1,7 +1,6 @@
 ﻿package com.housora.pages
 
 import kotlinx.html.*
-import kotlinx.html.dom.*
 import com.housora.templates.baseLayout
 
 fun HTML.signUpPage() {
@@ -15,7 +14,7 @@ fun HTML.signUpPage() {
                         }
                     }
                     h1("auth-heading") { attributes["data-i18n"] = "auth.create_account"; +"CREATE ACCOUNT" }
-                    p("auth-subtext") { attributes["data-i18n"] = "auth.start_journey"; +"Start your FREE room design journey" }
+                    p("auth-subtext") { attributes["data-i18n"] = "auth.start_journey"; +"Create your account to start designing" }
 
                     div("auth-social-buttons") {
                         button(classes = "auth-social-btn google-btn") {

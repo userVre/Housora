@@ -281,10 +281,8 @@ async function applyLimit(binding, key) {
   if (!result?.success) throw new HttpError(429, 'rate_limited', 'Too many requests. Please try again later.');
 }
 
-export async function enforceRateLimits(request, env, userId, kind) {
-  const names = kind === 'generation'
-    ? ['GENERATION_USER_RATE_LIMITER', 'GENERATION_IP_RATE_LIMITER']
-    : ['UPLOAD_USER_RATE_LIMITER', 'UPLOAD_IP_RATE_LIMITER'];
+export async function enforceRateLimits(request, env, userId) {
+  const names = ['GENERATION_USER_RATE_LIMITER', 'GENERATION_IP_RATE_LIMITER'];
   const [userKey, ipKey] = await Promise.all([sha256Hex(userId), sha256Hex(clientIp(request))]);
   await Promise.all([
     applyLimit(env[names[0]], userKey),

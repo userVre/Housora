@@ -94,6 +94,7 @@ fun HTML.interiorDesignPage() {
             "AI room makeover before and after" to "/examples"
         ),
         ctaHeading = "Ready to Redesign Your Space?",
-        ctaSubtext = "Explore a new visual direction for your own space."
+        ctaSubtext = "Explore a new visual direction for your own space.",
+        directFlow = true
     ))
 }

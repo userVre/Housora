@@ -17,54 +17,11 @@ export class SecurityCoordinator {
     }
     const path = new URL(request.url).pathname;
     try {
-      if (path === '/upload/reserve') return Response.json(await this.reserveUpload(body));
-      if (path === '/upload/commit') return Response.json(await this.finishUpload(body, true));
-      if (path === '/upload/release') return Response.json(await this.finishUpload(body, false));
       if (path === '/webhook/claim') return Response.json(await this.claimWebhook(body));
       return Response.json({ error: 'not_found' }, { status: 404 });
     } catch {
       return Response.json({ error: 'state_error' }, { status: 500 });
     }
-  }
-
-  async reserveUpload(body) {
-    const { assetId, bytes, maxBytes, maxFiles } = body;
-    if (!/^[0-9a-f-]{36}\.(?:jpg|png|webp)$/.test(assetId)
-      || !Number.isSafeInteger(bytes) || bytes < 1
-      || !Number.isSafeInteger(maxBytes) || maxBytes < 1
-      || !Number.isSafeInteger(maxFiles) || maxFiles < 1) {
-      return { reserved: false, reason: 'invalid' };
-    }
-    return this.state.storage.transaction(async (txn) => {
-      const quota = (await txn.get('upload-quota')) || { bytes: 0, files: 0 };
-      const existing = await txn.get(`upload:${assetId}`);
-      if (existing) return { reserved: false, reason: 'duplicate' };
-      if (quota.bytes + bytes > maxBytes || quota.files + 1 > maxFiles) {
-        return { reserved: false, reason: 'quota' };
-      }
-      await txn.put(`upload:${assetId}`, { bytes, state: 'reserved', createdAt: Date.now() });
-      await txn.put('upload-quota', { bytes: quota.bytes + bytes, files: quota.files + 1 });
-      return { reserved: true };
-    });
-  }
-
-  async finishUpload(body, committed) {
-    const assetId = String(body.assetId || '');
-    return this.state.storage.transaction(async (txn) => {
-      const record = await txn.get(`upload:${assetId}`);
-      if (!record) return { ok: false };
-      if (committed) {
-        await txn.put(`upload:${assetId}`, { ...record, state: 'committed' });
-      } else if (record.state === 'reserved') {
-        const quota = (await txn.get('upload-quota')) || { bytes: 0, files: 0 };
-        await txn.delete(`upload:${assetId}`);
-        await txn.put('upload-quota', {
-          bytes: Math.max(0, quota.bytes - record.bytes),
-          files: Math.max(0, quota.files - 1),
-        });
-      }
-      return { ok: true };
-    });
   }
 
   async claimWebhook(body) {

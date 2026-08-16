@@ -4,7 +4,7 @@ const MAX_CONSENT_AGE_MS = 180 * 24 * 60 * 60 * 1000;
 
 export function hasAnalyticsConsent(request) {
   const value = request?.headers?.get('X-Housora-Analytics-Consent') || '';
-  const match = /^v2;analytics=1;timestamp=(\d+)$/.exec(value);
+  const match = /^v(?:2|3);analytics=1;timestamp=(\d+)$/.exec(value);
   if (!match) return false;
   const timestamp = Number(match[1]);
   return Number.isFinite(timestamp) && timestamp <= Date.now() && Date.now() - timestamp <= MAX_CONSENT_AGE_MS;

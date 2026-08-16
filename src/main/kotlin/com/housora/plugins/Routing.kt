@@ -15,7 +15,6 @@ import io.ktor.client.statement.*
 import io.ktor.client.call.*
 import io.ktor.http.content.*
 import kotlinx.html.*
-import kotlinx.html.dom.*
 import com.housora.pages.*
 import com.housora.templates.baseLayout
 import com.housora.WhopConfig
@@ -27,7 +26,6 @@ import java.io.File
 import java.util.Base64
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
 
 data class PublicRoute(
@@ -47,7 +45,7 @@ data class PublicRoute(
  */
 val publicRouteManifest: List<PublicRoute> = buildList {
     listOf(
-        "/", "/design", "/reference-style", "/pricing", "/app/home",
+        "/", "/design", "/reference-style", "/pricing", "/app/home", "/app/usage", "/app/plan",
         "/interior-design", "/layout-boost", "/exterior-design", "/garden-design",
         "/floor-restyle", "/wall-texture", "/video-walkthrough", "/floorplan-to-3d",
         "/photo-to-render", "/ai-stairs-design", "/ai-doors-design",
@@ -208,11 +206,13 @@ fun Application.configureRouting() {
     val uploadRoot = File(EnvConfig.get("UPLOAD_ROOT").ifBlank { "uploads" })
 
     routing {
-        static("/static") {
-            if (staticRoot.exists()) files(staticRoot) else resource("static")
+        if (staticRoot.exists()) {
+            staticFiles("/static", staticRoot)
+        } else {
+            staticResources("/static", "static")
         }
-        static("/uploads") {
-            if (uploadRoot.exists()) files(uploadRoot)
+        if (uploadRoot.exists()) {
+            staticFiles("/uploads", uploadRoot)
         }
         listOf("favicon.ico", "favicon.svg", "apple-touch-icon.png", "icon-192.png", "icon-512.png", "og-image.png", "site.webmanifest").forEach { assetName ->
             get("/$assetName") {
@@ -235,6 +235,8 @@ fun Application.configureRouting() {
         get("/reference-style") { call.respondHtml { referenceStylePage(call.request.queryParameters["reference"]) } }
         get("/pricing") { call.respondHtml { pricingPage() } }
         get("/app/home") { call.respondHtml { appHomePage() } }
+        get("/app/usage") { call.respondHtml { workspaceUsagePage() } }
+        get("/app/plan") { call.respondHtml { workspacePlanPage() } }
 
         // AI Tool Pages
         get("/interior-design") { call.respondHtml { interiorDesignPage() } }
@@ -415,7 +417,7 @@ Prices, taxes, renewal terms, annual billing details, and feature limits shown a
             call.respondText("User-agent: *\nAllow: /\nDisallow: /app/\nDisallow: /design\nDisallow: /projects\nDisallow: /sign-in\nDisallow: /sign-up\nDisallow: /sign-out\nDisallow: /delete-account\nSitemap: ${WebsiteConfig.resolveUrl("/sitemap.xml")}\n", contentType = ContentType.Text.Plain)
         }
         get("/sitemap.xml") {
-            val sitemapPaths = publicRouteManifest.filter { it.behavior == "page" && it.export && it.path !in setOf("/app/home", "/design", "/projects", "/sign-in", "/sign-up", "/sign-out", "/delete-account", "/privacy", "/terms", "/refund-policy", "/cookies") }.map { it.path }
+            val sitemapPaths = publicRouteManifest.filter { it.behavior == "page" && it.export && it.path !in setOf("/app/home", "/app/usage", "/app/plan", "/design", "/projects", "/sign-in", "/sign-up", "/sign-out", "/delete-account", "/privacy", "/terms", "/refund-policy", "/cookies") }.map { it.path }
             val xml = buildString {
                 append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
                 append("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">")
@@ -476,6 +478,14 @@ Prices, taxes, renewal terms, annual billing details, and feature limits shown a
             call.response.headers.append(HttpHeaders.AccessControlAllowOrigin, "*")
             call.response.headers.append(HttpHeaders.AccessControlAllowMethods, "POST, OPTIONS")
             call.response.headers.append(HttpHeaders.AccessControlAllowHeaders, "Content-Type, Authorization")
+            val bearerToken = call.request.headers[HttpHeaders.Authorization]
+                ?.takeIf { it.startsWith("Bearer ", ignoreCase = true) }
+                ?.substringAfter(' ')
+                ?.trim()
+            if (bearerToken.isNullOrBlank() || verifyClerkSession(bearerToken) == null) {
+                call.respondText("""{"error":{"message":"Sign up or sign in to create a design."}}""", status = HttpStatusCode.Unauthorized, contentType = ContentType.Application.Json)
+                return@post
+            }
             if (!ImageGenerationConfig.isConfigured) {
                 call.respondText("""{"error":"Add IMAGE_API_URL and IMAGE_API_KEY"}""", status = HttpStatusCode.ServiceUnavailable, contentType = ContentType.Application.Json)
                 return@post

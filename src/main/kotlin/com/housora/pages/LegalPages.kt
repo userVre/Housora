@@ -1,7 +1,6 @@
 package com.housora.pages
 
 import kotlinx.html.*
-import kotlinx.html.dom.*
 import com.housora.templates.baseLayout
 
 private const val CONTACT_EMAIL = "support@housora.app"

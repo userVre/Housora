@@ -2,8 +2,6 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { before, test } from 'node:test';
 import { onRequestPost as generate } from '../api/generate.js';
-import { onRequestPost as upload, onRequestOptions as uploadOptions } from '../api/upload.js';
-import { onRequestGet as retrieveAsset } from '../api/assets/[assetId].js';
 import { onRequestPost as webhook } from '../api/webhooks/whop.js';
 import { onRequestPost as checkout } from '../api/whop/checkout.js';
 
@@ -60,8 +58,6 @@ function rateEnv(extra = {}) {
   return authEnv({
     GENERATION_USER_RATE_LIMITER: allowLimit(),
     GENERATION_IP_RATE_LIMITER: allowLimit(),
-    UPLOAD_USER_RATE_LIMITER: allowLimit(),
-    UPLOAD_IP_RATE_LIMITER: allowLimit(),
     ...extra,
   });
 }
@@ -83,23 +79,12 @@ function jsonBody(image = png()) {
 class CoordinatorMock {
   constructor() {
     this.events = new Map();
-    this.uploads = new Map();
     this.eventCursor = new Map();
   }
 
   async fetch(input, init) {
     const path = new URL(input).pathname;
     const body = JSON.parse(init.body);
-    if (path === '/upload/reserve') {
-      if (this.uploads.has(body.assetId)) return Response.json({ reserved: false, reason: 'duplicate' });
-      this.uploads.set(body.assetId, body.bytes);
-      return Response.json({ reserved: true });
-    }
-    if (path === '/upload/commit') return Response.json({ ok: true });
-    if (path === '/upload/release') {
-      this.uploads.delete(body.assetId);
-      return Response.json({ ok: true });
-    }
     if (path === '/webhook/claim') {
       if (this.events.has(body.eventId)) return Response.json({ accepted: false, reason: 'duplicate' });
       const cursor = this.eventCursor.get(body.entityId);
@@ -112,21 +97,6 @@ class CoordinatorMock {
     }
     return Response.json({}, { status: 404 });
   }
-}
-
-class BucketMock {
-  constructor() { this.values = new Map(); }
-
-  async put(key, body, options) {
-    this.values.set(key, {
-      body: new Uint8Array(body),
-      customMetadata: options.customMetadata,
-      httpMetadata: options.httpMetadata,
-      httpEtag: '"etag"',
-    });
-  }
-
-  async get(key) { return this.values.get(key) || null; }
 }
 
 async function signedWebhook(secret, eventId, body, timestamp = Math.floor(Date.now() / 1000)) {
@@ -213,18 +183,6 @@ test('generation rejects an oversized body before decoding base64', async () => 
   assert.equal((await response.json()).error.code, 'body_too_large');
 });
 
-test('upload validates magic bytes against the declared MIME type', async () => {
-  const token = await tokenFor('user-1');
-  const response = await upload({
-    request: request('https://api.test/api/upload', token, {
-      method: 'POST', headers: { 'Content-Type': 'image/jpeg' }, body: png(),
-    }),
-    env: rateEnv({ MEDIA_BUCKET: new BucketMock(), SECURITY_COORDINATOR: new CoordinatorMock() }),
-  });
-  assert.equal(response.status, 415);
-  assert.equal((await response.json()).error.code, 'image_type_mismatch');
-});
-
 test('generation rate limits are enforced', async () => {
   const token = await tokenFor('user-1');
   const response = await generate({
@@ -297,23 +255,6 @@ test('the browser cannot deduct, complete, or refund generations', () => {
   assert.equal(browser.includes("mutation('users:failGeneration'"), false);
 });
 
-test('CORS allows only configured origins and emits security headers', async () => {
-  const rejected = uploadOptions({
-    request: new Request('https://api.test/api/upload', { method: 'OPTIONS', headers: { Origin: 'https://evil.test' } }),
-    env: authEnv(),
-  });
-  assert.equal(rejected.status, 403);
-  assert.equal(rejected.headers.get('Access-Control-Allow-Origin'), null);
-
-  const allowed = uploadOptions({
-    request: new Request('https://api.test/api/upload', { method: 'OPTIONS', headers: { Origin: 'https://housora.test' } }),
-    env: authEnv(),
-  });
-  assert.equal(allowed.status, 204);
-  assert.equal(allowed.headers.get('Access-Control-Allow-Origin'), 'https://housora.test');
-  assert.equal(allowed.headers.get('X-Content-Type-Options'), 'nosniff');
-});
-
 test('checkout redirects require an HTTPS allowlist and mock mode requires explicit development flags', async () => {
   const token = await tokenFor('user-1');
   const body = 'planId=plan_yxeVUCgF75vlO&termsAccepted=true&immediatePerformanceRequested=true&legalVersion=2026-08-13';
@@ -375,48 +316,6 @@ test('checkout requires both legal acknowledgements and the current policy versi
   });
   assert.equal(response.status, 400);
   assert.equal((await response.json()).error.code, 'checkout_acknowledgement_required');
-});
-
-test('uploaded assets are private to their authenticated owner', async () => {
-  const bucket = new BucketMock();
-  const env = rateEnv({ MEDIA_BUCKET: bucket, SECURITY_COORDINATOR: new CoordinatorMock() });
-  const ownerToken = await tokenFor('owner');
-  const uploaded = await upload({
-    request: request('https://api.test/api/upload', ownerToken, {
-      method: 'POST', headers: { 'Content-Type': 'image/png' }, body: png(),
-    }),
-    env,
-  });
-  assert.equal(uploaded.status, 201);
-  const { assetId } = await uploaded.json();
-
-  const ownerResponse = await retrieveAsset({
-    request: request(`https://api.test/api/assets/${assetId}`, ownerToken), env, params: { assetId },
-  });
-  assert.equal(ownerResponse.status, 200);
-  assert.equal(ownerResponse.headers.get('Cache-Control'), 'private, no-store');
-
-  const intruderResponse = await retrieveAsset({
-    request: request(`https://api.test/api/assets/${assetId}`, await tokenFor('intruder')), env, params: { assetId },
-  });
-  assert.equal(intruderResponse.status, 404);
-});
-
-test('per-user upload quotas fail closed when exhausted', async () => {
-  const token = await tokenFor('owner');
-  const coordinator = new CoordinatorMock();
-  coordinator.fetch = async (input) => {
-    if (new URL(input).pathname === '/upload/reserve') return Response.json({ reserved: false, reason: 'quota' });
-    return Response.json({ ok: true });
-  };
-  const response = await upload({
-    request: request('https://api.test/api/upload', token, {
-      method: 'POST', headers: { 'Content-Type': 'image/png' }, body: png(),
-    }),
-    env: rateEnv({ MEDIA_BUCKET: new BucketMock(), SECURITY_COORDINATOR: coordinator }),
-  });
-  assert.equal(response.status, 429);
-  assert.equal((await response.json()).error.code, 'upload_quota_exceeded');
 });
 
 test('invalid webhook signatures are rejected', async () => {

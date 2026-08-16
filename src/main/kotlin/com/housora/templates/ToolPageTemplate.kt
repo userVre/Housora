@@ -59,6 +59,7 @@ data class ToolPageConfig(
     val optionGroups: List<ToolOptionGroup> = emptyList(),
     val styleDisplayMode: String = "thumbnails",
     val extraStyleGroups: List<Pair<String, List<String>>> = emptyList(),
+    val directFlow: Boolean = false,
     // Legacy fields kept for backward compatibility
     val problemHeading: String = "",
     val problemDescription: String = "",
@@ -96,7 +97,7 @@ fun HTML.toolPage(config: ToolPageConfig) {
         if (config.colorPalettes.isNotEmpty()) add(ToolOptionGroup("COLOR PALETTE", config.colorPalettes.map { it to "" }, "palette"))
     }
 
-    baseLayout(config.pageTitle, bodyClass = "page-tool") {
+    baseLayout(config.pageTitle, bodyClass = if (config.directFlow) "page-tool page-tool-direct" else "page-tool") {
 
         // One semantic heading for the page; responsive hero variants are visual.
         h1(classes = "sr-only") { +withoutUnverifiedSpeedClaim(config.heroHeading.ifEmpty { config.pageTitle }) }
@@ -213,7 +214,22 @@ fun HTML.toolPage(config: ToolPageConfig) {
         // ===== INTERACTIVE TOOL SECTION =====
         section(classes = "id-configure-section") {
             attributes["id"] = "try-it-now"
-            h2(classes = "id-configure-title") { +config.interactiveHeading }
+            div(classes = "workspace-tool-heading") {
+                div {
+                    span(classes = "workspace-eyebrow") { +"AI TOOL" }
+                    h2(classes = "id-configure-title") { +"AI ${config.toolName}" }
+                    p { +"Upload your image, choose your preferences, and generate a design you can review." }
+                }
+                ol(classes = "workspace-tool-steps") {
+                    attributes["aria-label"] = "Generation steps"
+                    listOf("Upload", "Preferences", "Generate").forEachIndexed { index, step ->
+                        li {
+                            span { +(index + 1).toString() }
+                            +step
+                        }
+                    }
+                }
+            }
             div(classes = "id-configure-inner") {
                 div(classes = "id-configure-grid") {
                     // Upload Zone
@@ -241,7 +257,7 @@ fun HTML.toolPage(config: ToolPageConfig) {
                                 }
                                 span(classes = "id-upload-title") { attributes["data-i18n"] = "tool.upload_title"; attributes["data-i18n-tool"] = config.toolName; +"AI ${config.toolName.uppercase()}" }
                                 span(classes = "id-upload-subtitle") { id = "toolUploadHelp"; +withoutUnverifiedSpeedClaim(config.uploadDescription) }
-                                span(classes = "id-upload-formats") { attributes["data-i18n"] = "tool.upload_formats"; +"FREE" }
+                                span(classes = "id-upload-formats") { +"JPG · PNG · WEBP · MAX 10 MB" }
                             }
                         }
                         p(classes = "id-field-error") {

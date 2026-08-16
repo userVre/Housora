@@ -1,7 +1,6 @@
 package com.housora.pages
 
 import kotlinx.html.*
-import kotlinx.html.dom.*
 import com.housora.templates.baseLayout
 
 fun HTML.deleteAccountPage() {
@@ -10,8 +9,13 @@ fun HTML.deleteAccountPage() {
             div(classes = "legal-inner") {
                 h1(classes = "legal-title") { +"Delete your Housora account" }
                 div(classes = "legal-content") {
-                    p { +"This permanently removes your Clerk account. Your projects and generated files may require separate retention or deletion processing." }
+                    p { +"This permanently removes your sign-in account and starts deletion of Housora-controlled projects, generations, and uploads, subject to legal retention requirements and limited provider backup cycles." }
                     p { +"This action cannot be undone. Make sure you are signed in to the account you want to remove." }
+                    label {
+                        attributes["for"] = "deleteAccountConfirmed"
+                        input(type = InputType.checkBox) { id = "deleteAccountConfirmed" }
+                        +" I understand that this permanently deletes my account and cannot be undone."
+                    }
                     button(classes = "btn-primary btn-large") {
                         id = "deleteAccountButton"
                         attributes["type"] = "button"
@@ -30,6 +34,7 @@ fun HTML.deleteAccountPage() {
                 +"""
                 (function() {
                     const button = document.getElementById('deleteAccountButton');
+                    const confirmation = document.getElementById('deleteAccountConfirmed');
                     const status = document.getElementById('deleteAccountStatus');
                     if (!button) return;
                     function setStatus(message, isError) {
@@ -39,6 +44,11 @@ fun HTML.deleteAccountPage() {
                         }
                     }
                     async function deleteAccount() {
+                        if (!confirmation || !confirmation.checked) {
+                            setStatus('Confirm that you understand the permanent deletion before continuing.', true);
+                            if (confirmation) confirmation.focus();
+                            return;
+                        }
                         if (!confirm('Delete your Housora account permanently?')) return;
                         if (!window.Clerk || !window.Clerk.user) {
                             setStatus('Please sign in first.', true);

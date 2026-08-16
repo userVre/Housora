@@ -1,7 +1,6 @@
 package com.housora.templates
 
 import kotlinx.html.*
-import kotlinx.html.dom.*
 import com.housora.EnvConfig
 import com.housora.ClerkConfig
 import com.housora.ConvexConfig
@@ -52,7 +51,7 @@ private fun inferredPath(title: String): String = when {
 private fun seoFor(path: String): SeoDefaults = when (path) {
     "/" -> SeoDefaults("Explore practical AI design concepts for your home from a photo.", organizationSchema = true, softwareSchema = true)
     "/pricing" -> SeoDefaults("See Housora plans, included image allowances, billing periods, and current checkout terms.", softwareSchema = true)
-    "/app/home", "/design", "/projects", "/sign-in", "/sign-up", "/sign-out", "/delete-account" -> SeoDefaults("Use Housora to explore and manage AI-assisted home design concepts.", indexable = false)
+    "/app/home", "/app/usage", "/app/plan", "/design", "/projects", "/sign-in", "/sign-up", "/sign-out", "/delete-account" -> SeoDefaults("Use Housora to explore and manage AI-assisted home design concepts.", indexable = false)
     "/blog" -> SeoDefaults("Practical ideas for planning rooms, materials, colour, layouts, and AI-assisted home design.")
     in setOf("/interior-design", "/layout-boost", "/exterior-design", "/garden-design", "/floor-restyle", "/wall-texture", "/video-walkthrough", "/floorplan-to-3d", "/photo-to-render", "/ai-stairs-design", "/ai-doors-design", "/ai-windows-design", "/ai-kitchen-design", "/ai-bathroom-design", "/reference-style") -> SeoDefaults("Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.", softwareSchema = true)
     "/enterprise" -> SeoDefaults("Higher image allowances and support options for teams exploring home design concepts.", softwareSchema = true)
@@ -61,7 +60,7 @@ private fun seoFor(path: String): SeoDefaults = when (path) {
     else -> SeoDefaults("Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.")
 }
 
-private val aiTools = listOf(
+val aiTools = listOf(
     AITool("AI Interior Design", "/interior-design"),
     AITool("AI Layout Boost", "/layout-boost"),
     AITool("AI Exterior Design", "/exterior-design"),
@@ -79,12 +78,139 @@ private val aiTools = listOf(
     AITool("Reference Style", "/reference-style")
 )
 
+private val workspacePaths = aiTools.map { it.path }.toSet() + setOf(
+    "/app/home", "/app/usage", "/app/plan", "/design", "/projects"
+)
+
+private val protectedPaths = workspacePaths + setOf("/delete-account")
+
+private fun FlowContent.workspaceIcon(name: String) {
+    val letter = name.removePrefix("AI ").firstOrNull()?.uppercase() ?: "H"
+    span(classes = "workspace-nav-icon") { attributes["aria-hidden"] = "true"; +letter }
+}
+
+private fun BODY.workspaceNavigation(currentPath: String) {
+    val toolGroups = listOf(
+        "Spaces" to setOf(
+            "/interior-design", "/layout-boost", "/exterior-design", "/garden-design",
+            "/ai-kitchen-design", "/ai-bathroom-design"
+        ),
+        "Elements" to setOf(
+            "/wall-texture", "/floor-restyle", "/ai-stairs-design", "/ai-doors-design",
+            "/ai-windows-design"
+        ),
+        "Visualize" to setOf(
+            "/video-walkthrough", "/floorplan-to-3d", "/photo-to-render", "/reference-style"
+        )
+    )
+    div(classes = "workspace-mobile-backdrop") { attributes["id"] = "workspace-mobile-backdrop" }
+    header(classes = "workspace-mobile-header") {
+        button(classes = "workspace-mobile-menu") {
+            attributes["id"] = "workspace-mobile-menu"
+            attributes["type"] = "button"
+            attributes["aria-label"] = "Open workspace navigation"
+            unsafe { +"""<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>""" }
+        }
+        a(href = "/app/home", classes = "workspace-mobile-logo") { +"HOUSORA" }
+        a(href = "/app/home#workspace-tools", classes = "workspace-mobile-new") { +"New" }
+    }
+    aside(classes = "workspace-app-sidebar") {
+        attributes["id"] = "workspace-app-sidebar"
+        attributes["aria-label"] = "Workspace navigation"
+        div(classes = "workspace-sidebar-brand") {
+            a(href = "/app/home", classes = "workspace-brand-link") {
+                span(classes = "brand-mark") { unsafe { +"""<svg width="25" height="25" viewBox="0 0 32 32" aria-hidden="true"><path d="M7 5v22M25 5v22M7 16c5-6 13-6 18 0" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>""" } }
+                span { +"HOUSORA" }
+            }
+            button(classes = "workspace-sidebar-close") {
+                attributes["id"] = "workspace-sidebar-close"
+                attributes["type"] = "button"
+                attributes["aria-label"] = "Close workspace navigation"
+                +"×"
+            }
+        }
+        nav(classes = "workspace-sidebar-scroll") {
+            div(classes = "workspace-nav-group workspace-nav-primary") {
+                listOf(
+                    Triple("Workspace Home", "/app/home", "H"),
+                    Triple("Create Design", "/app/home#workspace-tools", "+"),
+                    Triple("My Projects", "/projects", "P"),
+                    Triple("Usage", "/app/usage", "U")
+                ).forEach { (label, href, icon) ->
+                    a(href = href, classes = "workspace-nav-link${if (currentPath == href) " is-active" else ""}") {
+                        span(classes = "workspace-nav-icon") { attributes["aria-hidden"] = "true"; +icon }
+                        span { +label }
+                    }
+                }
+            }
+            p(classes = "workspace-nav-label") { +"AI TOOLS" }
+            div(classes = "workspace-tool-categories") {
+                toolGroups.forEachIndexed { index, (groupName, paths) ->
+                    val groupTools = aiTools.filter { it.path in paths }
+                    details(classes = "workspace-tool-category") {
+                        if (currentPath in paths || (currentPath == "/app/home" && index == 0)) {
+                            attributes["open"] = ""
+                        }
+                        summary {
+                            span { +groupName }
+                            span(classes = "workspace-category-chevron") { attributes["aria-hidden"] = "true"; +"⌄" }
+                        }
+                        div(classes = "workspace-nav-group workspace-tool-links") {
+                            groupTools.forEach { tool ->
+                                a(href = tool.path, classes = "workspace-nav-link${if (currentPath == tool.path) " is-active" else ""}") {
+                                    workspaceIcon(tool.name)
+                                    span { +tool.name.removePrefix("AI ") }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        div(classes = "workspace-sidebar-footer") {
+            div(classes = "workspace-usage-card") {
+                div(classes = "workspace-usage-heading") {
+                    div { a(href = "/app/usage", classes = "workspace-usage-title") { +"Usage" }; strong { attributes["id"] = "workspace-plan-name"; +"Free" } }
+                    a(href = "/app/plan") { +"Upgrade" }
+                }
+                p { attributes["id"] = "workspace-usage-count"; +"— images remaining" }
+                div(classes = "workspace-usage-track") { span { attributes["id"] = "workspace-usage-progress" } }
+            }
+            div(classes = "workspace-profile-wrap") {
+                button(classes = "workspace-profile-button") {
+                    attributes["id"] = "workspace-profile-button"
+                    attributes["type"] = "button"
+                    attributes["aria-expanded"] = "false"
+                    span(classes = "workspace-profile-avatar") { attributes["id"] = "workspace-user-avatar"; +"H" }
+                    span(classes = "workspace-profile-copy") {
+                        strong { attributes["id"] = "workspace-user-name"; +"My account" }
+                        small { attributes["id"] = "workspace-user-email"; +"Account settings" }
+                    }
+                    span(classes = "workspace-profile-chevron") { +"⌃" }
+                }
+                div(classes = "workspace-profile-menu") {
+                    attributes["id"] = "workspace-profile-menu"
+                    button(classes = "workspace-account-settings") {
+                        attributes["id"] = "workspace-account-settings"
+                        attributes["type"] = "button"
+                        +"Account settings"
+                    }
+                    a(href = "/app/plan") { +"Plan & usage" }
+                    a(href = "/pricing#billing-help") { +"Billing support" }
+                    a(href = "/sign-out") { +"Sign out" }
+                }
+            }
+        }
+    }
+}
+
 fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", structuredData: String? = null, content: DIV.() -> Unit) {
     val canonicalPath = if (path.isBlank()) inferredPath(title) else path
     val seo = seoFor(canonicalPath)
     val canonicalUrl = WebsiteConfig.resolveUrl(canonicalPath)
-    val convexPaths = aiTools.map { it.path }.toSet() + setOf("/", "/design", "/projects", "/pricing", "/app/home", "/delete-account")
+    val convexPaths = aiTools.map { it.path }.toSet() + setOf("/", "/design", "/projects", "/pricing", "/app/home", "/app/usage", "/app/plan", "/delete-account")
     val needsConvexClient = canonicalPath in convexPaths
+    val isWorkspace = canonicalPath in workspacePaths
     attributes["lang"] = "en"
     head {
         meta(charset = "utf-8")
@@ -243,7 +369,9 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
             }
         }
     }
-    body(classes = bodyClass) {
+    body(classes = listOf(bodyClass, if (isWorkspace) "workspace-app auth-required" else "").filter { it.isNotBlank() }.joinToString(" ")) {
+        attributes["data-protected-route"] = (canonicalPath in protectedPaths).toString()
+        attributes["data-workspace"] = isWorkspace.toString()
         a(href = "#main-content", classes = "skip-link") { +"Skip to main content" }
         // Clerk loading overlay (hidden by default, shown by JS during init)
         if (ClerkConfig.isConfigured) {
@@ -257,8 +385,10 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
             }
         }
 
+        if (isWorkspace) workspaceNavigation(canonicalPath)
+
         // Page wrapper
-        div(classes = if (path == "/projects") "projects-shell" else "create-page") {
+        div(classes = listOf(if (path == "/projects") "projects-shell" else "create-page", if (isWorkspace) "workspace-page-shell" else "").filter { it.isNotBlank() }.joinToString(" ")) {
 
         // Header
         header(classes = "create-header") {
@@ -297,8 +427,8 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                         }
                     }
                     button(classes = "browse-catalog-btn start-free-btn") {
-                        attributes["onclick"] = "window.location.href=(window.Clerk && window.Clerk.user ? '/app/home' : '/#first-design')"
-                        +"START FREE DESIGN"
+                        attributes["onclick"] = "window.location.href=(window.Clerk && window.Clerk.user ? '/app/home' : '/sign-up?redirect=/app/home')"
+                        +"CREATE DESIGN"
                     }
                 }
                 button(classes = "header-search-icon-mobile") {
@@ -481,8 +611,9 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
         }
         } // end create-page
 
-        // Serve Clerk locally so authentication is reliable even when a browser
-        // blocks third-party CDNs or the Clerk custom domain is unavailable.
+        // Keep the separately versioned Clerk UI and SDK first-party hosted.
+        // Script order matters: clerk.load() receives the UI constructor that
+        // the first bundle registers on window.
         script(src = "/static/vendor/clerk-ui/ui.browser.js") {
             attributes["defer"] = "true"
         }
@@ -515,7 +646,7 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                 +"""
                 (function() {
                     var clerkPubKey = '${ClerkConfig.publishableKey}';
-                    var convexUrl = '${ConvexConfig.url}';
+                    var convexUrl = '${ConvexConfig.url}'.replace(/\/+$/, '');
                     var isDev = window.location.hostname === 'localhost';
                     var loadingEl = document.getElementById('clerk-loading');
 
@@ -576,7 +707,10 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                                             return state.user.getToken();
                                         });
                                     } else {
-                                        window.convexClient.clearAuth();
+                                        // The standalone browser client does not expose the
+                                        // React client's clearAuth helper. A null token fetcher
+                                        // is the supported signed-out state for this bundle.
+                                        window.convexClient.setAuth(function() { return Promise.resolve(null); });
                                     }
                                     updateSidebarAuth(Clerk);
                                 });
@@ -603,7 +737,7 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                             window.location.replace('/app/home');
                             return;
                         }
-                        if (!Clerk.user && publicPath.indexOf('/app') === 0) {
+                        if (!Clerk.user && document.body.dataset.protectedRoute === 'true') {
                             window.location.replace('/sign-in?redirect=' + encodeURIComponent(window.location.pathname + window.location.search));
                             return;
                         }
@@ -618,6 +752,23 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                                 email: Clerk.user.emailAddresses[0]?.emailAddress || '',
                                 imageUrl: Clerk.user.imageUrl || ''
                             };
+                            document.body.classList.add('is-authenticated', 'auth-resolved');
+                            var workspaceName = document.getElementById('workspace-user-name');
+                            var workspaceEmail = document.getElementById('workspace-user-email');
+                            var workspaceAvatar = document.getElementById('workspace-user-avatar');
+                            if (workspaceName) workspaceName.textContent = window.HousoraUser.name;
+                            if (workspaceEmail) workspaceEmail.textContent = window.HousoraUser.email;
+                            if (workspaceAvatar) {
+                                if (window.HousoraUser.imageUrl) {
+                                    var workspaceAvatarImage = document.createElement('img');
+                                    workspaceAvatarImage.src = window.HousoraUser.imageUrl;
+                                    workspaceAvatarImage.alt = '';
+                                    workspaceAvatar.replaceChildren(workspaceAvatarImage);
+                                } else {
+                                    workspaceAvatar.textContent = window.HousoraUser.name.charAt(0).toUpperCase();
+                                }
+                            }
+                            window.dispatchEvent(new CustomEvent('housora:authenticated'));
                             // Show user info in sidebar
                             if (userInfo) {
                                 userInfo.style.display = 'flex';
@@ -654,6 +805,7 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                                 });
                             }
                         } else {
+                            document.body.classList.remove('is-authenticated');
                             if (window.HousoraAnalytics) window.HousoraAnalytics.reset();
                             if (accountLinks) accountLinks.style.display = 'none';
                             if (userInfo) userInfo.style.display = 'none';

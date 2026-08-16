@@ -6,6 +6,9 @@
 # Build output
 build/
 dist/
+.next/
+.open-next/
+.wrangler/
 *.jar
 *.class
 !gradle/wrapper/gradle-wrapper.jar
@@ -39,6 +42,7 @@ static/**/*.mjs
 
 # Logs and local screenshots
 *.log
+reports/
 screenshots/
 mywebsitescreenshoots/
 
@@ -46,3 +50,4 @@ mywebsitescreenshoots/
 convex/_generated/
 uploads/
 .wrangler/tmp/
+.dev.vars

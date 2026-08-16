@@ -42,7 +42,7 @@ export async function onRequestPost({ request, env }) {
   try {
     assertCors(request, env);
     auth = await requireClerkAuth(request, env);
-    await enforceRateLimits(request, env, auth.userId, 'generation');
+    await enforceRateLimits(request, env, auth.userId);
     if (!env.IMAGE_API_URL || !env.IMAGE_API_KEY) {
       throw new HttpError(503, 'generation_unavailable', 'Image generation is temporarily unavailable.');
     }

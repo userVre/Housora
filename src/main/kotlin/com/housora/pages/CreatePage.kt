@@ -1,10 +1,9 @@
 package com.housora.pages
 
 import kotlinx.html.*
-import kotlinx.html.dom.*
 import com.housora.templates.baseLayout
 
-fun HTML.createPage() {
+fun HTML.homePage() {
     baseLayout("Housora - AI Room Design | Upload a Photo & Redesign", bodyClass = "marketing-home") {
         h1(classes = "sr-only") {
             attributes["data-i18n"] = "create.seo_title"
@@ -294,9 +293,9 @@ fun HTML.createPage() {
             div("marketing-intro-inner") {
                 span("marketing-kicker") { attributes["data-i18n"] = "create.marketing_kicker"; +"AI HOME DESIGN" }
                 h2 { attributes["data-i18n"] = "create.marketing_title"; +"Redesign your room with AI." }
-                p { attributes["data-i18n"] = "create.marketing_subtitle"; +"Upload a photo, choose a direction, and create your first design free." }
+                p { attributes["data-i18n"] = "create.marketing_subtitle"; +"Explore Housora's AI design tools, then create an account to start designing." }
                 div("marketing-intro-actions") {
-                    a(href = "#first-design", classes = "btn-primary btn-large") { attributes["data-i18n"] = "create.marketing_primary"; +"CREATE YOUR FIRST DESIGN" }
+                    a(href = "/sign-up?redirect=/app/home", classes = "btn-primary btn-large") { attributes["data-i18n"] = "create.marketing_primary"; +"START DESIGNING" }
                     a(href = "/examples", classes = "btn-secondary btn-large") { attributes["data-i18n"] = "create.marketing_secondary"; +"EXPLORE EXAMPLES" }
                 }
             }
@@ -305,6 +304,7 @@ fun HTML.createPage() {
         // ===== TRY IT YOURSELF =====
         section("demo-section") {
             id = "first-design"
+            attributes["hidden"] = "hidden"
             attributes["tabindex"] = "-1"
             span("sr-only") {
                 id = "designStudio"
