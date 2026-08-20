@@ -1977,6 +1977,31 @@ function initCookiebot() {
     });
 }
 
+// Mobile footer accordions retain the full desktop sitemap without creating a long first view.
+function initFooterAccordions() {
+    document.querySelectorAll('.footer-accordion-trigger').forEach(function(trigger) {
+        var content = document.getElementById(trigger.getAttribute('aria-controls'));
+        if (!content) return;
+        trigger.addEventListener('click', function() {
+            if (!window.matchMedia('(max-width: 700px)').matches) return;
+            var expanded = trigger.getAttribute('aria-expanded') === 'true';
+            trigger.setAttribute('aria-expanded', String(!expanded));
+            content.hidden = expanded;
+        });
+    });
+    function syncFooter() {
+        var mobile = window.matchMedia('(max-width: 700px)').matches;
+        document.querySelectorAll('.footer-accordion-trigger').forEach(function(trigger) {
+            var content = document.getElementById(trigger.getAttribute('aria-controls'));
+            if (!content) return;
+            if (mobile) { trigger.setAttribute('aria-expanded', 'false'); content.hidden = true; }
+            else { trigger.setAttribute('aria-expanded', 'true'); content.hidden = false; }
+        });
+    }
+    syncFooter();
+    window.addEventListener('resize', syncFooter);
+}
+
 // ===== ENTERPRISE SLIDER =====
 function initEnterpriseSlider() {
     var slider = document.getElementById('enterpriseSlider');
@@ -2481,6 +2506,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initToolGenerateButtons();
     initToolCardSlideshow();
     initCookiebot();
+    initFooterAccordions();
     initGlobalImageFallback();
     initResponsiveImages();
 });

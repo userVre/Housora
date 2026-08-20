@@ -586,8 +586,8 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                 div(classes = "footer-columns") {
                     // Column 1: AI Tools
                     div(classes = "footer-col") {
-                        h2(classes = "footer-col-title") { +"AI Tools" }
-                        ul(classes = "footer-links") {
+                        button(classes = "footer-col-title footer-accordion-trigger") { attributes["type"] = "button"; attributes["aria-expanded"] = "false"; attributes["aria-controls"] = "footer-tools"; +"AI Tools" }
+                        ul(classes = "footer-links") { attributes["id"] = "footer-tools"
                             aiTools.forEach { tool ->
                                 li { a(href = tool.path) { +tool.name } }
                             }
@@ -596,24 +596,24 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                     }
                     // Column 2: Business
                     div(classes = "footer-col") {
-                        h2(classes = "footer-col-title") { +"Business" }
-                        ul(classes = "footer-links") {
+                        button(classes = "footer-col-title footer-accordion-trigger") { attributes["type"] = "button"; attributes["aria-expanded"] = "false"; attributes["aria-controls"] = "footer-business"; +"Business" }
+                        ul(classes = "footer-links") { attributes["id"] = "footer-business"
                             li { a(href = "/enterprise") { +"Enterprise plans" } }
                             li { a(href = "/contact") { +"Work with Housora" } }
                         }
                     }
                     // Column 3: Information
                     div(classes = "footer-col") {
-                        h2(classes = "footer-col-title") { +"Information" }
-                        ul(classes = "footer-links") {
+                        button(classes = "footer-col-title footer-accordion-trigger") { attributes["type"] = "button"; attributes["aria-expanded"] = "false"; attributes["aria-controls"] = "footer-information"; +"Information" }
+                        ul(classes = "footer-links") { attributes["id"] = "footer-information"
                             li { a(href = "/blog") { +"Blog" } }
                             li { a(href = "/examples") { +"Design Examples" } }
                         }
                     }
                     // Column 4: Support
                     div(classes = "footer-col") {
-                        h2(classes = "footer-col-title") { +"Support" }
-                        ul(classes = "footer-links") {
+                        button(classes = "footer-col-title footer-accordion-trigger") { attributes["type"] = "button"; attributes["aria-expanded"] = "false"; attributes["aria-controls"] = "footer-support"; +"Support" }
+                        ul(classes = "footer-links") { attributes["id"] = "footer-support"
                             li { a(href = "/contact") { +"Contact" } }
                             li { a(href = "/faq") { +"FAQ" } }
                         }

@@ -7402,6 +7402,7 @@ main { min-width: 0; }
 .footer-group summary::-webkit-details-marker { display: none; }
 .footer-group-links { display: grid; gap: 10px; margin-top: 16px; }
 .footer-group-links a { text-decoration: none; }
+.footer-accordion-trigger { width: 100%; min-height: 44px; padding: 0; border: 0; color: #f5f7f2; background: transparent; text-align: left; }
 @media (min-width: 701px) {
     .footer-group summary { pointer-events: none; }
     .footer-group summary::marker { display: none; }
@@ -7420,6 +7421,11 @@ main { min-width: 0; }
     .footer-group summary::after { content: "+"; font-size: 22px; font-weight: 400; }
     .footer-group[open] summary::after { content: "−"; }
     .footer-group-links { padding-bottom: 20px; }
+    .footer-col { border-top: 1px solid #3e463c; }
+    .footer-accordion-trigger { display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+    .footer-accordion-trigger::after { content: "+"; font-size: 22px; font-weight: 400; }
+    .footer-accordion-trigger[aria-expanded="true"]::after { content: "−"; }
+    .footer-col .footer-links { padding-bottom: 18px; }
     .footer-bottom-bar, .footer-bottom-links { gap: 12px !important; }
     .cookiebot-panel.cookiebot-banner, .cookiebot-panel { bottom: 8px; width: calc(100% - 16px); max-height: none; }
     .cookiebot-banner .cookiebot-desktop { display: grid; gap: 10px; padding: 12px; }
