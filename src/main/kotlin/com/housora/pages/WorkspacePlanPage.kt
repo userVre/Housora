@@ -38,7 +38,7 @@ fun HTML.workspacePlanPage() {
                         button(classes = "toggle-option active") { id = "monthlyBtn"; type = ButtonType.button; attributes["aria-pressed"] = "true"; +"Monthly" }
                     }
                 }
-                div("workspace-checkout-consent") {
+                div("workspace-checkout-consent") { attributes["hidden"] = "hidden"
                     h3 { +"Before checkout" }
                     label("checkout-legal-choice") {
                         checkBoxInput { id = "checkout-terms-accepted"; attributes["required"] = "required" }
@@ -67,7 +67,7 @@ fun HTML.workspacePlanPage() {
                             span("annual-total") { attributes["hidden"] = "hidden"; +plan.annualTotal }
                         }
                         strong { +plan.images }; p { +plan.description }
-                        ul { li { +"All Housora AI design tools" }; li { +"Save and manage projects" }; li { +if (index > 0) "Standard export quality" else "Start with no payment" } }
+                        ul { li { +"All Housora AI design tools" }; li { +if (index == 0) "Up to 3 saved projects" else "Unlimited saved projects" }; li { +if (index == 2) "High-quality exports and priority generation" else if (index == 1) "Standard-quality exports" else "Standard preview exports" }; li { +if (index > 0) "Commercial use included" else "Personal exploration" }; li { +if (index == 2) "Priority support" else "Email support" } }
                         span("workspace-plan-current-label") {
                             if (index != 0) attributes["hidden"] = "hidden"
                             +"Current plan"

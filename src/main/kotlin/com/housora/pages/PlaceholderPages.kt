@@ -20,7 +20,7 @@ fun HTML.placeholderPage(title: String, heading: String, description: String) {
     }
 }
 
-fun HTML.projectsPage() {
+private fun HTML.legacyProjectsPage() {
     baseLayout("My Projects | Housora", bodyClass = "page-projects", path = "/projects") {
         section("projects-page") {
             div("projects-content") {
@@ -78,7 +78,7 @@ fun HTML.affiliatePage() = placeholderPage("Affiliate Program", "Affiliate Progr
 fun HTML.answersPage() = placeholderPage("Answers", "Design Answers", "Expert answers to your interior design questions. Coming soon!")
 fun HTML.aiInformationPage() = placeholderPage("AI Information", "AI Information", "Learn how Housora AI works and the technology behind it. Coming soon!")
 
-fun HTML.signOutPage() {
+private fun HTML.legacySignOutPage() {
     baseLayout("Housora - Signing Out") {
         section("auth-page") {
             div("auth-container") {

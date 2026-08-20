@@ -16,7 +16,7 @@ fun HTML.referenceStylePage(reference: String? = null) {
             section(classes = "reference-style-grid") {
                 div(classes = "reference-upload-card") {
                     h2 { attributes["data-i18n"] = "reference.reference_title"; +"1. Reference image" }
-                    p { attributes["data-i18n"] = "reference.reference_help"; +"Pinterest, Instagram, or any image that inspires you." }
+                    p { attributes["data-i18n"] = "reference.reference_help"; +"Upload a saved JPG, PNG, or WebP inspiration image. URL import is not currently supported." }
                     input(type = InputType.file) { attributes["id"] = "referenceFileInput"; attributes["accept"] = "image/*"; attributes["hidden"] = "hidden" }
                     div(classes = "reference-upload-zone") { id = "referenceUploadZone"; attributes["tabindex"] = "0"; attributes["role"] = "button"; attributes["aria-label"] = "Upload reference image"
                         img(src = safeReference ?: emptyPreview, alt = "Selected reference") { attributes["id"] = "referencePreview"; if (safeReference == null) attributes["hidden"] = "hidden" }
@@ -37,12 +37,13 @@ fun HTML.referenceStylePage(reference: String? = null) {
                 label { span { attributes["data-i18n"] = "reference.room_type"; +"Room type" }
                     select { id = "referenceRoomType"; listOf("Living Room", "Bedroom", "Dining Room", "Kitchen", "Bathroom", "Home Office").forEach { option { +it } } }
                 }
-                label { span { attributes["data-i18n"] = "reference.style_direction"; +"Style direction" }
-                    select { id = "referenceStyleSelect"; listOf("Use reference image", "Modern", "Scandinavian", "Japandi", "Minimalist", "Industrial").forEach { option { +it } } }
+                label { span { attributes["data-i18n"] = "reference.style_direction"; +"Reference strength" }
+                    select { id = "referenceStyleSelect"; listOf("Balanced", "Subtle influence", "Close match").forEach { option { +it } } }
                 }
                 label { span { attributes["data-i18n"] = "reference.palette"; +"Color palette" }
-                    select { id = "referencePalette"; listOf("Natural", "Warm", "Cool", "Earth", "Monochrome").forEach { option { +it } } }
+                    select { id = "referencePalette"; listOf("Follow reference", "Natural", "Warm", "Cool", "Earth", "Monochrome").forEach { option { +it } } }
                 }
+                fieldSet("reference-borrow") { legend { +"Borrow from reference" }; listOf("Palette", "Materials", "Furniture", "Mood", "Lighting").forEach { label { checkBoxInput { checked = true; value = it.lowercase() }; span { +it } } } }
             }
             div(classes = "reference-generate-row") {
                 p("reference-generate-help") { id = "referenceGenerateHelp"; +"Add both images to continue." }

@@ -9,23 +9,24 @@ fun HTML.deleteAccountPage() {
             div(classes = "legal-inner") {
                 h1(classes = "legal-title") { +"Delete your Housora account" }
                 div(classes = "legal-content") {
-                    p { +"This permanently removes your sign-in account and starts deletion of Housora-controlled projects, generations, and uploads, subject to legal retention requirements and limited provider backup cycles." }
-                    p { +"This action cannot be undone. Make sure you are signed in to the account you want to remove." }
-                    label {
-                        attributes["for"] = "deleteAccountConfirmed"
-                        input(type = InputType.checkBox) { id = "deleteAccountConfirmed" }
-                        +" I understand that this permanently deletes my account and cannot be undone."
+                    p { +"This permanently removes your sign-in account, projects, uploaded source photos, and generated images from Housora-controlled systems. Payment records required for tax, fraud prevention, or legal compliance may be retained for the required period, and encrypted backups expire on provider schedules." }
+                    p { +"Export any designs you need first. For your protection, Clerk may ask you to sign in again before deletion." }
+                    a(href = "/projects", classes = "btn-secondary") { +"Review and export projects" }
+                    label { attributes["for"] = "deleteAccountTyped"; +"Type DELETE to continue"
+                        textInput { id = "deleteAccountTyped"; attributes["autocomplete"] = "off"; attributes["spellcheck"] = "false" }
                     }
-                    button(classes = "btn-primary btn-large") {
+                    label { attributes["for"] = "deleteAccountConfirmed"; checkBoxInput { id = "deleteAccountConfirmed" }; +" I understand this cannot be undone." }
+                    button(classes = "btn-primary btn-large account-delete-danger") {
                         id = "deleteAccountButton"
                         attributes["type"] = "button"
-                        +"DELETE ACCOUNT"
+                        attributes["disabled"] = "disabled"
+                        +"Review account deletion"
                     }
                     p {
                         id = "deleteAccountStatus"
                         attributes["role"] = "status"
                     }
-                    p { +"If the button cannot complete the request, email support@housora.app from the account email." }
+                    p { +"If deletion fails, you can retry without losing access to your account." }
                 }
             }
         }
@@ -35,8 +36,12 @@ fun HTML.deleteAccountPage() {
                 (function() {
                     const button = document.getElementById('deleteAccountButton');
                     const confirmation = document.getElementById('deleteAccountConfirmed');
+                    const typed = document.getElementById('deleteAccountTyped');
                     const status = document.getElementById('deleteAccountStatus');
                     if (!button) return;
+                    function syncButton() { button.disabled = !(confirmation && confirmation.checked && typed && typed.value.trim() === 'DELETE'); }
+                    confirmation?.addEventListener('change', syncButton);
+                    typed?.addEventListener('input', syncButton);
                     function setStatus(message, isError) {
                         if (status) {
                             status.textContent = message;
@@ -44,12 +49,12 @@ fun HTML.deleteAccountPage() {
                         }
                     }
                     async function deleteAccount() {
-                        if (!confirmation || !confirmation.checked) {
-                            setStatus('Confirm that you understand the permanent deletion before continuing.', true);
-                            if (confirmation) confirmation.focus();
+                        if (!confirmation || !confirmation.checked || !typed || typed.value.trim() !== 'DELETE') {
+                            setStatus('Type DELETE and confirm that you understand the permanent deletion.', true);
+                            if (typed) typed.focus();
                             return;
                         }
-                        if (!confirm('Delete your Housora account permanently?')) return;
+                        if (!confirm('Final review: permanently delete this account and its Housora projects, uploads, and generated images?')) return;
                         if (!window.Clerk || !window.Clerk.user) {
                             setStatus('Please sign in first.', true);
                             return;
@@ -63,7 +68,7 @@ fun HTML.deleteAccountPage() {
                         } catch (e) {
                             button.disabled = false;
                             const clerkMessage = e && e.errors && e.errors[0] && (e.errors[0].longMessage || e.errors[0].message);
-                            setStatus(clerkMessage || 'Account deletion is not enabled for this Clerk instance. Enable user account deletion in Clerk, or contact support@housora.app.', true);
+                            setStatus(clerkMessage || 'We could not delete the account. Reauthenticate if requested, then try again.', true);
                         }
                     }
                     button.addEventListener('click', deleteAccount);

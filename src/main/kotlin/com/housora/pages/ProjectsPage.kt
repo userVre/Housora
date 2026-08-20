@@ -19,6 +19,12 @@ fun HTML.projectsPage() {
                     }
                 }
                 p("projects-message") { id = "projectsMessage" }
+                div("projects-toolbar") { id = "projectsToolbar"; attributes["hidden"] = "hidden"
+                    label { span("sr-only") { +"Search projects" }; textInput { id = "projectsSearch"; placeholder = "Search projects" } }
+                    select { id = "projectsSort"; attributes["aria-label"] = "Sort projects"; option { value = "updated"; +"Recently edited" }; option { value = "name"; +"Name" } }
+                }
+                div("projects-skeleton-grid") { id = "projectsSkeletons"; attributes["aria-hidden"] = "true"; repeat(3) { article("project-skeleton") { div {}; span {}; i {} } } }
+                div("projects-error") { id = "projectsError"; attributes["hidden"] = "hidden"; attributes["role"] = "alert"; h2 { +"We couldn’t load your projects" }; p { +"Check your connection. Your saved work is safe." }; button { id = "projectsRetry"; type = ButtonType.button; +"Retry" } }
                 div("projects-auth-gate") {
                     id = "projectsAuthGate"
                     h2 { attributes["data-i18n"] = "misc.sign_in_projects"; +"Sign in to access your projects" }
@@ -34,7 +40,8 @@ fun HTML.projectsPage() {
                 div("projects-empty") {
                     id = "projectsEmpty"
                     h2 { attributes["data-i18n"] = "misc.no_projects"; +"No projects yet" }
-                    p { +"Choose an AI tool and save your first generated design here." }
+                    p { +"Projects keep each room, its source photo, and generated directions together so you can continue later." }
+                    a(href = "/app/home#workspace-tools", classes = "projects-empty-cta btn-primary") { +"Create your first project" }
                 }
             }
         }

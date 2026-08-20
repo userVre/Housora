@@ -20,23 +20,11 @@ fun HTML.workspaceUsagePage() {
                     }
                 }
             }
-            div("workspace-usage-summary") {
-                div("workspace-usage-metric workspace-usage-metric-primary") {
-                    span { +"IMAGES REMAINING" }
-                    strong { attributes["id"] = "usage-remaining-value"; +"—" }
-                    p { attributes["id"] = "usage-remaining-caption"; +"Loading your allowance…" }
-                }
-                div("workspace-usage-metric") {
-                    span { +"IMAGES USED" }
-                    strong { attributes["id"] = "usage-used-value"; +"—" }
-                    p { +"Completed generations this cycle" }
-                }
-                div("workspace-usage-metric") {
-                    span { +"PLAN ALLOWANCE" }
-                    strong { attributes["id"] = "usage-allowance-value"; +"—" }
-                    p { attributes["id"] = "usage-plan-caption"; +"Based on your current plan" }
-                }
+            div("workspace-usage-summary workspace-usage-loading") { attributes["id"] = "workspaceUsageSummary"; attributes["aria-busy"] = "true"
+                div("workspace-usage-metric workspace-usage-metric-primary") { span { +"CURRENT ALLOWANCE" }; strong { span { attributes["id"] = "usage-used-value"; +"—" }; +" of "; span { attributes["id"] = "usage-allowance-value"; +"—" } }; p { +"generations used this billing period" } }
+                div("workspace-usage-metric") { span { +"REMAINING" }; strong { attributes["id"] = "usage-remaining-value"; +"—" }; p { attributes["id"] = "usage-remaining-caption"; +"Loading your allowance…" } }
             }
+            div("workspace-load-error") { id = "workspaceUsageError"; attributes["hidden"] = "hidden"; attributes["role"] = "alert"; span { +"Usage is temporarily unavailable." }; button { id = "workspaceUsageRetry"; type = ButtonType.button; +"Retry" } }
             div("workspace-usage-panel") {
                 div("workspace-usage-panel-heading") {
                     div { h2 { +"Image usage" }; p { +"Your allowance for the current billing cycle." } }

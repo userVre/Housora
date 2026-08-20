@@ -2072,6 +2072,10 @@ function initWorkspaceAccountPages() {
         setText('usage-plan-status', state.charAt(0).toUpperCase() + state.slice(1));
         setText('usage-plan-end', end);
         setProgress('usage-large-progress', percent);
+        var summary = document.getElementById('workspaceUsageSummary');
+        if (summary) { summary.classList.remove('workspace-usage-loading'); summary.setAttribute('aria-busy', 'false'); }
+        var loadError = document.getElementById('workspaceUsageError');
+        if (loadError) loadError.hidden = true;
 
         setText('workspace-plan-page-name', planName);
         setText('workspace-plan-page-usage', remaining.toLocaleString() + ' of ' + allowance.toLocaleString() + ' images remaining');
@@ -2091,6 +2095,10 @@ function initWorkspaceAccountPages() {
     function renderUnavailable(message) {
         setText('usage-remaining-caption', message);
         setText('workspace-plan-page-usage', message);
+        var summary = document.getElementById('workspaceUsageSummary');
+        if (summary) { summary.classList.remove('workspace-usage-loading'); summary.setAttribute('aria-busy', 'false'); }
+        var loadError = document.getElementById('workspaceUsageError');
+        if (loadError) loadError.hidden = false;
     }
     function load() {
         loadAttempt += 1;
@@ -2109,6 +2117,7 @@ function initWorkspaceAccountPages() {
             .catch(function() { renderUnavailable('Usage is temporarily unavailable. Refresh to try again.'); });
     }
     load();
+    document.getElementById('workspaceUsageRetry')?.addEventListener('click', function() { loadAttempt = 0; load(); });
     window.addEventListener('clerk:ready', function() { loadAttempt = 0; load(); });
 }
 
@@ -2124,6 +2133,7 @@ function initWorkspaceHome() {
     var likesEmpty = document.getElementById('workspaceLikesEmpty');
     var likeButtons = Array.from(document.querySelectorAll('.workspace-like-button'));
     var loadAttempt = 0;
+    var skeletons = document.getElementById('workspaceHomeSkeletons');
 
     document.querySelectorAll('[data-home-prompt]').forEach(function(button) {
         button.addEventListener('click', function() {
@@ -2187,6 +2197,7 @@ function initWorkspaceHome() {
     function renderRecent(projects) {
         if (!recentGrid || !empty) return;
         recentGrid.replaceChildren();
+        if (skeletons) skeletons.hidden = true;
         var usable = (projects || []).filter(function(project) { return project.afterImageUrl || project.beforeImageUrl; }).slice(0, 4);
         empty.hidden = usable.length > 0;
         usable.forEach(function(project) {
@@ -2214,17 +2225,17 @@ function initWorkspaceHome() {
         var authReady = window.housoraAuthState && window.housoraAuthState.status === 'ready';
         if (!authReady || !window.convexClient) {
             if (loadAttempt < 50) window.setTimeout(loadRecent, 120);
-            else { if (status) status.textContent = 'Your library is temporarily unavailable.'; if (empty) empty.hidden = false; }
+            else { if (status) status.innerHTML = 'Your library is temporarily unavailable. <button type="button" id="workspaceHomeRetry">Retry</button>'; if (empty) empty.hidden = false; if (skeletons) skeletons.hidden = true; document.getElementById('workspaceHomeRetry')?.addEventListener('click', function(){ loadAttempt = 0; if (skeletons) skeletons.hidden = false; loadRecent(); }); }
             return;
         }
         if (!window.Clerk || !window.Clerk.user) {
-            if (status) status.textContent = '';
+            if (status) status.textContent = ''; if (skeletons) skeletons.hidden = true;
             if (empty) empty.hidden = false;
             return;
         }
         window.convexClient.query('projects:listProjects', {})
             .then(function(projects) { if (status) status.textContent = ''; renderRecent(projects); })
-            .catch(function() { if (status) status.textContent = 'Your latest images could not be loaded. Try refreshing.'; if (empty) empty.hidden = false; });
+            .catch(function() { if (status) status.innerHTML = 'Your latest images could not be loaded. <button type="button" id="workspaceHomeRetry">Retry</button>'; if (empty) empty.hidden = false; if (skeletons) skeletons.hidden = true; document.getElementById('workspaceHomeRetry')?.addEventListener('click', function(){ loadAttempt = 0; if (skeletons) skeletons.hidden = false; loadRecent(); }); });
         window.convexClient.query('users:getSubscriptionStatus', { clerkId: window.Clerk.user.id })
             .then(function(result) {
                 var credit = document.getElementById('workspace-sidebar-credits');
@@ -2260,6 +2271,10 @@ function initHousoraProjects() {
     var newBtn = document.getElementById('newProjectBtn');
     var authGate = document.getElementById('projectsAuthGate');
     var signInBtn = document.getElementById('projectsSignInBtn');
+    var skeletons = document.getElementById('projectsSkeletons');
+    var errorState = document.getElementById('projectsError');
+    var retry = document.getElementById('projectsRetry');
+    var toolbar = document.getElementById('projectsToolbar');
     if (!grid) return;
 
     function authReady() {
@@ -2285,6 +2300,9 @@ function initHousoraProjects() {
         }
     }
     function render(projects) {
+        if (skeletons) skeletons.hidden = true;
+        if (errorState) errorState.hidden = true;
+        if (toolbar) toolbar.hidden = projects.length === 0;
         grid.replaceChildren();
         if (!projects.length) {
             grid.style.display = 'none';
@@ -2374,11 +2392,15 @@ function initHousoraProjects() {
         if (newBtn) newBtn.style.display = '';
         grid.style.display = '';
         showMessage('Loading your projects…');
+        if (skeletons) skeletons.hidden = false;
+        if (errorState) errorState.hidden = true;
         window.convexClient.query('projects:listProjects', {})
             .then(function(projects) { showMessage(''); render(projects || []); })
             .catch(function(error) {
                 console.error('[Projects] Load failed:', error);
-                showMessage('Projects could not be loaded. Check your connection and try again.', true);
+                showMessage('', false);
+                if (skeletons) skeletons.hidden = true;
+                if (errorState) errorState.hidden = false;
             });
     }
     if (newBtn) newBtn.addEventListener('click', function() {
@@ -2397,6 +2419,7 @@ function initHousoraProjects() {
         if (window.housoraOpenAuth) window.housoraOpenAuth('signin');
         else window.location.href = '/sign-in?redirect=/projects';
     });
+    if (retry) retry.addEventListener('click', function() { load(0); });
     load();
     window.addEventListener('clerk:ready', function() { setTimeout(function() { load(0); }, 0); });
     // The bootstrap script can finish before this page script is evaluated.

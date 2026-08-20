@@ -55,7 +55,7 @@ fun HTML.appHomePage() {
                         +"Add room photo"
                     }
                     span("workspace-creator-note") { +"Your photo stays private" }
-                    button(classes = "workspace-create-submit") { type = ButtonType.submit; span { +"Open design studio" }; span { +"↑" } }
+                    button(classes = "workspace-create-submit") { type = ButtonType.submit; span { +"Continue to upload" }; span { +"→" } }
                 }
             }
 
@@ -75,6 +75,7 @@ fun HTML.appHomePage() {
                     a(href = "/projects") { +"View all projects →" }
                 }
                 p("workspace-home-status") { id = "workspaceHomeStatus"; attributes["role"] = "status"; attributes["aria-live"] = "polite"; +"Loading your latest images…" }
+                div("workspace-card-skeletons") { attributes["id"] = "workspaceHomeSkeletons"; attributes["aria-hidden"] = "true"; repeat(3) { div("workspace-card-skeleton") { span {}; i {} } } }
                 div("workspace-recent-grid") { id = "workspaceRecentGrid" }
                 div("workspace-library-empty") {
                     id = "workspaceHomeEmpty"
@@ -106,7 +107,7 @@ fun HTML.appHomePage() {
                 id = "my-likes"
                 div("workspace-section-heading") { div { span { +"SAVED INSPIRATION" }; h2 { +"My likes" }; p { +"Keep useful directions close while you decide what to make next." } } }
                 div("workspace-liked-grid") { id = "workspaceLikedGrid" }
-                div("workspace-likes-empty") { id = "workspaceLikesEmpty"; span { +"♡" }; h3 { +"Nothing saved yet" }; p { +"Tap the heart on an example to collect it here." } }
+                div("workspace-likes-empty") { id = "workspaceLikesEmpty"; span { +"♡" }; h3 { +"Nothing saved yet" }; p { +"Tap the heart on an example to collect it here." }; a(href = "#workspace-tools", classes = "workspace-inline-text-link") { +"Browse examples →" } }
             }
         }
     }
