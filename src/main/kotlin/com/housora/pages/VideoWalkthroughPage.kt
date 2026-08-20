@@ -11,6 +11,7 @@ fun HTML.videoWalkthroughPage() {
         heroAction = "Generate",
         heroElement = "Video Walkthrough",
         heroWords = listOf("Cinematic", "Smooth Pan", "Dolly Zoom", "Orbit", "First Person"),
+        heroSlides = listOf("/static/images/tools/video-walkthrough-hero-v2.jpg", "/static/images/gallery-walkthrough.jpg", "/static/images/gallery-cinematic.jpg"),
         heroLine2 = "video walkthrough",
         heroLine3 = "with AI",
         toolName = "Video Walkthrough",

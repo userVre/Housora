@@ -11,7 +11,7 @@ fun HTML.windowsDesignPage() {
         heroAction = "Redesign your",
         heroElement = "Window",
         heroWords = listOf("Window", "Frame", "Glazing", "Glass", "View", "Windows"),
-        heroSlides = listOf("/static/images/windows-before.jpg", "/static/images/gallery-black-frame.jpg", "/static/images/gallery-crittall.jpg", "/static/images/gallery-french-glass.jpg"),
+        heroSlides = listOf("/static/images/tools/windows-design-hero-v2.jpg", "/static/images/gallery-black-frame.jpg", "/static/images/gallery-crittall.jpg", "/static/images/gallery-french-glass.jpg"),
         toolName = "Windows Design",
         interactiveHeading = "Redesign Your Windows with AI",
         uploadDescription = "Upload a photo of your window and redesign it instantly",

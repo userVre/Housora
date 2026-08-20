@@ -19,7 +19,7 @@ data class ShowcaseItem(
 data class ToolOptionGroup(
     val label: String,
     val options: List<Pair<String, String>>,
-    val displayMode: String = "thumbnails"
+    val displayMode: String = "pills"
 )
 
 data class ToolPageConfig(
@@ -57,7 +57,7 @@ data class ToolPageConfig(
     val showCustomPrompt: Boolean = false,
     val colorPalettes: List<String> = emptyList(),
     val optionGroups: List<ToolOptionGroup> = emptyList(),
-    val styleDisplayMode: String = "thumbnails",
+    val styleDisplayMode: String = "pills",
     val extraStyleGroups: List<Pair<String, List<String>>> = emptyList(),
     val directFlow: Boolean = false,
     // Legacy fields kept for backward compatibility
@@ -95,6 +95,27 @@ fun HTML.toolPage(config: ToolPageConfig) {
         else add(ToolOptionGroup(config.styleLabel, config.styles, config.styleDisplayMode))
         config.extraStyleGroups.forEach { (label, options) -> add(ToolOptionGroup(label, options.map { it to "" }, "pills")) }
         if (config.colorPalettes.isNotEmpty()) add(ToolOptionGroup("COLOR PALETTE", config.colorPalettes.map { it to "" }, "palette"))
+    }
+    fun canonicalToolUrl(url: String): String = when (url) {
+        "/stairs-design" -> "/ai-stairs-design"
+        "/doors-design" -> "/ai-doors-design"
+        "/windows-design" -> "/ai-windows-design"
+        "/kitchen-design" -> "/ai-kitchen-design"
+        "/bathroom-design" -> "/ai-bathroom-design"
+        else -> if (url == "#") "/blog" else url
+    }
+    fun readingUrl(title: String, url: String): String {
+        if (url != "#") return url
+        val normalized = title.lowercase()
+        return when {
+            "door" in normalized -> "/blog/black-doors-without-regret"
+            "exterior" in normalized -> "/blog/exterior-colour-palettes"
+            "garden" in normalized -> "/blog/garden-design-brief"
+            "video" in normalized || "walkthrough" in normalized -> "/blog/photo-to-video-room-tour"
+            "floorplan" in normalized || "render" in normalized -> "/blog/architecture-prompt-basics"
+            "furniture" in normalized -> "/blog/choosing-furniture-with-confidence"
+            else -> "/blog/planning-a-room-redesign"
+        }
     }
 
     baseLayout(config.pageTitle, bodyClass = if (config.directFlow) "page-tool page-tool-direct" else "page-tool") {
@@ -273,6 +294,7 @@ fun HTML.toolPage(config: ToolPageConfig) {
                                 div(classes = "id-config-label") { +group.label }
                                 if (group.displayMode == "select") {
                                     select(classes = "id-select") {
+                                        attributes["aria-label"] = group.label
                                         group.options.forEachIndexed { index, (name, _) ->
                                             option {
                                                 attributes["value"] = name
@@ -517,10 +539,11 @@ fun HTML.toolPage(config: ToolPageConfig) {
                     ul(classes = "rt-card-list") {
                         config.exploreTools.forEach { (name, description, url) ->
                             li {
-                                a(href = if (url == "#") "/blog" else url, classes = "rt-card") {
+                                a(href = canonicalToolUrl(url), classes = "rt-card") {
                                     span(classes = "rt-card-thumb") {
                                         val imgKey = name.lowercase().replace("ai ", "").replace(" ", "-")
-                                        img(src = "/static/images/tools/${imgKey}-hero.jpg", alt = name, classes = "rt-card-thumb-img") {
+                                        val thumbVersion = if (imgKey in setOf("layout-boost", "video-walkthrough", "photo-to-render", "kitchen-design", "windows-design")) "-v2" else ""
+                                        img(src = "/static/images/tools/${imgKey}-hero${thumbVersion}.jpg", alt = name, classes = "rt-card-thumb-img") {
                                             attributes["width"] = "80"
                                             attributes["height"] = "56"
                                             attributes["loading"] = "lazy"
@@ -544,7 +567,7 @@ fun HTML.toolPage(config: ToolPageConfig) {
                     ul(classes = "rt-card-list") {
                         config.keepReading.forEach { (title, url) ->
                             li {
-                                a(href = url, classes = "rt-card") {
+                                a(href = readingUrl(title, url), classes = "rt-card") {
                                     span(classes = "rt-card-text") {
                                         span(classes = "rt-card-name") { +title }
                                         span(classes = "rt-card-desc") { +"Read article" }

@@ -11,7 +11,7 @@ fun HTML.stairsDesignPage() {
         heroAction = "Redesign your",
         heroElement = "Staircase",
         heroWords = listOf("Railing", "Treads", "Banister", "Runner", "Stairwell", "Staircase"),
-        heroSlides = listOf("/static/images/stairs-after.jpg", "/static/images/gallery-glass-railing.jpg", "/static/images/gallery-floating.jpg", "/static/images/gallery-wood.jpg"),
+        heroSlides = listOf("/static/images/tools/stairs-design-hero.jpg", "/static/images/stairs-after.jpg", "/static/images/gallery-glass-railing.jpg", "/static/images/gallery-floating.jpg"),
         toolName = "Stairs Design",
         interactiveHeading = "Redesign Your Staircase with AI",
         uploadDescription = "Upload a photo of your stairs and redesign them instantly",

@@ -13,8 +13,9 @@ fun HTML.signInPage() {
                             +"""<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 8h16v24l-8-5-8 5V8z" fill="#1a1a1a"/><path d="M24 8h8v16h-8" fill="#1a1a1a"/></svg>"""
                         }
                     }
-                    h1("auth-heading") { attributes["data-i18n"] = "auth.welcome"; +"WELCOME" }
-                    p("auth-subtext") { attributes["data-i18n"] = "auth.sign_in_claim"; +"Sign in to access your Housora workspace" }
+                    span("auth-brand-name") { +"HOUSORA" }
+                    h1("auth-heading") { attributes["data-i18n"] = "auth.welcome"; +"WELCOME TO HOUSORA" }
+                    p("auth-subtext") { attributes["data-i18n"] = "auth.sign_in_claim"; +"Sign in to claim your FREE room design" }
 
                     div("auth-social-buttons") {
                         button(classes = "auth-social-btn google-btn") {

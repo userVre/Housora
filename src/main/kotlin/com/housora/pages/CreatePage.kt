@@ -289,13 +289,14 @@ fun HTML.homePage() {
                 }
             }
         }
+        section("marketing-hero") {
         section("marketing-intro") {
             div("marketing-intro-inner") {
                 span("marketing-kicker") { attributes["data-i18n"] = "create.marketing_kicker"; +"AI HOME DESIGN" }
                 h2 { attributes["data-i18n"] = "create.marketing_title"; +"Redesign your room with AI." }
                 p { attributes["data-i18n"] = "create.marketing_subtitle"; +"Explore Housora's AI design tools, then create an account to start designing." }
                 div("marketing-intro-actions") {
-                    a(href = "/sign-up?redirect=/app/home", classes = "btn-primary btn-large") { attributes["data-i18n"] = "create.marketing_primary"; +"START DESIGNING" }
+                    a(href = "#demoPhotoBtn", classes = "btn-primary btn-large") { attributes["data-i18n"] = "create.marketing_primary"; +"CREATE YOUR FIRST DESIGN" }
                     a(href = "/examples", classes = "btn-secondary btn-large") { attributes["data-i18n"] = "create.marketing_secondary"; +"EXPLORE EXAMPLES" }
                 }
             }
@@ -395,13 +396,12 @@ fun HTML.homePage() {
                                 div("demo-budget-value") { id = "budgetAmount"; +"$5,000" }
                             }
                             input(InputType.range, classes = "demo-budget-slider") {
-                                id = "budgetSlider"; min = "3000"; max = "20000"; value = "5000"; step = "100"
+                                id = "budgetSlider"; min = "0"; max = "10000"; value = "5000"; step = "100"
                                 attributes["aria-label"] = "Budget"
-                                attributes["readOnly"] = "true"
                             }
                             div("demo-budget-range") {
-                                span { +"$3,000" }
-                                span { +"$20,000" }
+                                span { +"$0" }
+                                span { +"$10,000" }
                             }
                         }
                     }
@@ -519,40 +519,42 @@ fun HTML.homePage() {
             div("demo-testimonials-grid") {}
         }
 
+        }
+
         // ===== EXPLORE AI TOOLS =====
         section("create-tools-section") {
             h2("create-tools-title") { attributes["data-i18n"] = "create.explore_tools"; +"EXPLORE AI TOOLS" }
             div("create-tools-wrap") {
                 div("create-tools-scroll") {
-                    data class ToolCard(val url: String, val name: String, val desc: String, val imgKey: String, val isVideo: Boolean = false)
+                    data class ToolCard(val url: String, val name: String, val desc: String, val imagePath: String, val isVideo: Boolean = false)
                     val tools = listOf(
-                        ToolCard("/interior-design", "AI Interior Design", "Explore a new direction for any room", "interior-design"),
-                        ToolCard("/wall-texture", "AI Walls Texture", "Try wall textures and paint colors", "walls-texture"),
-                        ToolCard("/floor-restyle", "AI Floor Restyle", "Explore new flooring finishes", "floor-restyle"),
-                        ToolCard("/ai-stairs-design", "AI Stairs Design", "Redesign your staircase from a photo", "stairs-design"),
-                        ToolCard("/ai-doors-design", "AI Doors Design", "Redesign your doors from a photo", "doors-design"),
-                        ToolCard("/ai-windows-design", "AI Windows Design", "Redesign your windows from a photo", "windows-design"),
-                        ToolCard("/ai-kitchen-design", "AI Kitchen Design", "Redesign your kitchen from a photo", "kitchen-design"),
-                        ToolCard("/ai-bathroom-design", "AI Bathroom Design", "Redesign your bathroom from a photo", "bathroom-design"),
-                        ToolCard("/exterior-design", "AI Exterior Design", "Transform your home's exterior", "exterior-design"),
-                        ToolCard("/garden-design", "AI Garden Design", "Design your dream garden", "garden-design"),
-                        ToolCard("/layout-boost", "AI Layout Boost", "Optimize your room layout with AI", "layout-boost"),
-                        ToolCard("/video-walkthrough", "AI Video Walkthrough", "Generate cinematic video walkthroughs", "video-walkthrough", true),
-                        ToolCard("/floorplan-to-3d", "AI Floorplan to 3D", "Convert 2D floorplans to photorealistic 3D", "floorplan-to-3d", true),
-                        ToolCard("/photo-to-render", "AI Photo to Render", "Turn any photo or 3D draft into a render", "photo-to-render", true)
+                        ToolCard("/interior-design", "AI Interior Design", "Explore a new direction for any room", "/static/images/tools/interior-design-hero.jpg"),
+                        ToolCard("/wall-texture", "AI Walls Texture", "Try wall textures and paint colors", "/static/images/tools/walls-texture-hero.jpg"),
+                        ToolCard("/floor-restyle", "AI Floor Restyle", "Explore new flooring finishes", "/static/images/tools/floor-restyle-hero.jpg"),
+                        ToolCard("/ai-stairs-design", "AI Stairs Design", "Redesign your staircase from a photo", "/static/images/tools/stairs-design-hero.jpg"),
+                        ToolCard("/ai-doors-design", "AI Doors Design", "Redesign your doors from a photo", "/static/images/tools/doors-design-hero.jpg"),
+                        ToolCard("/ai-windows-design", "AI Windows Design", "Redesign your windows from a photo", "/static/images/tools/windows-design-hero-v2.jpg"),
+                        ToolCard("/ai-kitchen-design", "AI Kitchen Design", "Redesign your kitchen from a photo", "/static/images/tools/kitchen-design-hero-v2.jpg"),
+                        ToolCard("/ai-bathroom-design", "AI Bathroom Design", "Redesign your bathroom from a photo", "/static/images/tools/bathroom-design-hero.jpg"),
+                        ToolCard("/exterior-design", "AI Exterior Design", "Transform your home's exterior", "/static/images/tools/exterior-design-hero.jpg"),
+                        ToolCard("/garden-design", "AI Garden Design", "Design your dream garden", "/static/images/tools/garden-design-hero.jpg"),
+                        ToolCard("/layout-boost", "AI Layout Boost", "Optimize your room layout with AI", "/static/images/tools/layout-boost-hero-v2.jpg"),
+                        ToolCard("/video-walkthrough", "AI Video Walkthrough", "Generate cinematic video walkthroughs", "/static/images/tools/video-walkthrough-hero-v2.jpg", true),
+                        ToolCard("/floorplan-to-3d", "AI Floorplan to 3D", "Convert 2D floorplans to photorealistic 3D", "/static/images/tools/floorplan-to-3d-hero.jpg", true),
+                        ToolCard("/photo-to-render", "AI Photo to Render", "Turn any photo or 3D draft into a render", "/static/images/tools/photo-to-render-hero-v2.jpg", true)
                     )
                     tools.forEach { tool ->
                         a(href = tool.url, classes = "create-tool-card") {
                             div("create-tool-card__img") {
                                 if (tool.isVideo) {
                                     // Video placeholder for video tools
-                                    img(src = "/static/images/tools/${tool.imgKey}-hero.jpg", alt = tool.name, classes = "create-tool-card__slide create-tool-card__slide--active") {
+                                    img(src = tool.imagePath, alt = tool.name, classes = "create-tool-card__slide create-tool-card__slide--active") {
                                         attributes["loading"] = "lazy"
                                         attributes["onerror"] = "this.style.display='none'"
                                     }
                                 } else {
                                     div("create-tool-card__slideshow") {
-                                        img(src = "/static/images/tools/${tool.imgKey}-hero.jpg", alt = tool.name, classes = "create-tool-card__slide create-tool-card__slide--active") {
+                                        img(src = tool.imagePath, alt = tool.name, classes = "create-tool-card__slide create-tool-card__slide--active") {
                                             attributes["loading"] = "lazy"
                                             attributes["onerror"] = "this.style.display='none'"
                                         }
@@ -584,7 +586,7 @@ fun HTML.homePage() {
                             img(src = "/static/images/step${num.toInt()}.jpg", alt = title) {
                                 attributes["width"] = "400"
                                 attributes["height"] = "260"
-                                attributes["loading"] = "lazy"
+                                attributes["loading"] = "eager"
                                 attributes["onerror"] = "this.style.opacity='0.3';this.alt='Image not available'"
                             }
                         }

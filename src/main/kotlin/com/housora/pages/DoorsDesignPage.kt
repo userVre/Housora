@@ -12,10 +12,10 @@ fun HTML.doorsDesignPage() {
         heroElement = "Door",
         heroWords = listOf("Door", "Handle", "Panels", "Frame", "Doorway", "Doors"),
         heroSlides = listOf(
+            "/static/images/tools/doors-design-hero.jpg",
             "/static/images/door-modern-flush.jpg",
             "/static/images/door-french-glass.jpg",
-            "/static/images/door-black-crittall.jpg",
-            "/static/images/door-pivot.jpg"
+            "/static/images/door-black-crittall.jpg"
         ),
         toolName = "Doors Design",
         interactiveHeading = "Redesign Your Doors with AI",

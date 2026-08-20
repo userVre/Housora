@@ -11,7 +11,7 @@ fun HTML.gardenDesignPage() {
         heroAction = "Redesign",
         heroElement = "Garden",
         heroWords = listOf("Backyard", "Front Yard", "Patio", "Terrace", "Pool Area", "Rooftop", "Any Garden"),
-        heroSlides = listOf("/static/images/garden-after.jpg", "/static/images/gallery-tropical.jpg", "/static/images/gallery-cottage.jpg", "/static/images/gallery-natural.jpg"),
+        heroSlides = listOf("/static/images/tools/garden-design-hero.jpg", "/static/images/garden-after.jpg", "/static/images/gallery-tropical.jpg", "/static/images/gallery-natural.jpg"),
         toolName = "Garden Design",
         interactiveHeading = "Design Your Dream Garden with AI",
         uploadDescription = "Upload a photo of your garden and redesign it instantly",

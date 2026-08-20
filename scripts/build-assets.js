@@ -11,9 +11,8 @@ const {
 } = require('./asset-lib');
 
 const CLERK_VERSION = '6.25.7';
-const CLERK_UI_VERSION = '1.25.7';
-const POSTHOG_VERSION = '1.416.0';
-const CONVEX_VERSION = '1.43.0';
+const POSTHOG_VERSION = '1.417.1';
+const CONVEX_VERSION = '1.44.0';
 const TOOL_KEYS = [
   'bathroom-design', 'doors-design', 'exterior-design', 'floor-restyle',
   'floorplan-to-3d', 'garden-design', 'interior-design', 'kitchen-design',
@@ -21,13 +20,57 @@ const TOOL_KEYS = [
   'wall-texture', 'walls-texture', 'windows-design'
 ];
 
+// Tool hero routes are product proof, not decorative fallbacks. Keep them
+// backed by the best matching project-owned image when a dedicated hero has
+// not been supplied yet, so builds never replace the whole catalogue with
+// "Visual pending" cards.
+const TOOL_IMAGE_SOURCES = {
+  'bathroom-design': '/static/images/bathroom-after.jpg',
+  'doors-design': '/static/images/door-black-crittall.jpg',
+  'exterior-design': '/static/images/exterior-after.jpg',
+  'floor-restyle': '/static/images/floor-restyle-after.jpg',
+  'floorplan-to-3d': '/static/images/floorplan-after.jpg',
+  'garden-design': '/static/images/garden-after.jpg',
+  'interior-design': '/static/images/interior-after.jpg',
+  'kitchen-design': '/static/images/kitchen-after.jpg',
+  'layout-boost': '/static/images/layout-after.jpg',
+  'photo-to-render': '/static/images/render-after.jpg',
+  'stairs-design': '/static/images/stairs-after.jpg',
+  'video-walkthrough': '/static/images/gallery-walkthrough.jpg',
+  'wall-texture': '/static/images/walls-texture-after.jpg',
+  'walls-texture': '/static/images/walls-texture-after.jpg',
+  'windows-design': '/static/images/windows-before.jpg'
+};
+
+// Core marketing visuals are also real product proof. These mappings keep a
+// previously generated placeholder from being reintroduced into the hero or
+// the three-step explainer when the asset manifest is rebuilt.
+const CORE_IMAGE_SOURCES = {
+  '/static/images/room-before.jpg': '/static/images/room-before.jpg',
+  '/static/images/hero-after.jpg': '/static/images/hero-after.jpg',
+  '/static/images/step1.jpg': '/static/images/step1.jpg',
+  '/static/images/step2.jpg': '/static/images/step2.jpg',
+  '/static/images/step3.jpg': '/static/images/step3.jpg'
+};
+
 function ensureParent(file) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
 }
 
 function write(file, content) {
   ensureParent(file);
-  fs.writeFileSync(file, content);
+  const temporary = `${file}.${process.pid}.tmp`;
+  fs.writeFileSync(temporary, content);
+  try {
+    fs.renameSync(temporary, file);
+  } catch (error) {
+    // Windows can reject replacing a generated image while an antivirus or
+    // preview process still has a handle open. Retry with an exact-file
+    // replacement so the audit build remains repeatable.
+    if (error.code !== 'EEXIST' && error.code !== 'EPERM' && error.code !== 'UNKNOWN') throw error;
+    fs.rmSync(file, { force: true });
+    fs.renameSync(temporary, file);
+  }
 }
 
 function copy(file, destination) {
@@ -74,10 +117,9 @@ function buildVendorAssets() {
     throw new Error('The vendored Clerk browser license is missing.');
   }
 
-  // Clerk's prebuilt components are versioned separately from clerk-js. Copy
-  // the browser bundle and every lazy-loaded chunk so the auth UI remains
-  // first-party hosted and works without depending on Clerk's CDN at runtime.
-  const clerkUiRoot = assertVersion('@clerk/ui', CLERK_UI_VERSION);
+  // Keep the historical path as a no-op compatibility file for old generated
+  // pages. Current pages load @clerk/ui from the instance Frontend API because
+  // ClerkJS does not expose the UI constructor by itself.
   const clerkUiOutput = path.join(STATIC_DIR, 'vendor', 'clerk-ui');
   fs.rmSync(clerkUiOutput, { recursive: true, force: true });
   const clerkUiDist = path.join(clerkUiRoot, 'dist');
@@ -197,6 +239,12 @@ async function buildImageAssets() {
     const dimensions = dimensionsFor(publicPath);
     ensureParent(file);
     const previousPlaceholder = knownPlaceholders.get(publicPath);
+    const toolKey = publicPath.match(/^\/static\/images\/tools\/(.+)-hero\.jpg$/)?.[1];
+    const mappedSource = toolKey ? TOOL_IMAGE_SOURCES[toolKey] : CORE_IMAGE_SOURCES[publicPath];
+    const mappedFile = mappedSource ? sourceFileFor(mappedSource) : null;
+    if (mappedFile && fs.existsSync(mappedFile) && previousPlaceholder && fs.existsSync(file) && previousPlaceholder.sha256 === sha256(fs.readFileSync(file))) {
+      copy(mappedFile, file);
+    }
     let placeholder = Boolean(
       previousPlaceholder && fs.existsSync(file) && previousPlaceholder.sha256 === sha256(fs.readFileSync(file))
     );

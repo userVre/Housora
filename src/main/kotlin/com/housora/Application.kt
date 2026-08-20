@@ -9,11 +9,20 @@ import java.util.Base64
 
 object EnvConfig {
     private val dotenv = dotenv { ignoreIfMissing = true }
-    fun get(key: String): String = dotenv[key] ?: ""
+    private val localDotenv = dotenv { filename = ".env.local"; ignoreIfMissing = true }
+    fun get(key: String, vararg aliases: String): String =
+        sequenceOf(key, *aliases)
+            .mapNotNull { (localDotenv[it] ?: dotenv[it])?.trim()?.takeIf(String::isNotEmpty) }
+            .firstOrNull()
+            ?: ""
 }
 
 object ClerkConfig {
-    private val rawKey = EnvConfig.get("EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY")
+    private val rawKey = EnvConfig.get(
+        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY",
+        "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
+        "CLERK_PUBLISHABLE_KEY"
+    )
     val publishableKey: String = rawKey.trim()
     val secretKey: String = EnvConfig.get("CLERK_SECRET_KEY").trim()
     val jwtIssuerDomain: String = EnvConfig.get("CLERK_JWT_ISSUER_DOMAIN").trim()
@@ -31,7 +40,7 @@ object ClerkConfig {
         println("[Clerk] Initializing Clerk configuration...")
         when {
             publishableKey.isEmpty() ->
-                println("[Clerk] WARN: EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY is not set. Authentication will not work.")
+                println("[Clerk] WARN: No Clerk publishable key is set. Use EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY (or CLERK_PUBLISHABLE_KEY) and restart the server.")
             !publishableKey.startsWith("pk_") ->
                 println("[Clerk] WARN: Publishable key has invalid format (expected pk_test_ or pk_live_). Got: ${publishableKey.take(15)}...")
             publishableKey.startsWith("pk_test_") ->
@@ -53,7 +62,7 @@ object ClerkConfig {
 }
 
 object ConvexConfig {
-    private val rawUrl = EnvConfig.get("EXPO_PUBLIC_CONVEX_URL")
+    private val rawUrl = EnvConfig.get("EXPO_PUBLIC_CONVEX_URL", "NEXT_PUBLIC_CONVEX_URL")
     val siteUrl: String = EnvConfig.get("EXPO_PUBLIC_CONVEX_SITE_URL")
     val deployment: String = EnvConfig.get("CONVEX_DEPLOYMENT")
     val url: String = rawUrl.trim().trimEnd('/')
@@ -190,6 +199,12 @@ fun main() {
 
 fun Application.module() {
     println("[Server] Configuring routing...")
+    intercept(ApplicationCallPipeline.Plugins) {
+        call.response.headers.append("X-Content-Type-Options", "nosniff")
+        call.response.headers.append("Referrer-Policy", "strict-origin-when-cross-origin")
+        call.response.headers.append("X-Frame-Options", "SAMEORIGIN")
+        call.response.headers.append("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
+    }
     configureRouting()
     println("[Server] Housora AI server is ready.")
 }

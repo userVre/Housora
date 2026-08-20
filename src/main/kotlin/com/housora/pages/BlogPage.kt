@@ -89,7 +89,7 @@ fun HTML.blogPage() {
                             }
                             div(classes = "blog-card-body") {
                                 span(classes = "blog-card-category") { +post.category }
-                                h3(classes = "blog-card-title") { +post.title }
+                                h2(classes = "blog-card-title") { +post.title }
                                 p(classes = "blog-card-excerpt") { +post.excerpt }
                                 div(classes = "blog-card-meta") {
                                     span { +post.date }

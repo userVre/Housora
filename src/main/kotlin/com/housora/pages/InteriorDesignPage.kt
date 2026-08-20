@@ -14,13 +14,13 @@ fun HTML.interiorDesignPage() {
         badge = "AI Interior Design Tool",
         heroAction = "Redesign",
         heroElement = "Bedroom",
-        heroWords = listOf("Bedroom", "Kitchen", "Bathroom", "Office", "Interior", "Any Room"),
+        heroWords = listOf("Any Room", "Bedroom", "Kitchen", "Bathroom", "Office", "Interior"),
         heroLine2 = "with AI, shaped around your space",
         heroLine3 = "Furniture from",
         heroSlides = listOf(
+            "/static/images/tools/interior-design-hero.jpg",
             "/static/images/interior-after.jpg",
             "/static/images/hero-after.jpg",
-            "/static/images/room-after.jpg",
             "/static/images/kitchen-after.jpg"
         ),
         toolName = "Interior Design",

@@ -11,7 +11,7 @@ fun HTML.bathroomDesignPage() {
         heroAction = "Redesign your",
         heroElement = "Bathroom",
         heroWords = listOf("Bathroom", "Tiles", "Vanity", "Shower", "Ensuite", "Bathrooms"),
-        heroSlides = listOf("/static/images/bathroom-after.jpg", "/static/images/gallery-modern-spa.jpg", "/static/images/gallery-modern-spa.jpg", "/static/images/gallery-white-marble.jpg"),
+        heroSlides = listOf("/static/images/tools/bathroom-design-hero.jpg", "/static/images/bathroom-after.jpg", "/static/images/gallery-modern-spa.jpg", "/static/images/gallery-white-marble.jpg"),
         toolName = "Bathroom Design",
         interactiveHeading = "Redesign Your Bathroom with AI",
         uploadDescription = "Upload a photo of your bathroom and redesign it instantly",

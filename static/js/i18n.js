@@ -438,7 +438,44 @@
         extraTranslations[lang] = Object.assign(extraTranslations[lang] || {}, marketingExtraTranslations[lang]);
     });
     var workspaceExtraTranslations = {
-        en: {'workspace.design_now':'DESIGN NOW'}, de: {'workspace.design_now':'JETZT DESIGNEN'}, fr: {'workspace.design_now':'CONCEVOIR MAINTENANT'}, ja: {'workspace.design_now':'今すぐデザイン'}, zh: {'workspace.design_now':'立即设计'}, es: {'workspace.design_now':'DISEÑAR AHORA'}, ar: {'workspace.design_now':'صمّم الآن'}, nl: {'workspace.design_now':'NU ONTWERPEN'}, ko: {'workspace.design_now':'지금 디자인'}, pt: {'workspace.design_now':'CRIAR AGORA'}
+        en: {
+            'workspace.design_now':'DESIGN NOW',
+            'workspace.home':'Home','workspace.my_images':'My images','workspace.projects':'Projects','workspace.my_likes':'My likes','workspace.ai_tools':'AI TOOLS',
+            'workspace.usage':'Usage','workspace.upgrade_plan':'Upgrade plan','workspace.profile':'Profile','workspace.account':'Account','workspace.plan_billing':'Plan & billing','workspace.design_studio':'Design studio',
+            'workspace.search':'Search tools or describe a room','workspace.new_design':'NEW DESIGN','workspace.creative_studio':'HOUSORA CREATIVE STUDIO',
+            'workspace.hero_title':'Shape the home you have in mind.','workspace.hero_desc':'Describe an idea, choose a focused tool, or continue from one of your spaces.',
+            'workspace.room_design':'Room design','workspace.reference_style':'Reference style','workspace.layout_boost':'Layout boost','workspace.exterior':'Exterior','workspace.garden':'Garden',
+            'workspace.describe':'Describe your design idea','workspace.prompt_placeholder':'Example: Make my living room warm and contemporary with oak, soft limestone, and hidden storage…','workspace.warm_japandi':'Warm Japandi','workspace.smarter_kitchen':'Smarter kitchen','workspace.calm_bedroom':'Calm bedroom',
+            'workspace.add_photo':'Add room photo','workspace.private_photo':'Your photo stays private','workspace.open_studio':'Open design studio',
+            'workspace.interior':'Interior','workspace.kitchen':'Kitchen','workspace.bathroom':'Bathroom','workspace.floorplan_3d':'Floorplan to 3D','workspace.photo_render':'Photo to render',
+            'workspace.your_library':'YOUR LIBRARY','workspace.pick_up':'Pick up where you left off or start a fresh space.','workspace.view_projects':'View all projects →',
+            'workspace.loading_images':'Loading your latest images…','workspace.first_space':'YOUR FIRST SPACE','workspace.no_designs':'NO DESIGNS YET',
+            'workspace.ideas_live':'Your ideas deserve somewhere to live.','workspace.empty_desc':'Create your first room concept. Every generated image will be saved here and grouped inside a project.','workspace.create_first':'CREATE FIRST DESIGN',
+            'workspace.start_space':'START FROM A SPACE','workspace.focused_tools':'Focused tools for every part of home.','workspace.focused_desc':'Each workflow keeps the task simple and the output relevant.','workspace.browse_examples':'Browse all examples →',
+            'workspace.interior_redesign':'Interior redesign','workspace.kitchen_design':'Kitchen design','workspace.bathroom_design':'Bathroom design','workspace.garden_design':'Garden design','workspace.exterior_design':'Exterior design','workspace.floor_restyle':'Floor restyle',
+            'workspace.interior_desc':'Reimagine a room while keeping its architecture.','workspace.kitchen_desc':'Explore finishes, cabinetry, and a clearer layout.','workspace.bathroom_desc':'Turn a practical bathroom into a considered space.','workspace.garden_desc':'Plan planting, pathways, and outdoor living zones.','workspace.exterior_desc':'Test materials, colours, and stronger curb appeal.','workspace.floor_desc':'Compare realistic flooring directions in your room.',
+            'workspace.open_tool':'OPEN TOOL ↗','workspace.saved_inspiration':'SAVED INSPIRATION','workspace.likes_desc':'Keep useful directions close while you decide what to make next.','workspace.nothing_saved':'Nothing saved yet','workspace.likes_empty':'Tap the heart on an example to collect it here.'
+        },
+        de: {'workspace.design_now':'JETZT DESIGNEN'},
+        fr: {
+            'workspace.design_now':'CONCEVOIR MAINTENANT',
+            'workspace.home':'Accueil','workspace.my_images':'Mes images','workspace.projects':'Projets','workspace.my_likes':'Mes favoris','workspace.ai_tools':'OUTILS IA',
+            'workspace.usage':'Utilisation','workspace.upgrade_plan':'Améliorer le forfait','workspace.profile':'Profil','workspace.account':'Compte','workspace.plan_billing':'Forfait et facturation','workspace.design_studio':'Studio de design',
+            'workspace.search':'Rechercher un outil ou décrire une pièce','workspace.new_design':'NOUVEAU DESIGN','workspace.creative_studio':'STUDIO CRÉATIF HOUSORA',
+            'workspace.hero_title':'Imaginez la maison que vous avez en tête.','workspace.hero_desc':'Décrivez une idée, choisissez un outil précis ou reprenez l’un de vos espaces.',
+            'workspace.room_design':'Design de pièce','workspace.reference_style':'Style de référence','workspace.layout_boost':'Optimisation du plan','workspace.exterior':'Extérieur','workspace.garden':'Jardin',
+            'workspace.describe':'Décrivez votre idée de design','workspace.prompt_placeholder':'Exemple : rendez mon salon chaleureux et contemporain avec du chêne, de la pierre claire et des rangements intégrés…','workspace.warm_japandi':'Japandi chaleureux','workspace.smarter_kitchen':'Cuisine optimisée','workspace.calm_bedroom':'Chambre apaisante',
+            'workspace.add_photo':'Ajouter la photo d’une pièce','workspace.private_photo':'Votre photo reste privée','workspace.open_studio':'Ouvrir le studio de design',
+            'workspace.interior':'Intérieur','workspace.kitchen':'Cuisine','workspace.bathroom':'Salle de bains','workspace.floorplan_3d':'Plan vers 3D','workspace.photo_render':'Photo vers rendu',
+            'workspace.your_library':'VOTRE BIBLIOTHÈQUE','workspace.pick_up':'Reprenez là où vous vous êtes arrêté ou commencez un nouvel espace.','workspace.view_projects':'Voir tous les projets →',
+            'workspace.loading_images':'Chargement de vos dernières images…','workspace.first_space':'VOTRE PREMIER ESPACE','workspace.no_designs':'AUCUN DESIGN',
+            'workspace.ideas_live':'Vos idées méritent un espace dédié.','workspace.empty_desc':'Créez votre premier concept. Chaque image générée sera enregistrée ici et classée dans un projet.','workspace.create_first':'CRÉER MON PREMIER DESIGN',
+            'workspace.start_space':'COMMENCER PAR UN ESPACE','workspace.focused_tools':'Des outils précis pour chaque partie de la maison.','workspace.focused_desc':'Chaque parcours reste simple et produit un résultat pertinent.','workspace.browse_examples':'Voir tous les exemples →',
+            'workspace.interior_redesign':'Réaménagement intérieur','workspace.kitchen_design':'Design de cuisine','workspace.bathroom_design':'Design de salle de bains','workspace.garden_design':'Design de jardin','workspace.exterior_design':'Design extérieur','workspace.floor_restyle':'Transformation du sol',
+            'workspace.interior_desc':'Réinventez une pièce tout en conservant son architecture.','workspace.kitchen_desc':'Explorez les finitions, les rangements et un agencement plus clair.','workspace.bathroom_desc':'Transformez une salle de bains pratique en un espace soigné.','workspace.garden_desc':'Planifiez les plantations, les allées et les espaces de vie extérieurs.','workspace.exterior_desc':'Testez les matériaux, les couleurs et une façade plus forte.','workspace.floor_desc':'Comparez des finitions de sol réalistes dans votre pièce.',
+            'workspace.open_tool':'OUVRIR L’OUTIL ↗','workspace.saved_inspiration':'INSPIRATIONS ENREGISTRÉES','workspace.likes_desc':'Gardez vos directions préférées à portée de main.','workspace.nothing_saved':'Aucun favori','workspace.likes_empty':'Touchez le cœur d’un exemple pour l’enregistrer ici.'
+        },
+        ja: {'workspace.design_now':'今すぐデザイン'}, zh: {'workspace.design_now':'立即设计'}, es: {'workspace.design_now':'DISEÑAR AHORA'}, ar: {'workspace.design_now':'صمّم الآن'}, nl: {'workspace.design_now':'NU ONTWERPEN'}, ko: {'workspace.design_now':'지금 디자인'}, pt: {'workspace.design_now':'CRIAR AGORA'}
     };
     Object.keys(workspaceExtraTranslations).forEach(function(lang) {
         extraTranslations[lang] = Object.assign(extraTranslations[lang] || {}, workspaceExtraTranslations[lang]);

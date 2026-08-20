@@ -39,6 +39,29 @@ function requiredPublicSiteUrl() {
 
 const PUBLIC_SITE_URL = requiredPublicSiteUrl();
 
+function validateProductionClerkKey() {
+  const clerkKey = String(
+    BUILD_ENV.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY
+      || BUILD_ENV.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+      || BUILD_ENV.CLERK_PUBLISHABLE_KEY
+      || ''
+  ).trim();
+  const isLocal = ['localhost', '127.0.0.1'].includes(new URL(PUBLIC_SITE_URL).hostname);
+
+  if (!clerkKey) {
+    throw new Error('A Clerk publishable key is required before building the site.');
+  }
+  if (!/^pk_(?:test|live)_/.test(clerkKey)) {
+    throw new Error('The Clerk publishable key must use the pk_test_ or pk_live_ format.');
+  }
+  if (!isLocal && clerkKey.startsWith('pk_test_')) {
+    throw new Error('Refusing a production build with a pk_test_ Clerk key. Set NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY to your pk_live_ key before publishing.');
+  }
+  return clerkKey;
+}
+
+const CLERK_PUBLISHABLE_KEY = validateProductionClerkKey();
+
 function clerkFrontendDomain(publishableKey) {
   try {
     const encoded = publishableKey.replace(/^pk_(?:test|live)_/, '');
@@ -145,8 +168,8 @@ function sanitizeLegacyMarkup(html) {
   // not connected yet.
   html = html.replaceAll('Furniture from<span class="sr-only"> IKEA, Amazon, Wayfair &amp; more</span>', 'A clear direction for your space');
   html = html.replaceAll('Furniture from IKEA, Wayfair, Amazon and more.', 'Design inspiration tailored to your space.');
-  const clerkKey = BUILD_ENV.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
-  const convexUrl = BUILD_ENV.EXPO_PUBLIC_CONVEX_URL;
+  const clerkKey = CLERK_PUBLISHABLE_KEY;
+  const convexUrl = String(BUILD_ENV.EXPO_PUBLIC_CONVEX_URL || BUILD_ENV.NEXT_PUBLIC_CONVEX_URL || '').trim().replace(/\/+$/, '');
   const configuredPostHogKey = String(BUILD_ENV.VITE_POSTHOG_KEY || '').trim();
   // Static HTML may contain only PostHog's public phc_ project key. Never
   // fall back to POSTHOG_API_KEY, which may be a private personal API key.
@@ -163,6 +186,15 @@ function sanitizeLegacyMarkup(html) {
     html = html.replace(/(<meta name="clerk-publishable-key"\s+content=")[^"]*(")/g, `$1${clerkKey}$2`);
     html = html.replace(/(data-clerk-publishable-key=")[^"]*(")/g, `$1${clerkKey}$2`);
     html = html.replace(/(var clerkPubKey = ')[^']*(')/g, `$1${clerkKey}$2`);
+    // The vendored Clerk browser bundle reads its key from the script tag
+    // before clerk-bootstrap.js runs. Older local Ktor responses may not
+    // include this attribute, so add it during static generation as well.
+    html = html.replace(
+      /(<script\b[^>]*src="\/static\/vendor\/clerk-js\/clerk\.browser\.js"[^>]*)(>)/g,
+      (match, prefix, close) => prefix.includes('data-clerk-publishable-key')
+        ? match
+        : `${prefix} data-clerk-publishable-key="${clerkKey}"${close}`
+    );
     // Keep the Clerk browser SDK on the official CDN. Rewriting it to the
     // frontend API domain makes the SDK fail to load on Cloudflare Pages.
   }

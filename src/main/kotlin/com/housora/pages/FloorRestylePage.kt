@@ -13,7 +13,7 @@ fun HTML.floorRestylePage() {
         heroWords = listOf("Living Room", "Bedroom", "Kitchen", "Bathroom", "Hallway", "Any Room"),
         heroLine2 = "floors with AI",
         heroLine3 = "in seconds",
-        heroSlides = listOf("/static/images/floor-restyle-after.jpg", "/static/images/gallery-oak-herringbone.jpg", "/static/images/gallery-polished-concrete.jpg", "/static/images/gallery-oak-chevron.jpg"),
+        heroSlides = listOf("/static/images/tools/floor-restyle-hero.jpg", "/static/images/floor-restyle-after.jpg", "/static/images/gallery-oak-herringbone.jpg", "/static/images/gallery-oak-chevron.jpg"),
         toolName = "Floor Restyle",
         interactiveHeading = "Transform Your Floors with AI",
         uploadDescription = "Upload a photo and restyle your floors instantly",

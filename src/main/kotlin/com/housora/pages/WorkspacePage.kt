@@ -25,25 +25,33 @@ fun HTML.workspacePage(projectId: String? = null) {
                 // Main canvas area
                 div("workspace-canvas") {
                     div("workspace-topbar") {
-                        a(href = "/interior-design", classes = "back-link") { +"\u2190 AI INTERIOR DESIGN" }
-                    }
-                    div("workspace-tabs-bar") {
-                        button(classes = "tab-item") { type = ButtonType.button; attributes["aria-label"] = "Add workspace tab"; +"+" }
-                        button(classes = "tab-item tab-label") { type = ButtonType.button; +"Furniture" }
-                        button(classes = "tab-item tab-label") { type = ButtonType.button; +"List" }
-                        button(classes = "tab-item tab-label tab-active") { type = ButtonType.button; attributes["aria-current"] = "page"; +"Design" }
+                        a(href = "/app/home", classes = "back-link") { +"\u2190 WORKSPACE HOME" }
+                        span("workspace-step-label") { +"NEW DESIGN" }
                     }
                     div("workspace-modify-header") {
-                        span("modify-title") { +"MODIFY THIS IMAGE" }
-                        span("modify-credits") { +"PLAN IMAGES" }
-                        a(href = "/projects", classes = "summary-btn") { +"Summary \u2192" }
+                        div {
+                            span("modify-title") { +"DESIGN STUDIO" }
+                            span("modify-credits") { +"Upload, configure, and generate in one place" }
+                        }
+                        a(href = "/projects", classes = "summary-btn") { +"VIEW PROJECTS \u2192" }
                     }
                     div("canvas-area") {
                         div("analyzing-overlay empty-state") {
                             p("analyzing-title") { attributes["id"] = "workspaceStatusTitle"; +"UPLOAD A ROOM TO BEGIN" }
                             p("analyzing-pct") { attributes["id"] = "analyzePct"; +"No photo selected" }
-                            p("analyzing-sub") { attributes["id"] = "workspaceStatusText"; +"Upload a room photo first. Then choose a direction and describe the design you want." }
-                            a(href = "/#first-design", classes = "btn-primary workspace-upload-cta") { +"UPLOAD ROOM PHOTO" }
+                            p("analyzing-sub") { attributes["id"] = "workspaceStatusText"; +"Choose a JPG, PNG, or WebP image up to 10 MB. Your photo stays private and is used only for the design you request." }
+                            input(InputType.file) {
+                                id = "workspaceFileInput"
+                                attributes["accept"] = "image/jpeg,image/png,image/webp"
+                                attributes["hidden"] = "hidden"
+                            }
+                            button(classes = "btn-primary workspace-upload-cta") {
+                                id = "workspaceUploadBtn"
+                                type = ButtonType.button
+                                attributes["aria-describedby"] = "workspaceStatusText workspaceUploadError"
+                                +"CHOOSE ROOM PHOTO"
+                            }
+                            p("workspace-upload-error") { id = "workspaceUploadError"; attributes["role"] = "alert"; attributes["aria-live"] = "polite" }
                             div("analyzing-image") {
                                 img(src = "/static/images/room-before.jpg", alt = "Example room photo placeholder", classes = "workspace-input-photo") {
                                     attributes["width"] = "300"
@@ -53,39 +61,24 @@ fun HTML.workspacePage(projectId: String? = null) {
                                 }
                                 span("image-number") { +"1 / 1" }
                             }
-                            div("progress-bar") {
-                                div("progress-fill") { attributes["id"] = "progressFill" }
-                            }
-                        }
-                        div("workspace-photo-grid") {
-                            val photos = listOf(
-                                "/static/images/kitchen-after.jpg",
-                                "/static/images/kitchen-before.jpg",
-                                "/static/images/interior-after.jpg",
-                                "/static/images/room-after.jpg",
-                                "/static/images/interior-before.jpg",
-                                "/static/images/walls-texture-after.jpg",
-                                "/static/images/room-before.jpg",
-                                "/static/images/floor-restyle-after.jpg",
-                                "/static/images/kitchen-after.jpg"
-                            )
-                            photos.forEach { src ->
-                            div("photo-cell photo-cell-primary") {
-                                    img(src = src, alt = "Room design photo") {
-                                        attributes["loading"] = "lazy"
-                                        attributes["onerror"] = "this.style.opacity='0.3';this.alt='Image not available'"
-                                    }
-                                }
-                            }
-                        }
-                        div("canvas-actions") {
-                            button(classes = "action-btn") {
+                            button(classes = "workspace-replace-photo") {
+                                id = "workspaceReplacePhoto"
                                 type = ButtonType.button
-                                attributes["aria-label"] = "Edit design"
-                                +"Edit"
+                                attributes["hidden"] = "hidden"
+                                +"Replace photo"
                             }
-                            button(classes = "action-btn") { type = ButtonType.button; attributes["aria-label"] = "Download design"; +"⬇" }
-                            button(classes = "action-btn") { type = ButtonType.button; attributes["aria-label"] = "Share design"; +"⤴" }
+                        }
+                        div("workspace-result ph-no-capture") {
+                            attributes["id"] = "workspaceResult"
+                            attributes["hidden"] = "hidden"
+                            p("workspace-result-label") { +"YOUR AI DESIGN" }
+                            img(src = "", alt = "AI-generated room redesign") { id = "workspaceResultImage" }
+                            div("canvas-actions") {
+                                button(classes = "action-btn") { id = "workspaceDownloadBtn"; type = ButtonType.button; +"Download" }
+                                button(classes = "action-btn") { id = "workspaceShareBtn"; type = ButtonType.button; +"Share" }
+                                button(classes = "action-btn") { id = "workspaceStartOverBtn"; type = ButtonType.button; +"Start over" }
+                            }
+                            p("workspace-action-status") { id = "workspaceActionStatus"; attributes["role"] = "status"; attributes["aria-live"] = "polite" }
                         }
                     }
                     div("workspace-prompt-bar") {
@@ -101,19 +94,7 @@ fun HTML.workspacePage(projectId: String? = null) {
                             p("workspace-field-error") { id = "workspacePromptError"; attributes["role"] = "alert"; attributes["aria-live"] = "polite" }
                         }
                         div("prompt-controls") {
-                            button(classes = "upload-furniture-btn") {
-                                type = ButtonType.button
-                                img(src = "/static/images/tools/interior-design-hero.jpg", alt = "Upload furniture reference photo") {
-                                    attributes["width"] = "16"
-                                    attributes["height"] = "16"
-                                    attributes["loading"] = "lazy"
-                                    attributes["onerror"] = "this.style.opacity='0.3'"
-                                    style = "border-radius:2px"
-                                }
-                                +"UPLOAD FURNITURE"
-                            }
-                            span("quality-badge") { +"Quick \u00B7 1x \u00B7 1K" }
-                            span("quality-arrow") { +"⌄" }
+                            span("quality-badge") { +"STANDARD OUTPUT" }
                             button(classes = "send-btn") { type = ButtonType.button; attributes["aria-label"] = "Generate design"; attributes["disabled"] = "true"; +"\u2191" }
                         }
                     }
@@ -138,7 +119,7 @@ fun HTML.workspacePage(projectId: String? = null) {
                             }
                             div("room-option") {
                                 attributes["data-room"] = "bedroom"
-                                img(src = "/static/images/room-bedroom.jpg", alt = "Bedroom") {
+                                img(src = "/static/images/room-bedroom-v2.png", alt = "Bedroom") {
                                     attributes["width"] = "60"
                                     attributes["height"] = "42"
                                     attributes["loading"] = "lazy"
@@ -158,11 +139,10 @@ fun HTML.workspacePage(projectId: String? = null) {
                             }
                             div("room-option") { attributes["data-room"] = "kitchen"; img(src = "/static/images/kitchen-after.jpg", alt = "Kitchen"); span("room-name") { +"Kitchen" } }
                             div("room-option") { attributes["data-room"] = "bathroom"; img(src = "/static/images/bathroom-minimalist.jpg", alt = "Bathroom"); span("room-name") { +"Bathroom" } }
-                            div("room-option") { attributes["data-room"] = "office"; img(src = "/static/images/interior-after.jpg", alt = "Home Office"); span("room-name") { +"Home Office" } }
-                            div("room-option") { attributes["data-room"] = "kids"; img(src = "/static/images/room-bedroom.jpg", alt = "Kids Room"); span("room-name") { +"Kids Room" } }
+                            div("room-option") { attributes["data-room"] = "office"; img(src = "/static/images/room-home-office-v2.png", alt = "Home Office"); span("room-name") { +"Home Office" } }
+                            div("room-option") { attributes["data-room"] = "kids"; img(src = "/static/images/room-kids-v2.png", alt = "Kids Room"); span("room-name") { +"Kids Room" } }
                             div("room-option") { attributes["data-room"] = "balcony"; img(src = "/static/images/interior-balcony.jpg", alt = "Balcony"); span("room-name") { +"Balcony" } }
                         }
-                        span("show-more") { +"Show more (5) \u25BE" }
                     }
 
                     // Style
@@ -200,13 +180,12 @@ fun HTML.workspacePage(projectId: String? = null) {
                                 }
                                 span("style-name") { +"Coastal" }
                             }
-                            div("style-option") { attributes["data-style"] = "japandi"; img(src = "/static/images/s-warm-min.jpg", alt = "Japandi"); span("style-name") { +"Japandi" } }
+                            div("style-option") { attributes["data-style"] = "japandi"; img(src = "/static/images/japandi_minimalist_living_room.jpg", alt = "Japandi"); span("style-name") { +"Japandi" } }
                             div("style-option") { attributes["data-style"] = "minimalist"; img(src = "/static/images/s-minimalist.jpg", alt = "Minimalist"); span("style-name") { +"Minimalist" } }
                             div("style-option") { attributes["data-style"] = "industrial"; img(src = "/static/images/interior-industrial.jpg", alt = "Industrial"); span("style-name") { +"Industrial" } }
                             div("style-option") { attributes["data-style"] = "luxury"; img(src = "/static/images/s-luxury-render.jpg", alt = "Luxury"); span("style-name") { +"Luxury" } }
                             div("style-option") { attributes["data-style"] = "farmhouse"; img(src = "/static/images/s-farmhouse.jpg", alt = "Farmhouse"); span("style-name") { +"Farmhouse" } }
                         }
-                        span("show-more") { +"Show more (5) \u25BE" }
                     }
 
                     // Color Palette
@@ -262,11 +241,6 @@ fun HTML.workspacePage(projectId: String? = null) {
                                     span("color-dot c20") {}
                                 }
                                 span("palette-name") { +"Mono" }
-                            }
-                            div("palette-option palette-custom") {
-                                attributes["data-palette"] = "custom"
-                                span("plus-icon") { +"+" }
-                                span("palette-name") { +"Custom" }
                             }
                         }
                     }

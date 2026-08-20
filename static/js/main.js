@@ -303,6 +303,7 @@ function initReferenceStyleTool() {
     var referencePreview = document.getElementById('referencePreview');
     var roomPreview = document.getElementById('referenceRoomPreview');
     var generateBtn = document.getElementById('referenceGenerateBtn');
+    var generateHelp = document.getElementById('referenceGenerateHelp');
     var referenceFile = null;
     var roomFile = null;
     var errorEl = document.createElement('p');
@@ -320,6 +321,11 @@ function initReferenceStyleTool() {
         referenceZone.removeAttribute('aria-invalid');
         roomZone.removeAttribute('aria-invalid');
     }
+    function updateReferenceState() {
+        var ready = !!(referenceFile || preloaded) && !!roomFile;
+        generateBtn.disabled = !ready;
+        if (generateHelp) generateHelp.textContent = ready ? 'Both images are ready.' : 'Add both images to continue.';
+    }
 
     function preview(file, zone, image, emptyText) {
         if (!file) return;
@@ -331,13 +337,14 @@ function initReferenceStyleTool() {
     function bind(input, zone, image, setter, emptyText) {
         zone.addEventListener('click', function() { input.click(); });
         zone.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); } });
-        input.addEventListener('change', function() { if (this.files && this.files[0]) { clearReferenceError(); setter(this.files[0]); preview(this.files[0], zone, image, emptyText); } });
+        input.addEventListener('change', function() { if (this.files && this.files[0]) { clearReferenceError(); setter(this.files[0]); preview(this.files[0], zone, image, emptyText); updateReferenceState(); } });
     }
     bind(referenceInput, referenceZone, referencePreview, function(file) { referenceFile = file; }, 'Reference image');
     bind(roomInput, roomZone, roomPreview, function(file) { roomFile = file; }, 'Room image');
 
     var preloaded = page.getAttribute('data-reference-src');
     if (preloaded && referencePreview) { referencePreview.src = preloaded; referencePreview.hidden = false; referenceZone.querySelector('span').hidden = true; }
+    updateReferenceState();
     generateBtn.addEventListener('click', function() {
         clearReferenceError();
         if (!referenceFile && !preloaded) { showReferenceError('Please upload a reference image first.', referenceZone); return; }
@@ -348,11 +355,25 @@ function initReferenceStyleTool() {
         var prompt = 'Redesign the uploaded room photo using the visual style, materials, colors, furniture language, lighting mood, and composition cues from the uploaded reference image. Preserve the room photo architecture, camera angle, windows, doors, proportions, and perspective. Room type: ' + room + '. Style direction: ' + style + '. Color palette: ' + palette + '. Return one photorealistic result with no text, watermark, collage, or extra rooms.';
         var original = generateBtn.innerHTML;
         generateBtn.disabled = true; generateBtn.setAttribute('aria-busy', 'true'); generateBtn.innerHTML = 'Generating...';
-        requestHousoraGeneration(prompt, roomFile).then(showGeneratedHousoraImage).catch(function(error) { showReferenceError(error.message || 'Generation failed. Please try again.'); }).finally(function() { generateBtn.disabled = false; generateBtn.removeAttribute('aria-busy'); generateBtn.innerHTML = original; });
+        requestHousoraGeneration(prompt, roomFile).then(showGeneratedHousoraImage).catch(function(error) { showReferenceError(error.message || 'Generation failed. Please try again.'); }).finally(function() { generateBtn.removeAttribute('aria-busy'); generateBtn.innerHTML = original; updateReferenceState(); });
     });
 }
 
 function showGeneratedHousoraImage(imageUrl) {
+    var workspaceResult = document.getElementById('workspaceResult');
+    var workspaceImage = document.getElementById('workspaceResultImage');
+    if (workspaceResult && workspaceImage) {
+        workspaceImage.src = imageUrl;
+        workspaceImage.alt = 'AI-generated room redesign';
+        workspaceResult.hidden = false;
+        document.body.classList.add('workspace-result-ready');
+        workspaceResult.scrollIntoView({ behavior: scrollBehavior(), block: 'center' });
+        var workspaceProject = localStorage.getItem('housora_current_project');
+        if (workspaceProject && window.convexClient && window.Clerk && window.Clerk.user) {
+            persistGeneratedProjectImage(workspaceProject, imageUrl);
+        }
+        return;
+    }
     var target = document.querySelector('#heroPreviewImg, #uploadPreviewImg, .generated-result img');
     if (target) {
         target.src = imageUrl;
@@ -477,15 +498,22 @@ function initHeroBar() {
         var studio = document.getElementById('designStudio');
         if (studio) studio.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
         var demoBtn = document.getElementById('demoPhotoBtn');
-        if (demoBtn) window.setTimeout(function() { demoBtn.focus(); }, 450);
+        // Preserve the user gesture all the way to the real file input. The
+        // previous version only scrolled and focused the next button, leaving
+        // users with no visible upload action after tapping the hero CTA.
+        if (demoBtn) {
+            demoBtn.click();
+            window.setTimeout(function() { demoBtn.focus(); }, 450);
+        } else {
+            fileInput.click();
+        }
     });
 
     // ---- Keyboard: Enter/Space on upload button ----
     uploadBtn.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
-            var studio = document.getElementById('designStudio');
-            if (studio) studio.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
+            uploadBtn.click();
         }
     });
 
@@ -631,7 +659,12 @@ function initHeroBarMobile() {
         clearError();
         if (studio) studio.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
         var demoBtn = document.getElementById('demoPhotoBtn');
-        if (demoBtn) window.setTimeout(function() { demoBtn.focus(); }, 450);
+        if (demoBtn) {
+            demoBtn.click();
+            window.setTimeout(function() { demoBtn.focus(); }, 450);
+        } else {
+            fileInput.click();
+        }
     });
     uploadBtn.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); uploadBtn.click(); }
@@ -1318,12 +1351,6 @@ function initWorkspaceHandoff() {
     var style = params.get('style') || options.style || 'scandinavian';
     var palette = options.palette || 'neutral';
     var budget = params.get('budget') || options.budget || '3000';
-    var roomImages = {
-        living: '/static/images/room-living.jpg', bedroom: '/static/images/room-bedroom.jpg', dining: '/static/images/room-dining.jpg'
-    };
-    var styleImages = {
-        scandinavian: '/static/images/style-scandi.jpg', modern: '/static/images/style-modern.jpg', coastal: '/static/images/style-coastal.jpg'
-    };
     document.querySelectorAll('.room-option[data-room]').forEach(function(el) { el.classList.toggle('active', el.getAttribute('data-room') === room); });
     document.querySelectorAll('.style-option[data-style]').forEach(function(el) { el.classList.toggle('active', el.getAttribute('data-style') === style); });
     document.querySelectorAll('.palette-option[data-palette]').forEach(function(el) { el.classList.toggle('active', el.getAttribute('data-palette') === palette); });
@@ -1332,42 +1359,86 @@ function initWorkspaceHandoff() {
     if (budgetInput) budgetInput.value = budget;
     if (budgetAmount) budgetAmount.textContent = '$' + Number(budget).toLocaleString();
     var inputPhoto = document.querySelector('.workspace-input-photo');
-    var photoCell = document.querySelector('.photo-cell-primary img');
+    var fileInput = document.getElementById('workspaceFileInput');
+    var uploadButton = document.getElementById('workspaceUploadBtn');
+    var replaceButton = document.getElementById('workspaceReplacePhoto');
+    var uploadError = document.getElementById('workspaceUploadError');
+    var overlay = document.querySelector('.analyzing-overlay');
+    var statusTitle = document.getElementById('workspaceStatusTitle');
+    var statusText = document.getElementById('workspaceStatusText');
+    var pctEl = document.getElementById('analyzePct');
     var uploadedPhoto = null;
     var prompt = document.getElementById('workspacePrompt');
     var generateBtn = document.getElementById('workspaceGenerateBtn');
     var sendBtn = document.querySelector('.page-workspace .send-btn');
     var promptError = document.getElementById('workspacePromptError');
+    var result = document.getElementById('workspaceResult');
+    var resultImage = document.getElementById('workspaceResultImage');
+    var downloadButton = document.getElementById('workspaceDownloadBtn');
+    var shareButton = document.getElementById('workspaceShareBtn');
+    var startOverButton = document.getElementById('workspaceStartOverBtn');
+    var actionStatus = document.getElementById('workspaceActionStatus');
+    var allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    var maxSize = 10 * 1024 * 1024;
+    var homePrompt = params.get('prompt');
+    if (prompt && homePrompt && !prompt.value.trim()) prompt.value = homePrompt.slice(0, 500);
     function updateWorkspaceSubmitState() {
         var ready = !!window.__HousoraToolFile && !!(prompt && prompt.value.trim());
         if (generateBtn) generateBtn.disabled = !ready;
         if (sendBtn) sendBtn.disabled = !ready;
     }
+    function clearUploadError() { if (uploadError) uploadError.textContent = ''; }
+    function showUploadError(message) {
+        if (uploadError) uploadError.textContent = message;
+        if (uploadButton) uploadButton.focus();
+    }
+    function setWorkspacePhoto(file, source, persist) {
+        window.__HousoraToolFile = file;
+        document.body.classList.remove('workspace-empty');
+        if (overlay) overlay.classList.remove('empty-state');
+        if (inputPhoto) { inputPhoto.src = source; inputPhoto.alt = 'Your uploaded room photo'; }
+        if (statusTitle) statusTitle.textContent = 'ROOM PHOTO READY';
+        if (statusText) statusText.textContent = 'Choose a room, style, palette, and budget, then describe the result you want.';
+        if (pctEl) pctEl.textContent = file.name || 'Ready';
+        if (uploadButton) uploadButton.hidden = true;
+        if (replaceButton) replaceButton.hidden = false;
+        if (prompt && !prompt.value.trim()) prompt.value = 'Redesign this ' + room + ' in a ' + style + ' style with a ' + palette + ' palette.';
+        clearUploadError();
+        updateWorkspaceSubmitState();
+        if (persist) {
+            try { sessionStorage.setItem('housora_first_design_photo', source); } catch (_) {}
+        }
+    }
+    function acceptWorkspaceFile(file) {
+        clearUploadError();
+        if (!file) return;
+        if (allowedTypes.indexOf(file.type) === -1) { showUploadError('Choose a JPG, PNG, or WebP image.'); return; }
+        if (file.size > maxSize) { showUploadError('This image is larger than 10 MB. Choose a smaller file.'); return; }
+        var reader = new FileReader();
+        reader.onload = function() { setWorkspacePhoto(file, reader.result, true); };
+        reader.onerror = function() { showUploadError('This image could not be read. Try another file.'); };
+        reader.readAsDataURL(file);
+    }
+    if (uploadButton) uploadButton.addEventListener('click', function() { if (fileInput) fileInput.click(); });
+    if (replaceButton) replaceButton.addEventListener('click', function() { if (fileInput) fileInput.click(); });
+    if (fileInput) fileInput.addEventListener('change', function() { acceptWorkspaceFile(this.files && this.files[0]); this.value = ''; });
+    if (overlay) {
+        overlay.addEventListener('dragover', function(event) { event.preventDefault(); overlay.classList.add('is-dragging'); });
+        overlay.addEventListener('dragleave', function() { overlay.classList.remove('is-dragging'); });
+        overlay.addEventListener('drop', function(event) {
+            event.preventDefault(); overlay.classList.remove('is-dragging');
+            acceptWorkspaceFile(event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]);
+        });
+    }
     try { uploadedPhoto = sessionStorage.getItem('housora_first_design_photo'); } catch (e) {}
     if (uploadedPhoto) {
-        document.body.classList.remove('workspace-empty');
-        if (inputPhoto) inputPhoto.src = uploadedPhoto;
-        if (photoCell) photoCell.src = uploadedPhoto;
-        var overlay = document.querySelector('.analyzing-overlay');
-        var statusTitle = document.getElementById('workspaceStatusTitle');
-        var statusText = document.getElementById('workspaceStatusText');
-        var pctEl = document.getElementById('analyzePct');
-        var progressFill = document.getElementById('progressFill');
-        if (overlay) overlay.classList.remove('empty-state');
-        if (statusTitle) statusTitle.textContent = 'ROOM PHOTO READY';
-        if (statusText) statusText.textContent = 'Choose a room, style, and palette, then describe the result you want.';
-        if (pctEl) pctEl.textContent = 'Ready';
-        if (progressFill) progressFill.style.width = '100%';
         fetch(uploadedPhoto).then(function(response) { return response.blob(); }).then(function(blob) {
-            window.__HousoraToolFile = new File([blob], 'room-upload.png', { type: blob.type || 'image/png' });
-            updateWorkspaceSubmitState();
-        }).catch(function() {});
+            var restoredFile = new File([blob], 'room-upload.' + ((blob.type || '').split('/')[1] || 'png'), { type: blob.type || 'image/png' });
+            setWorkspacePhoto(restoredFile, uploadedPhoto, false);
+        }).catch(function() { document.body.classList.add('workspace-empty'); });
     } else document.body.classList.add('workspace-empty');
-    var selectedStyleImage = document.querySelector('.workspace-photo-grid .photo-cell:nth-child(2) img');
-    if (selectedStyleImage && styleImages[style]) selectedStyleImage.src = styleImages[style];
     if (prompt) {
-        if (uploadedPhoto) prompt.value = 'Redesign this ' + room + ' in a ' + style + ' style with a ' + palette + ' palette.';
-        else prompt.placeholder = 'Upload a room photo before describing your design';
+        if (!uploadedPhoto) prompt.placeholder = 'Upload a room photo before describing your design';
         prompt.addEventListener('input', function() {
             prompt.removeAttribute('aria-invalid');
             if (promptError) promptError.textContent = '';
@@ -1375,6 +1446,48 @@ function initWorkspaceHandoff() {
         });
     }
     if (sendBtn && generateBtn) sendBtn.addEventListener('click', function() { generateBtn.click(); });
+    if (downloadButton) downloadButton.addEventListener('click', function() {
+        if (!resultImage || !resultImage.src) return;
+        var link = document.createElement('a');
+        link.href = resultImage.src; link.download = 'housora-design.png';
+        document.body.appendChild(link); link.click(); link.remove();
+        if (actionStatus) actionStatus.textContent = 'Download started.';
+    });
+    if (shareButton) shareButton.addEventListener('click', async function() {
+        if (!resultImage || !resultImage.src) return;
+        try {
+            var blob = await (await fetch(resultImage.src)).blob();
+            var file = new File([blob], 'housora-design.png', { type: blob.type || 'image/png' });
+            if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+                await navigator.share({ title: 'My Housora design', files: [file] });
+                if (actionStatus) actionStatus.textContent = 'Design shared.';
+            } else if (navigator.clipboard && window.ClipboardItem) {
+                await navigator.clipboard.write([new ClipboardItem({ [blob.type || 'image/png']: blob })]);
+                if (actionStatus) actionStatus.textContent = 'Design copied to your clipboard.';
+            } else throw new Error('Sharing is not supported');
+        } catch (error) {
+            if (error && error.name === 'AbortError') return;
+            if (actionStatus) actionStatus.textContent = 'Sharing is unavailable here. Use Download instead.';
+        }
+    });
+    if (startOverButton) startOverButton.addEventListener('click', function() {
+        try { sessionStorage.removeItem('housora_first_design_photo'); } catch (_) {}
+        window.__HousoraToolFile = null;
+        document.body.classList.add('workspace-empty');
+        document.body.classList.remove('workspace-result-ready');
+        if (overlay) overlay.classList.add('empty-state');
+        if (inputPhoto) { inputPhoto.src = '/static/images/room-before.jpg'; inputPhoto.alt = 'Example room photo placeholder'; }
+        if (statusTitle) statusTitle.textContent = 'UPLOAD A ROOM TO BEGIN';
+        if (pctEl) pctEl.textContent = 'No photo selected';
+        if (statusText) statusText.textContent = 'Choose a JPG, PNG, or WebP image up to 10 MB. Your photo stays private and is used only for the design you request.';
+        if (uploadButton) uploadButton.hidden = false;
+        if (replaceButton) replaceButton.hidden = true;
+        if (result) result.hidden = true;
+        if (prompt) prompt.value = '';
+        if (actionStatus) actionStatus.textContent = '';
+        updateWorkspaceSubmitState();
+        if (uploadButton) uploadButton.focus();
+    });
     updateWorkspaceSubmitState();
     if (budgetInput) budgetInput.addEventListener('input', function() { if (budgetAmount) budgetAmount.textContent = '$' + Number(this.value).toLocaleString(); });
 }
@@ -1496,14 +1609,14 @@ function initPricingToggle() {
             var periodEl = card.querySelector('.price-period');
             var annualTotal = card.querySelector('.annual-total');
             var annualTotalLabel = card.querySelector('.annual-total-label');
-            if (monthly) { monthly.style.display = period === 'monthly' ? 'inline' : 'none'; monthly.hidden = period !== 'monthly'; }
-            if (annual) { annual.style.display = period === 'yearly' ? 'inline' : 'none'; annual.hidden = period !== 'yearly'; }
+            if (monthly) { monthly.hidden = period !== 'monthly'; monthly.style.display = period === 'monthly' ? 'inline' : 'none'; }
+            if (annual) { annual.hidden = period !== 'yearly'; annual.style.display = period === 'yearly' ? 'inline' : 'none'; }
             if (periodEl && periodEl.hasAttribute('data-billing-period')) {
                 var localizedPeriod = window.HousoraI18n && window.HousoraI18n.t ? window.HousoraI18n.t('pricing.per_month') : ' / month';
                 periodEl.textContent = localizedPeriod;
             }
-            if (annualTotal) { annualTotal.style.display = period === 'yearly' ? 'inline' : 'none'; annualTotal.hidden = period !== 'yearly'; }
-            if (annualTotalLabel) { annualTotalLabel.style.display = period === 'yearly' ? 'inline' : 'none'; annualTotalLabel.hidden = period !== 'yearly'; }
+            if (annualTotal) { annualTotal.hidden = period !== 'yearly'; annualTotal.style.display = period === 'yearly' ? 'inline' : 'none'; }
+            if (annualTotalLabel) { annualTotalLabel.hidden = period !== 'yearly'; annualTotalLabel.style.display = period === 'yearly' ? 'inline' : 'none'; }
         });
         yearlyBtn.setAttribute('aria-pressed', period === 'yearly' ? 'true' : 'false');
         monthlyBtn.setAttribute('aria-pressed', period === 'monthly' ? 'true' : 'false');
@@ -1755,6 +1868,14 @@ function initCookiebot() {
     } catch (_) { savedConsent = null; }
     var defaults = { necessary: true, analytics: false };
     var previouslyFocused = null;
+    var preferencesOpen = false;
+    function setPreferences(open) {
+        preferencesOpen = open;
+        panel.classList.toggle('preferences-open', open);
+        panel.setAttribute('role', open ? 'dialog' : 'region');
+        if (open) panel.setAttribute('aria-modal', 'true');
+        else panel.removeAttribute('aria-modal');
+    }
     function applyConsentToControls(consent) {
         panel.querySelectorAll('.cookiebot-checkbox').forEach(function(cb) {
             cb.checked = cb.name === 'necessary' ? true : consent[cb.name] === true;
@@ -1775,6 +1896,7 @@ function initCookiebot() {
         localStorage.setItem(consentKey, JSON.stringify(savedConsent));
         panel.style.display = 'none';
         panel.setAttribute('aria-hidden', 'true');
+        setPreferences(false);
         if (window.HousoraAnalytics) window.HousoraAnalytics.applyConsent(savedConsent.analytics);
         if (window.gtag) {
             window.gtag('consent', 'update', {
@@ -1821,6 +1943,13 @@ function initCookiebot() {
         panel.querySelectorAll('.cookiebot-checkbox').forEach(function(cb) { consent[cb.name] = cb.checked; });
         saveConsent(consent);
     });
+    var manageBtn = document.getElementById('cookiebot-manage-btn');
+    if (manageBtn) manageBtn.addEventListener('click', function() {
+        previouslyFocused = this;
+        setPreferences(true);
+        var analyticsChoice = panel.querySelector('input[name="analytics"]');
+        if (analyticsChoice) analyticsChoice.focus();
+    });
 
     var settingsBtn = document.getElementById('cookie-settings-btn');
     if (settingsBtn) settingsBtn.addEventListener('click', function() {
@@ -1828,9 +1957,23 @@ function initCookiebot() {
         applyConsentToControls(savedConsent || defaults);
         panel.style.display = 'block';
         panel.setAttribute('aria-hidden', 'false');
-        panel.scrollIntoView({ behavior: scrollBehavior(), block: 'end' });
-        var firstChoice = document.getElementById('cookiebot-necessary-btn');
+        setPreferences(true);
+        var firstChoice = panel.querySelector('input[name="analytics"]');
         if (firstChoice) firstChoice.focus();
+    });
+    panel.addEventListener('keydown', function(event) {
+        if (!preferencesOpen) return;
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            setPreferences(false);
+            if (previouslyFocused) previouslyFocused.focus();
+            return;
+        }
+        if (event.key !== 'Tab') return;
+        var items = Array.from(panel.querySelectorAll('a[href], button:not([disabled]), input:not([disabled])')).filter(function(el) { return el.offsetParent !== null; });
+        if (!items.length) return;
+        if (event.shiftKey && document.activeElement === items[0]) { event.preventDefault(); items[items.length - 1].focus(); }
+        else if (!event.shiftKey && document.activeElement === items[items.length - 1]) { event.preventDefault(); items[0].focus(); }
     });
 }
 
@@ -1873,112 +2016,215 @@ function initConvexCredits() {
     };
 }
 
-// ===== AUTHENTICATED WORKSPACE SHELL =====
-function initWorkspaceShell() {
-    if (document.body.dataset.workspace !== 'true') return;
-    var sidebar = document.getElementById('workspace-app-sidebar');
-    var backdrop = document.getElementById('workspace-mobile-backdrop');
-    var mobileMenu = document.getElementById('workspace-mobile-menu');
-    var closeButton = document.getElementById('workspace-sidebar-close');
-    var profileButton = document.getElementById('workspace-profile-button');
-    var profileMenu = document.getElementById('workspace-profile-menu');
-    var accountSettings = document.getElementById('workspace-account-settings');
+function initWorkspaceAccountPages() {
+    var usagePage = document.querySelector('.workspace-usage-page');
+    var planPage = document.querySelector('.workspace-plan-page');
+    if (!usagePage && !planPage) return;
+    var allowanceByPlan = { free: 5, standard: 100, pro: 190 };
+    var loadAttempt = 0;
+    function setText(id, value) { var element = document.getElementById(id); if (element) element.textContent = value; }
+    function setProgress(id, percent) { var element = document.getElementById(id); if (element) element.style.width = Math.max(0, Math.min(100, percent)) + '%'; }
+    function friendlyPlan(plan) { var value = String(plan || 'free'); return value.charAt(0).toUpperCase() + value.slice(1); }
+    function render(status) {
+        status = status || { plan: 'free', credits: 0, subscriptionStatus: 'inactive' };
+        var plan = String(status.plan || 'free').toLowerCase();
+        var remaining = Math.max(0, Number(status.credits) || 0);
+        var allowance = allowanceByPlan[plan] || Math.max(remaining, 1);
+        var used = Math.max(0, allowance - remaining);
+        var percent = allowance ? Math.round((used / allowance) * 100) : 0;
+        var planName = friendlyPlan(plan);
+        var end = status.subscriptionEnd ? new Date(status.subscriptionEnd).toLocaleDateString() : (plan === 'free' ? 'No renewal date' : 'Managed through checkout');
+        var state = String(status.subscriptionStatus || (plan === 'free' ? 'active' : 'active')).replace(/_/g, ' ');
 
-    function setSidebar(open) {
-        document.body.classList.toggle('workspace-nav-open', open);
-        if (mobileMenu) mobileMenu.setAttribute('aria-expanded', String(open));
-    }
-    if (mobileMenu) mobileMenu.addEventListener('click', function() { setSidebar(true); });
-    if (closeButton) closeButton.addEventListener('click', function() { setSidebar(false); });
-    if (backdrop) backdrop.addEventListener('click', function() { setSidebar(false); });
-    if (sidebar) sidebar.querySelectorAll('a').forEach(function(link) { link.addEventListener('click', function() { setSidebar(false); }); });
-    if (profileButton && profileMenu) {
-        profileButton.addEventListener('click', function(event) {
-            event.stopPropagation();
-            var open = profileMenu.classList.toggle('is-open');
-            profileButton.setAttribute('aria-expanded', String(open));
-        });
-        document.addEventListener('click', function(event) {
-            if (!profileMenu.contains(event.target) && !profileButton.contains(event.target)) {
-                profileMenu.classList.remove('is-open');
-                profileButton.setAttribute('aria-expanded', 'false');
+        setText('usage-remaining-value', remaining.toLocaleString());
+        setText('usage-remaining-caption', remaining === 1 ? '1 image ready to use' : remaining.toLocaleString() + ' images ready to use');
+        setText('usage-used-value', used.toLocaleString());
+        setText('usage-allowance-value', allowance.toLocaleString());
+        setText('usage-plan-caption', planName + ' plan allowance');
+        setText('usage-percent-label', percent + '% used');
+        setText('usage-breakdown-used', used.toLocaleString() + (used === 1 ? ' image' : ' images'));
+        setText('usage-plan-name', planName);
+        setText('usage-plan-status', state.charAt(0).toUpperCase() + state.slice(1));
+        setText('usage-plan-end', end);
+        setProgress('usage-large-progress', percent);
+
+        setText('workspace-plan-page-name', planName);
+        setText('workspace-plan-page-usage', remaining.toLocaleString() + ' of ' + allowance.toLocaleString() + ' images remaining');
+        setProgress('workspace-plan-page-progress', Math.round((remaining / allowance) * 100));
+        document.querySelectorAll('.workspace-plan-card').forEach(function(card) {
+            var current = card.getAttribute('data-plan-key') === plan;
+            card.classList.toggle('is-current', current);
+            var label = card.querySelector('.workspace-plan-current-label');
+            var action = card.querySelector('.workspace-plan-action');
+            if (label) label.hidden = !current;
+            if (action) {
+                action.hidden = current;
+                action.setAttribute('aria-hidden', current ? 'true' : 'false');
             }
         });
     }
-    if (accountSettings) {
-        accountSettings.addEventListener('click', function() {
-            if (window.Clerk && typeof window.Clerk.openUserProfile === 'function') {
-                profileMenu && profileMenu.classList.remove('is-open');
-                profileButton && profileButton.setAttribute('aria-expanded', 'false');
-                window.Clerk.openUserProfile();
-            }
-        });
+    function renderUnavailable(message) {
+        setText('usage-remaining-caption', message);
+        setText('workspace-plan-page-usage', message);
     }
-
-    var attempts = 0;
-    async function loadUsage() {
-        attempts += 1;
-        if (!window.Housora || !window.Housora.getSubscription || !window.Clerk || !window.Clerk.user || !window.convexClient) {
-            if (attempts < 30) window.setTimeout(loadUsage, 300);
+    function load() {
+        loadAttempt += 1;
+        var authReady = window.housoraAuthState && window.housoraAuthState.status === 'ready';
+        if (!authReady || !window.convexClient) {
+            if (loadAttempt < 50) window.setTimeout(load, 120);
+            else renderUnavailable('Usage is temporarily unavailable. Refresh to try again.');
             return;
         }
-        var subscription = await window.Housora.getSubscription();
-        var credits = await window.Housora.getCredits();
-        var rawPlan = subscription && subscription.plan ? String(subscription.plan).toLowerCase() : 'free';
-        var allowances = { free: 5, standard: 100, pro: 190, growth: 1200, scale: 2250, unlimited: 5250 };
-        var allowance = allowances[rawPlan] || Math.max(credits, 1);
-        var plan = rawPlan.charAt(0).toUpperCase() + rawPlan.slice(1);
-        var percent = Math.max(0, Math.min(100, (credits / allowance) * 100));
-        var used = Math.max(0, allowance - credits);
-        var usedPercent = Math.max(0, Math.min(100, (used / allowance) * 100));
-        [document.getElementById('workspace-plan-name'), document.getElementById('workspace-home-plan'), document.getElementById('workspace-plan-page-name')].forEach(function(el) { if (el) el.textContent = plan; });
-        var remaining = credits + ' images remaining (' + allowance + ' per cycle)';
-        var sidebarCount = document.getElementById('workspace-usage-count');
-        var homeUsage = document.getElementById('workspace-home-usage');
-        var planUsage = document.getElementById('workspace-plan-page-usage');
-        if (sidebarCount) sidebarCount.textContent = remaining;
-        if (homeUsage) homeUsage.textContent = remaining;
-        if (planUsage) planUsage.textContent = remaining;
-        [document.getElementById('workspace-usage-progress'), document.getElementById('workspace-home-progress'), document.getElementById('workspace-plan-page-progress')].forEach(function(el) { if (el) el.style.width = percent + '%'; });
-        var usageRemaining = document.getElementById('usage-remaining-value');
-        var usageRemainingCaption = document.getElementById('usage-remaining-caption');
-        var usageUsed = document.getElementById('usage-used-value');
-        var usageAllowance = document.getElementById('usage-allowance-value');
-        var usagePlanCaption = document.getElementById('usage-plan-caption');
-        var usagePercentLabel = document.getElementById('usage-percent-label');
-        var usageLargeProgress = document.getElementById('usage-large-progress');
-        var usageBreakdownUsed = document.getElementById('usage-breakdown-used');
-        var usagePlanName = document.getElementById('usage-plan-name');
-        var usagePlanStatus = document.getElementById('usage-plan-status');
-        var usagePlanEnd = document.getElementById('usage-plan-end');
-        if (usageRemaining) usageRemaining.textContent = String(credits);
-        if (usageRemainingCaption) usageRemainingCaption.textContent = credits + ' of ' + allowance + ' available';
-        if (usageUsed) usageUsed.textContent = String(used);
-        if (usageAllowance) usageAllowance.textContent = String(allowance);
-        if (usagePlanCaption) usagePlanCaption.textContent = plan + ' plan allowance';
-        if (usagePercentLabel) usagePercentLabel.textContent = Math.round(usedPercent) + '% used';
-        if (usageLargeProgress) usageLargeProgress.style.width = usedPercent + '%';
-        if (usageBreakdownUsed) usageBreakdownUsed.textContent = used + (used === 1 ? ' image' : ' images');
-        if (usagePlanName) usagePlanName.textContent = plan;
-        if (usagePlanStatus) {
-            var status = subscription && subscription.subscriptionStatus ? String(subscription.subscriptionStatus).replace(/_/g, ' ') : 'active';
-            usagePlanStatus.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+        if (!window.Clerk || !window.Clerk.user) {
+            renderUnavailable('Sign in to view your allowance.');
+            return;
         }
-        if (usagePlanEnd && subscription && subscription.subscriptionEnd) {
-            usagePlanEnd.textContent = new Intl.DateTimeFormat(undefined, { year: 'numeric', month: 'short', day: 'numeric' }).format(new Date(subscription.subscriptionEnd));
-        }
-        document.querySelectorAll('.workspace-plan-card[data-plan-key]').forEach(function(card) {
-            var isCurrent = card.dataset.planKey === rawPlan;
-            var currentLabel = card.querySelector('.workspace-plan-current-label');
-            var chooseAction = card.querySelector('.workspace-plan-action');
-            card.classList.toggle('is-current', isCurrent);
-            if (currentLabel) currentLabel.hidden = !isCurrent;
-            if (chooseAction) chooseAction.hidden = isCurrent;
+        window.convexClient.query('users:getSubscriptionStatus', { clerkId: window.Clerk.user.id })
+            .then(render)
+            .catch(function() { renderUnavailable('Usage is temporarily unavailable. Refresh to try again.'); });
+    }
+    load();
+    window.addEventListener('clerk:ready', function() { loadAttempt = 0; load(); });
+}
+
+// ===== WORKSPACE HOME =====
+function initWorkspaceHome() {
+    var home = document.querySelector('.workspace-home');
+    if (!home) return;
+    var promptInput = document.getElementById('workspace-home-prompt');
+    var recentGrid = document.getElementById('workspaceRecentGrid');
+    var status = document.getElementById('workspaceHomeStatus');
+    var empty = document.getElementById('workspaceHomeEmpty');
+    var likedGrid = document.getElementById('workspaceLikedGrid');
+    var likesEmpty = document.getElementById('workspaceLikesEmpty');
+    var likeButtons = Array.from(document.querySelectorAll('.workspace-like-button'));
+    var loadAttempt = 0;
+
+    document.querySelectorAll('[data-home-prompt]').forEach(function(button) {
+        button.addEventListener('click', function() {
+            if (!promptInput) return;
+            promptInput.value = button.getAttribute('data-home-prompt') || '';
+            promptInput.focus();
+        });
+    });
+
+    function storedLikes() {
+        try { return JSON.parse(localStorage.getItem('housora_workspace_likes') || '[]'); }
+        catch (_) { return []; }
+    }
+    function saveLikes(likes) {
+        try { localStorage.setItem('housora_workspace_likes', JSON.stringify(likes)); } catch (_) {}
+    }
+    function renderLikes() {
+        if (!likedGrid || !likesEmpty) return;
+        var likes = storedLikes();
+        likedGrid.replaceChildren();
+        likesEmpty.hidden = likes.length > 0;
+        likes.forEach(function(item) {
+            var article = document.createElement('article');
+            article.className = 'workspace-liked-card';
+            var link = document.createElement('a');
+            link.href = item.path || '/examples';
+            var image = document.createElement('img');
+            image.src = item.image;
+            image.alt = (item.title || 'Saved design') + ' inspiration';
+            image.loading = 'lazy';
+            var copy = document.createElement('div');
+            var title = document.createElement('h3');
+            title.textContent = item.title || 'Saved inspiration';
+            var detail = document.createElement('p');
+            detail.textContent = 'Open this design tool →';
+            copy.append(title, detail);
+            link.append(image, copy);
+            article.appendChild(link);
+            likedGrid.appendChild(article);
+        });
+        likeButtons.forEach(function(button) {
+            var active = likes.some(function(item) { return item.path === button.getAttribute('data-like-path'); });
+            button.setAttribute('aria-pressed', active ? 'true' : 'false');
+            button.textContent = active ? '♥' : '♡';
+            button.setAttribute('aria-label', (active ? 'Remove ' : 'Save ') + (button.getAttribute('data-like-title') || 'example') + (active ? ' from My likes' : ' to My likes'));
         });
     }
-    window.addEventListener('housora:authenticated', loadUsage);
-    window.addEventListener('clerk:ready', loadUsage);
-    loadUsage();
+    likeButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            var path = button.getAttribute('data-like-path');
+            var likes = storedLikes();
+            var existing = likes.findIndex(function(item) { return item.path === path; });
+            if (existing >= 0) likes.splice(existing, 1);
+            else likes.unshift({ title: button.getAttribute('data-like-title'), image: button.getAttribute('data-like-image'), path: path });
+            saveLikes(likes.slice(0, 12));
+            renderLikes();
+        });
+    });
+    renderLikes();
+
+    function renderRecent(projects) {
+        if (!recentGrid || !empty) return;
+        recentGrid.replaceChildren();
+        var usable = (projects || []).filter(function(project) { return project.afterImageUrl || project.beforeImageUrl; }).slice(0, 4);
+        empty.hidden = usable.length > 0;
+        usable.forEach(function(project) {
+            var article = document.createElement('article');
+            article.className = 'workspace-recent-card';
+            var link = document.createElement('a');
+            link.href = '/design?project=' + encodeURIComponent(project._id);
+            var image = document.createElement('img');
+            image.src = project.afterImageUrl || project.beforeImageUrl;
+            image.alt = 'Preview of ' + (project.title || 'Untitled project');
+            image.loading = 'lazy';
+            var copy = document.createElement('div');
+            var title = document.createElement('h3');
+            title.textContent = project.title || 'Untitled project';
+            var date = document.createElement('p');
+            date.textContent = 'Updated ' + new Date(project.updatedAt || project.createdAt).toLocaleDateString();
+            copy.append(title, date);
+            link.append(image, copy);
+            article.appendChild(link);
+            recentGrid.appendChild(article);
+        });
+    }
+    function loadRecent() {
+        loadAttempt += 1;
+        var authReady = window.housoraAuthState && window.housoraAuthState.status === 'ready';
+        if (!authReady || !window.convexClient) {
+            if (loadAttempt < 50) window.setTimeout(loadRecent, 120);
+            else { if (status) status.textContent = 'Your library is temporarily unavailable.'; if (empty) empty.hidden = false; }
+            return;
+        }
+        if (!window.Clerk || !window.Clerk.user) {
+            if (status) status.textContent = '';
+            if (empty) empty.hidden = false;
+            return;
+        }
+        window.convexClient.query('projects:listProjects', {})
+            .then(function(projects) { if (status) status.textContent = ''; renderRecent(projects); })
+            .catch(function() { if (status) status.textContent = 'Your latest images could not be loaded. Try refreshing.'; if (empty) empty.hidden = false; });
+        window.convexClient.query('users:getSubscriptionStatus', { clerkId: window.Clerk.user.id })
+            .then(function(result) {
+                var credit = document.getElementById('workspace-sidebar-credits');
+                if (credit) credit.textContent = Math.max(0, Number(result && result.credits) || 0) + ' left';
+            }).catch(function() {});
+    }
+    loadRecent();
+    window.addEventListener('clerk:ready', function() { loadAttempt = 0; loadRecent(); });
+}
+
+function initWorkspaceChrome() {
+    var profileButtons = [document.getElementById('workspace-profile-button'), document.getElementById('workspace-sidebar-profile')].filter(Boolean);
+    profileButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            if (window.Clerk && typeof window.Clerk.openUserProfile === 'function') window.Clerk.openUserProfile();
+            else window.location.href = '/sign-in?redirect=' + encodeURIComponent(window.location.pathname);
+        });
+    });
+    document.addEventListener('keydown', function(event) {
+        if (event.key !== '/' || event.ctrlKey || event.metaKey || event.altKey) return;
+        var target = event.target;
+        if (target && /input|textarea|select/i.test(target.tagName)) return;
+        var prompt = document.getElementById('workspace-home-prompt');
+        if (prompt) { event.preventDefault(); prompt.focus(); }
+    });
 }
 
 // ===== PROJECTS =====
@@ -1991,7 +2237,11 @@ function initHousoraProjects() {
     var signInBtn = document.getElementById('projectsSignInBtn');
     if (!grid) return;
 
-    function signedIn() { return window.convexClient && window.Clerk && window.Clerk.user; }
+    function authReady() {
+        return !!(window.housoraAuthState && window.housoraAuthState.status === 'ready') || !!(window.Clerk && window.Clerk.loaded);
+    }
+    function userSignedIn() { return !!(window.Clerk && window.Clerk.user); }
+    function clientReady() { return !!window.convexClient; }
     function showMessage(text, isError) {
         if (message) { message.textContent = text; message.classList.toggle('is-error', !!isError); }
     }
@@ -2074,8 +2324,27 @@ function initHousoraProjects() {
             grid.appendChild(card);
         });
     }
-    function load() {
-        if (!signedIn()) { showSignedOutState(); return; }
+    function load(attempt) {
+        attempt = attempt || 0;
+        if (!authReady()) {
+            if (authGate) authGate.style.display = 'none';
+            if (newBtn) newBtn.style.display = 'none';
+            grid.style.display = 'none';
+            if (empty) empty.style.display = 'none';
+            showMessage('Preparing your projects…');
+            if (attempt < 50) window.setTimeout(function() { load(attempt + 1); }, 120);
+            return;
+        }
+        if (!userSignedIn()) { showSignedOutState(); return; }
+        if (!clientReady()) {
+            if (authGate) authGate.style.display = 'none';
+            if (newBtn) newBtn.style.display = 'none';
+            grid.style.display = 'none';
+            if (empty) empty.style.display = 'none';
+            showMessage(attempt < 50 ? 'Connecting to your project library…' : 'Your project library is temporarily unavailable. Refresh the page to try again.', attempt >= 50);
+            if (attempt < 50) window.setTimeout(function() { load(attempt + 1); }, 120);
+            return;
+        }
         if (authGate) authGate.style.display = 'none';
         if (newBtn) newBtn.style.display = '';
         grid.style.display = '';
@@ -2088,20 +2357,28 @@ function initHousoraProjects() {
             });
     }
     if (newBtn) newBtn.addEventListener('click', function() {
-        if (!signedIn()) { window.location.href = '/sign-in?redirect=/projects'; return; }
-        window.location.href = '/app/home#workspace-tools';
+        if (!userSignedIn()) { window.location.href = '/sign-in?redirect=/projects'; return; }
+        if (!clientReady()) { showMessage('Your project library is still connecting. Try again in a moment.', true); return; }
+        newBtn.disabled = true;
+        window.convexClient.mutation('projects:createProject', {
+            title: 'Untitled Project', roomType: 'Living Room', style: 'Contemporary'
+        }).then(function(id) {
+            window.HousoraAnalytics.track('project_created');
+            localStorage.setItem('housora_current_project', id);
+            window.location.href = '/design?project=' + encodeURIComponent(id);
+        }).catch(function(error) { showMessage(error.message || 'Could not create the project.', true); newBtn.disabled = false; });
     });
     if (signInBtn) signInBtn.addEventListener('click', function() {
         if (window.housoraOpenAuth) window.housoraOpenAuth('signin');
         else window.location.href = '/sign-in?redirect=/projects';
     });
     load();
-    window.addEventListener('clerk:ready', function() { setTimeout(load, 0); });
+    window.addEventListener('clerk:ready', function() { setTimeout(function() { load(0); }, 0); });
     // The bootstrap script can finish before this page script is evaluated.
     // Re-check the already-ready state so the gate cannot remain stuck on
     // “Sign in” after a successful Clerk session is available.
     if (window.housoraAuthState && window.housoraAuthState.status === 'ready') {
-        setTimeout(load, 0);
+        setTimeout(function() { load(0); }, 0);
     }
 }
 
@@ -2190,7 +2467,9 @@ document.addEventListener('DOMContentLoaded', function() {
     initWhopCheckout();
     handleCheckoutRedirects();
     initConvexCredits();
-    initWorkspaceShell();
+    initWorkspaceAccountPages();
+    initWorkspaceHome();
+    initWorkspaceChrome();
     initWorkspaceOptions();
     initWorkspaceHandoff();
     initWorkspaceProgress();

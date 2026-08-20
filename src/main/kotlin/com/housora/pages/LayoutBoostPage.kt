@@ -11,6 +11,7 @@ fun HTML.layoutBoostPage() {
         heroAction = "Optimize Layout",
         heroElement = "Layout",
         heroWords = emptyList(),
+        heroSlides = listOf("/static/images/tools/layout-boost-hero-v2.jpg", "/static/images/gallery-scandinavian.jpg", "/static/images/gallery-warm-contemporary.jpg"),
         toolName = "Layout Boost",
         interactiveHeading = "Boost Your Room Layout with AI",
         uploadDescription = "Upload a photo and optimize your room layout instantly",
@@ -26,9 +27,7 @@ fun HTML.layoutBoostPage() {
             ToolOptionGroup("EXISTING FURNITURE", listOf("Keep & Rearrange" to "", "Suggest New" to ""), "pills")
         ),
         styleDisplayMode = "pills",
-        extraStyleGroups = listOf(
-            "SPACE FEEL" to listOf("Airy & Open", "Balanced", "Cozy & Warm")
-        ),
+        extraStyleGroups = emptyList(),
         textInputPlaceholder = "Describe your ideal layout...",
         quickIdeas = listOf(
             "Open Plan Living" to "Maximize space with open flow",

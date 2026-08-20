@@ -24,6 +24,7 @@ import com.housora.EnvConfig
 import com.housora.ImageGenerationConfig
 import java.io.File
 import java.util.Base64
+import java.util.concurrent.ConcurrentHashMap
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -165,8 +166,8 @@ private suspend fun verifyClerkSession(token: String): String? {
         // Verify session is active via Clerk backend API
         val secretKey = ClerkConfig.secretKey
         if (secretKey.isEmpty()) {
-            println("[Clerk Auth] WARN: CLERK_SECRET_KEY not set, skipping session verification")
-            return sub
+            println("[Clerk Auth] ERROR: CLERK_SECRET_KEY not set; refusing to trust an unverified session")
+            return null
         }
 
         val client = io.ktor.client.HttpClient(io.ktor.client.engine.java.Java)
@@ -199,6 +200,40 @@ private suspend fun verifyClerkSession(token: String): String? {
         println("[Clerk Auth] Session verification error: ${e.message}")
         return null
     }
+}
+
+private data class RequestWindow(val startedAt: Long, val count: Int)
+
+private val requestWindows = ConcurrentHashMap<String, RequestWindow>()
+
+private fun requestKey(call: ApplicationCall): String =
+    call.request.headers["X-Forwarded-For"]?.substringBefore(',')?.trim()
+        ?.takeIf { it.isNotBlank() }
+        ?: call.request.local.remoteHost
+
+private fun rateLimited(call: ApplicationCall, bucket: String, limit: Int, windowMs: Long = 60_000L): Boolean {
+    val now = System.currentTimeMillis()
+    val key = "$bucket:${requestKey(call)}"
+    val window = requestWindows.compute(key) { _, current ->
+        when {
+            current == null || now - current.startedAt >= windowMs -> RequestWindow(now, 1)
+            else -> current.copy(count = current.count + 1)
+        }
+    } ?: RequestWindow(now, 1)
+    if (requestWindows.size > 10_000) requestWindows.entries.removeIf { now - it.value.startedAt >= windowMs }
+    return window.count > limit
+}
+
+private fun appendGenerationCors(call: ApplicationCall) {
+    val origin = call.request.headers[HttpHeaders.Origin] ?: return
+    val allowed = setOf(WebsiteConfig.resolveUrl(), "http://localhost:8081", "http://127.0.0.1:8081")
+    if (origin in allowed) {
+        call.response.headers.append(HttpHeaders.AccessControlAllowOrigin, origin)
+        call.response.headers.append(HttpHeaders.AccessControlAllowCredentials, "true")
+        call.response.headers.append(HttpHeaders.Vary, HttpHeaders.Origin)
+    }
+    call.response.headers.append(HttpHeaders.AccessControlAllowMethods, "POST, OPTIONS")
+    call.response.headers.append(HttpHeaders.AccessControlAllowHeaders, "Content-Type, Authorization, X-Housora-Analytics-Consent")
 }
 
 fun Application.configureRouting() {
@@ -429,24 +464,28 @@ Prices, taxes, renewal terms, annual billing details, and feature limits shown a
 
         // File upload endpoint — accepts raw image bytes in body
         post("/upload") {
+            if (rateLimited(call, "upload", limit = 20)) {
+                call.respondText("""{"error":"Too many uploads. Please wait a minute and try again."}""", status = HttpStatusCode.TooManyRequests, contentType = ContentType.Application.Json)
+                return@post
+            }
             try {
                 val bytes = call.receive<ByteArray>()
 
                 if (bytes.isEmpty()) {
-                    call.respondText("""{"error":"No file provided"}""", contentType = ContentType.Application.Json)
+                    call.respondText("""{"error":"No file provided"}""", status = HttpStatusCode.BadRequest, contentType = ContentType.Application.Json)
                     return@post
                 }
 
                 // Validate file size (10MB max)
                 if (bytes.size > 10 * 1024 * 1024) {
-                    call.respondText("""{"error":"File too large. Maximum size is 10MB."}""", contentType = ContentType.Application.Json)
+                    call.respondText("""{"error":"File too large. Maximum size is 10MB."}""", status = HttpStatusCode.PayloadTooLarge, contentType = ContentType.Application.Json)
                     return@post
                 }
 
                 // Validate file type
                 val imageType = detectImageType(bytes)
                 if (imageType == null) {
-                    call.respondText("""{"error":"Invalid file type. Only JPG, PNG, WebP allowed."}""", contentType = ContentType.Application.Json)
+                    call.respondText("""{"error":"Invalid file type. Only JPG, PNG, WebP allowed."}""", status = HttpStatusCode.UnsupportedMediaType, contentType = ContentType.Application.Json)
                     return@post
                 }
 
@@ -462,29 +501,28 @@ Prices, taxes, renewal terms, annual billing details, and feature limits shown a
                 call.respondText("""{"storageId":"$fileName","fileName":"$fileName"}""", contentType = ContentType.Application.Json)
             } catch (e: Exception) {
                 println("[Upload] Error: ${e.message}")
-                call.respondText("""{"error":"Upload failed"}""", contentType = ContentType.Application.Json)
+                call.respondText("""{"error":"Upload failed"}""", status = HttpStatusCode.BadRequest, contentType = ContentType.Application.Json)
             }
         }
 
         // 404 catch-all — return HTML error page
         options("/api/generate") {
-            call.response.headers.append(HttpHeaders.AccessControlAllowOrigin, "*")
-            call.response.headers.append(HttpHeaders.AccessControlAllowMethods, "POST, OPTIONS")
-            call.response.headers.append(HttpHeaders.AccessControlAllowHeaders, "Content-Type, Authorization")
+            appendGenerationCors(call)
             call.respond(HttpStatusCode.NoContent)
         }
 
         post("/api/generate") {
-            call.response.headers.append(HttpHeaders.AccessControlAllowOrigin, "*")
-            call.response.headers.append(HttpHeaders.AccessControlAllowMethods, "POST, OPTIONS")
-            call.response.headers.append(HttpHeaders.AccessControlAllowHeaders, "Content-Type, Authorization")
-            val bearerToken = call.request.headers[HttpHeaders.Authorization]
-                ?.takeIf { it.startsWith("Bearer ", ignoreCase = true) }
-                ?.substringAfter(' ')
-                ?.trim()
-            if (bearerToken.isNullOrBlank() || verifyClerkSession(bearerToken) == null) {
-                call.respondText("""{"error":{"message":"Sign up or sign in to create a design."}}""", status = HttpStatusCode.Unauthorized, contentType = ContentType.Application.Json)
+            appendGenerationCors(call)
+            if (rateLimited(call, "generate", limit = 6)) {
+                call.respondText("""{"error":"Generation limit reached. Please wait a minute and try again."}""", status = HttpStatusCode.TooManyRequests, contentType = ContentType.Application.Json)
                 return@post
+            }
+            if (ClerkConfig.isConfigured) {
+                val token = call.request.headers[HttpHeaders.Authorization]?.removePrefix("Bearer")?.trim()
+                if (token.isNullOrBlank() || verifyClerkSession(token) == null) {
+                    call.respondText("""{"error":"Authentication required. Please sign in again."}""", status = HttpStatusCode.Unauthorized, contentType = ContentType.Application.Json)
+                    return@post
+                }
             }
             if (!ImageGenerationConfig.isConfigured) {
                 call.respondText("""{"error":"Add IMAGE_API_URL and IMAGE_API_KEY"}""", status = HttpStatusCode.ServiceUnavailable, contentType = ContentType.Application.Json)

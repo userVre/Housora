@@ -42,7 +42,7 @@ static/**/*.mjs
 
 # Logs and local screenshots
 *.log
-reports/
+*.bak
 screenshots/
 mywebsitescreenshoots/
 
@@ -50,4 +50,35 @@ mywebsitescreenshoots/
 convex/_generated/
 uploads/
 .wrangler/tmp/
-.dev.vars
+
+# The runtime source of truth is Kotlin/Ktor. These folders are an untracked
+# Next.js migration scratch tree and must not leak into the production build.
+app/
+components/
+lib/
+public/
+middleware.ts
+next.config.ts
+next-env.d.ts
+open-next.config.ts
+convex/vitest.config.mts
+functions/package.json
+
+# Local audits, captures, and generated migration output
+.next/
+.wrangler/
+reports/
+inspiration/
+tssawar/
+server-audit*.log
+tsconfig.tsbuildinfo
+tsconfig.json
+types/
+wrangler.jsonc
+static/images/**/*-1024w.*
+static/images/**/*-1086w.*
+static/images/**/*-1376w-*.*
+static/images/**/*-1402w.*
+static/images/**/*-1536w.*
+static/images/**/*-1600w.*
+static/images/**/*-1920w.*

@@ -29,7 +29,7 @@ var convex = (() => {
   });
 
   // src/index.ts
-  var version = "1.43.0";
+  var version = "1.44.0";
 
   // src/values/base64.ts
   var base64_exports = {};

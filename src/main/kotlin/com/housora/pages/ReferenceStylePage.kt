@@ -5,7 +5,8 @@ import com.housora.templates.baseLayout
 
 fun HTML.referenceStylePage(reference: String? = null) {
     val safeReference = reference?.takeIf { it.startsWith("/") || it.startsWith("https://") || it.startsWith("http://") }
-    baseLayout("Reference Style | Housora AI", path = "/reference-style") {
+    val emptyPreview = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
+    baseLayout("Reference Style | Housora AI", bodyClass = "page-reference-style", path = "/reference-style") {
         div(classes = "reference-style-page") {
             if (safeReference != null) attributes["data-reference-src"] = safeReference
             section(classes = "reference-style-hero") {
@@ -18,7 +19,7 @@ fun HTML.referenceStylePage(reference: String? = null) {
                     p { attributes["data-i18n"] = "reference.reference_help"; +"Pinterest, Instagram, or any image that inspires you." }
                     input(type = InputType.file) { attributes["id"] = "referenceFileInput"; attributes["accept"] = "image/*"; attributes["hidden"] = "hidden" }
                     div(classes = "reference-upload-zone") { id = "referenceUploadZone"; attributes["tabindex"] = "0"; attributes["role"] = "button"; attributes["aria-label"] = "Upload reference image"
-                        img(src = safeReference ?: "", alt = "Selected reference") { attributes["id"] = "referencePreview"; if (safeReference == null) attributes["hidden"] = "hidden" }
+                        img(src = safeReference ?: emptyPreview, alt = "Selected reference") { attributes["id"] = "referencePreview"; if (safeReference == null) attributes["hidden"] = "hidden" }
                         span { attributes["data-i18n"] = "reference.choose_reference"; +"Choose a reference image" }
                     }
                 }
@@ -27,7 +28,7 @@ fun HTML.referenceStylePage(reference: String? = null) {
                     p { attributes["data-i18n"] = "reference.room_help"; +"Upload the room you want to redesign." }
                     input(type = InputType.file) { attributes["id"] = "referenceRoomFileInput"; attributes["accept"] = "image/*"; attributes["hidden"] = "hidden" }
                     div(classes = "reference-upload-zone") { id = "referenceRoomUploadZone"; attributes["tabindex"] = "0"; attributes["role"] = "button"; attributes["aria-label"] = "Upload room photo"
-                        img(src = "", alt = "Selected room") { attributes["id"] = "referenceRoomPreview"; attributes["hidden"] = "hidden" }
+                        img(src = emptyPreview, alt = "Selected room") { attributes["id"] = "referenceRoomPreview"; attributes["hidden"] = "hidden" }
                         span { attributes["data-i18n"] = "reference.choose_room"; +"Choose your room photo" }
                     }
                 }
@@ -44,7 +45,8 @@ fun HTML.referenceStylePage(reference: String? = null) {
                 }
             }
             div(classes = "reference-generate-row") {
-                button(classes = "btn-primary btn-large") { id = "referenceGenerateBtn"; attributes["type"] = "button"; attributes["data-i18n"] = "reference.generate"; +"Generate my design" }
+                p("reference-generate-help") { id = "referenceGenerateHelp"; +"Add both images to continue." }
+                button(classes = "btn-primary btn-large") { id = "referenceGenerateBtn"; attributes["type"] = "button"; attributes["data-i18n"] = "reference.generate"; attributes["aria-describedby"] = "referenceGenerateHelp"; attributes["disabled"] = "disabled"; +"Generate my design" }
             }
         }
     }

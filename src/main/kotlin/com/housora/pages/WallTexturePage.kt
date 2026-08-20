@@ -12,7 +12,7 @@ fun HTML.wallTexturePage() {
         heroElement = "Walls",
         heroWords = listOf("Living Room", "Bedroom", "Kitchen", "Bathroom", "Office", "Any Room"),
         heroLine2 = "walls with AI in seconds",
-        heroSlides = listOf("/static/images/wall-after.jpg", "/static/images/gallery-exposed-brick.jpg", "/static/images/gallery-wood-paneling.jpg", "/static/images/gallery-stone.jpg"),
+        heroSlides = listOf("/static/images/tools/wall-texture-hero.jpg", "/static/images/wall-after.jpg", "/static/images/gallery-wood-paneling.jpg", "/static/images/gallery-stone.jpg"),
         toolName = "Wall Texture",
         interactiveHeading = "Restyle Your Walls with AI",
         uploadDescription = "Upload a photo of your room and restyle your walls instantly",

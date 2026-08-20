@@ -24,7 +24,7 @@ fun HTML.enterprisePage() {
                     val images = listOf("1,200", "2,250", "5,250")
                     plans.forEachIndexed { index, (name, price, ids) ->
                         div(classes = "pricing-card") {
-                            h3("plan-name") { +name }
+                            h2("plan-name") { +name }
                             div("plan-price") {
                                 span("price-current") { +price }
                                 span("price-period") { +" / month" }

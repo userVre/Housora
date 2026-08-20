@@ -206,6 +206,15 @@ private fun BODY.workspaceNavigation(currentPath: String) {
 
 fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", structuredData: String? = null, content: DIV.() -> Unit) {
     val canonicalPath = if (path.isBlank()) inferredPath(title) else path
+    val workspacePaths = setOf("/app/home", "/app/usage", "/app/plan", "/design", "/projects")
+    val isWorkspaceSurface = canonicalPath in workspacePaths
+    val workspacePageLabel = when (canonicalPath) {
+        "/projects" -> "Projects"
+        "/app/usage" -> "Usage"
+        "/app/plan" -> "Plan & billing"
+        "/design" -> "Design studio"
+        else -> "Home"
+    }
     val seo = seoFor(canonicalPath)
     val canonicalUrl = WebsiteConfig.resolveUrl(canonicalPath)
     val convexPaths = aiTools.map { it.path }.toSet() + setOf("/", "/design", "/projects", "/pricing", "/app/home", "/app/usage", "/app/plan", "/delete-account")
@@ -369,9 +378,7 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
             }
         }
     }
-    body(classes = listOf(bodyClass, if (isWorkspace) "workspace-app auth-required" else "").filter { it.isNotBlank() }.joinToString(" ")) {
-        attributes["data-protected-route"] = (canonicalPath in protectedPaths).toString()
-        attributes["data-workspace"] = isWorkspace.toString()
+    body(classes = listOf(bodyClass, if (isWorkspaceSurface) "workspace-surface" else "").filter { it.isNotBlank() }.joinToString(" ")) {
         a(href = "#main-content", classes = "skip-link") { +"Skip to main content" }
         // Clerk loading overlay (hidden by default, shown by JS during init)
         if (ClerkConfig.isConfigured) {
@@ -388,7 +395,10 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
         if (isWorkspace) workspaceNavigation(canonicalPath)
 
         // Page wrapper
-        div(classes = listOf(if (path == "/projects") "projects-shell" else "create-page", if (isWorkspace) "workspace-page-shell" else "").filter { it.isNotBlank() }.joinToString(" ")) {
+        div(classes = buildString {
+            append(if (canonicalPath == "/projects") "projects-shell" else "create-page")
+            if (isWorkspaceSurface) append(" workspace-app-shell")
+        }) {
 
         // Header
         header(classes = "create-header") {
@@ -400,35 +410,56 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                     span {}
                     span {}
                 }
-                a(href = "/", classes = "create-logo") {
-                    span(classes = "brand-mark") { unsafe { +"""<svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><path d="M7 5v22M25 5v22M7 16c5-6 13-6 18 0" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>""" } }
+                a(href = if (isWorkspaceSurface) "/app/home" else "/", classes = "create-logo") {
                     span { +"HOUSORA" }
                 }
+                if (isWorkspaceSurface) span("workspace-header-title") { +workspacePageLabel }
             }
             div(classes = "create-header-actions") {
                 div(classes = "desktop-header-nav") {
-                    a(href = "/examples", classes = "desktop-nav-link") { +"Examples" }
-                    a(href = "/pricing", classes = "desktop-nav-link") { +"Pricing" }
-                    a(href = "/sign-in", classes = "desktop-nav-link") { +"Sign in" }
-                    div(classes = "ai-tools-dropdown-wrapper") {
-                        button(classes = "desktop-nav-link ai-tools-trigger") {
-                            attributes["id"] = "ai-tools-btn"
-                            attributes["type"] = "button"
-                            attributes["aria-expanded"] = "false"
-                            attributes["aria-controls"] = "ai-tools-dropdown"
-                            +"AI Tools"
-                            unsafe { +"""<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>""" }
+                    if (isWorkspaceSurface) {
+                        a(href = "/app/home#workspace-prompt", classes = "workspace-top-search") {
+                            attributes["aria-label"] = "Search tools and start a design"
+                            unsafe { +"""<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>""" }
+                            span { +"Search tools or describe a room" }
+                            kbd { +"/" }
                         }
-                        div(classes = "ai-tools-dropdown") {
-                            attributes["id"] = "ai-tools-dropdown"
-                            aiTools.forEach { tool ->
-                                a(href = tool.path, classes = "ai-tool-link") { +tool.name }
+                        a(href = "/faq", classes = "workspace-header-icon") {
+                            attributes["aria-label"] = "Help"
+                            +"?"
+                        }
+                        a(href = "/design", classes = "browse-catalog-btn workspace-new-design") { +"NEW DESIGN" }
+                        button(classes = "workspace-account-link") {
+                            attributes["id"] = "workspace-profile-button"
+                            attributes["type"] = "button"
+                            attributes["aria-label"] = "Open profile"
+                            span(classes = "workspace-account-avatar") { attributes["id"] = "workspace-account-avatar"; +"H" }
+                            span(classes = "workspace-account-name") { attributes["id"] = "workspace-account-name"; +"Account" }
+                        }
+                    } else {
+                        a(href = "/examples", classes = "desktop-nav-link") { +"Examples" }
+                        a(href = "/pricing", classes = "desktop-nav-link") { +"Pricing" }
+                        a(href = "/sign-in", classes = "desktop-nav-link") { +"Sign in" }
+                        div(classes = "ai-tools-dropdown-wrapper") {
+                            button(classes = "desktop-nav-link ai-tools-trigger") {
+                                attributes["id"] = "ai-tools-btn"
+                                attributes["type"] = "button"
+                                attributes["aria-expanded"] = "false"
+                                attributes["aria-controls"] = "ai-tools-dropdown"
+                                +"AI Tools"
+                                unsafe { +"""<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>""" }
+                            }
+                            div(classes = "ai-tools-dropdown") {
+                                attributes["id"] = "ai-tools-dropdown"
+                                aiTools.forEach { tool ->
+                                    a(href = tool.path, classes = "ai-tool-link") { +tool.name }
+                                }
                             }
                         }
-                    }
-                    button(classes = "browse-catalog-btn start-free-btn") {
-                        attributes["onclick"] = "window.location.href=(window.Clerk && window.Clerk.user ? '/app/home' : '/sign-up?redirect=/app/home')"
-                        +"CREATE DESIGN"
+                        button(classes = "browse-catalog-btn start-free-btn") {
+                            attributes["onclick"] = "window.location.href=(window.Clerk && window.Clerk.user ? '/app/home' : '/#first-design')"
+                            +"START FREE DESIGN"
+                        }
                     }
                 }
                 button(classes = "header-search-icon-mobile") {
@@ -468,26 +499,68 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                     span(classes = "sidebar-user-email") { attributes["id"] = "sidebar-user-email"; +"" }
                 }
             }
-            div(classes = "sidebar-section") {
-                a(href = "/design", classes = "sidebar-link") { +"New Design" }
-                a(href = "/projects", classes = "sidebar-link") { +"My Projects" }
-            }
-            div(classes = "sidebar-section") {
-                div(classes = "sidebar-section-header") {
-                    span { +"AI Tools" }
-                    span(classes = "chevron") { unsafe { +"""<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>""" } }
+            if (isWorkspaceSurface) {
+                div("workspace-account-switcher") {
+                    span("workspace-switcher-mark") { +"H" }
+                    div { strong { +"Personal workspace" }; small { +"Housora Studio" } }
+                    span("workspace-switcher-chevron") { +"⌄" }
                 }
-                div(classes = "sidebar-links") {
-                    aiTools.take(6).forEach { tool ->
-                        a(href = tool.path, classes = "sidebar-link") { +tool.name }
+                div("workspace-sidebar-scroll") {
+                    div("sidebar-section workspace-library-nav") {
+                        span("workspace-sidebar-label") { +"LIBRARY" }
+                        a(href = "/app/home", classes = "sidebar-link workspace-sidebar-link ${if (canonicalPath == "/app/home") "is-active" else ""}") {
+                            span("workspace-nav-glyph") { +"⌂" }; +"Home"
+                        }
+                        a(href = "/app/home#my-images", classes = "sidebar-link workspace-sidebar-link") {
+                            span("workspace-nav-glyph") { +"▧" }; +"My images"
+                        }
+                        a(href = "/projects", classes = "sidebar-link workspace-sidebar-link ${if (canonicalPath == "/projects") "is-active" else ""}") {
+                            span("workspace-nav-glyph") { +"□" }; +"Projects"
+                        }
+                        a(href = "/app/home#my-likes", classes = "sidebar-link workspace-sidebar-link") {
+                            span("workspace-nav-glyph") { +"♡" }; +"My likes"
+                        }
+                    }
+                    div("sidebar-section workspace-tools-nav") {
+                        span("workspace-sidebar-label") { +"AI TOOLS" }
+                        aiTools.forEach { tool ->
+                            a(href = tool.path, classes = "sidebar-link workspace-sidebar-link workspace-tool-link ${if (canonicalPath == tool.path) "is-active" else ""}") {
+                                span("workspace-nav-glyph workspace-tool-glyph") { +"✦" }; +tool.name.removePrefix("AI ")
+                            }
+                        }
                     }
                 }
-            }
-            div(classes = "sidebar-section") {
-                a(href = "/pricing", classes = "sidebar-link") { +"Pricing" }
-                a(href = "/faq", classes = "sidebar-link") { +"FAQ" }
-                a(href = "/blog", classes = "sidebar-link") { +"Blog" }
-                a(href = "/examples", classes = "sidebar-link") { +"Examples" }
+                div("workspace-sidebar-footer") {
+                    a(href = "/app/usage", classes = "sidebar-link workspace-sidebar-link ${if (canonicalPath == "/app/usage") "is-active" else ""}") {
+                        span("workspace-nav-glyph") { +"◴" }; span { +"Usage" }; small { id = "workspace-sidebar-credits"; +"View" }
+                    }
+                    a(href = "/app/plan", classes = "workspace-upgrade-link ${if (canonicalPath == "/app/plan") "is-active" else ""}") { +"UPGRADE PLAN" }
+                    button(classes = "sidebar-link workspace-sidebar-link workspace-profile-link") {
+                        attributes["id"] = "workspace-sidebar-profile"
+                        attributes["type"] = "button"
+                        span("workspace-nav-glyph") { +"◎" }; +"Profile"
+                    }
+                }
+            } else {
+                div(classes = "sidebar-section") {
+                    a(href = "/design", classes = "sidebar-link") { +"New Design" }
+                    a(href = "/projects", classes = "sidebar-link") { +"My Projects" }
+                }
+                div(classes = "sidebar-section") {
+                    div(classes = "sidebar-section-header") {
+                        span { +"AI Tools" }
+                        span(classes = "chevron") { unsafe { +"""<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>""" } }
+                    }
+                    div(classes = "sidebar-links") {
+                        aiTools.take(6).forEach { tool -> a(href = tool.path, classes = "sidebar-link") { +tool.name } }
+                    }
+                }
+                div(classes = "sidebar-section") {
+                    a(href = "/pricing", classes = "sidebar-link") { +"Pricing" }
+                    a(href = "/faq", classes = "sidebar-link") { +"FAQ" }
+                    a(href = "/blog", classes = "sidebar-link") { +"Blog" }
+                    a(href = "/examples", classes = "sidebar-link") { +"Examples" }
+                }
             }
             div(classes = "sidebar-section sidebar-auth-section") {
                 attributes["id"] = "sidebar-auth-section"
@@ -515,7 +588,7 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                     div(classes = "footer-col") {
                         h2(classes = "footer-col-title") { +"AI Tools" }
                         ul(classes = "footer-links") {
-                            aiTools.take(6).forEach { tool ->
+                            aiTools.forEach { tool ->
                                 li { a(href = tool.path) { +tool.name } }
                             }
                             // Developer tools are intentionally omitted until their documentation is ready.
@@ -535,13 +608,6 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                         ul(classes = "footer-links") {
                             li { a(href = "/blog") { +"Blog" } }
                             li { a(href = "/examples") { +"Design Examples" } }
-                            li { a(href = "/faq") { +"Answers & FAQ" } }
-                            li {
-                                a(href = "/llms.txt", target = "_blank") {
-                                    attributes["rel"] = "noopener noreferrer"
-                                    +"AI Information"
-                                }
-                            }
                         }
                     }
                     // Column 4: Support
@@ -611,12 +677,8 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
         }
         } // end create-page
 
-        // Keep the separately versioned Clerk UI and SDK first-party hosted.
-        // Script order matters: clerk.load() receives the UI constructor that
-        // the first bundle registers on window.
-        script(src = "/static/vendor/clerk-ui/ui.browser.js") {
-            attributes["defer"] = "true"
-        }
+        // ClerkJS is pinned locally. clerk-bootstrap loads the matching
+        // @clerk/ui bundle from the instance Frontend API before calling load().
         script(src = "/static/vendor/clerk-js/clerk.browser.js") {
             attributes["defer"] = "true"
             if (ClerkConfig.publishableKey.isNotBlank()) {
@@ -706,10 +768,11 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                                         window.convexClient.setAuth(function() {
                                             return state.user.getToken();
                                         });
+                                    } else if (typeof window.convexClient.clearAuth === 'function') {
+                                        window.convexClient.clearAuth();
                                     } else {
-                                        // The standalone browser client does not expose the
-                                        // React client's clearAuth helper. A null token fetcher
-                                        // is the supported signed-out state for this bundle.
+                                        // The browser ConvexClient exposes setAuth but not clearAuth.
+                                        // Returning null resets authentication without throwing on public pages.
                                         window.convexClient.setAuth(function() { return Promise.resolve(null); });
                                     }
                                     updateSidebarAuth(Clerk);
@@ -775,8 +838,12 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                                 var nameEl = document.getElementById('sidebar-user-name');
                                 var emailEl = document.getElementById('sidebar-user-email');
                                 var avatarEl = document.getElementById('sidebar-user-avatar');
-                                if (nameEl) nameEl.textContent = window.HousoraUser.name;
-                                if (emailEl) emailEl.textContent = window.HousoraUser.email;
+                            if (nameEl) nameEl.textContent = window.HousoraUser.name;
+                            if (emailEl) emailEl.textContent = window.HousoraUser.email;
+                            var workspaceName = document.getElementById('workspace-account-name');
+                            var workspaceAvatar = document.getElementById('workspace-account-avatar');
+                            if (workspaceName) workspaceName.textContent = window.HousoraUser.name;
+                            if (workspaceAvatar) workspaceAvatar.textContent = window.HousoraUser.name.charAt(0).toUpperCase();
                                 if (avatarEl && window.HousoraUser.imageUrl) {
                                     var avatarImage = document.createElement('img');
                                     avatarImage.src = window.HousoraUser.imageUrl;
@@ -796,7 +863,7 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                             // Replace sign-in/up links with sign-out
                             if (authSection) {
                                 authSection.replaceChildren();
-                                [['/pricing#billing-help', 'Manage Plan & Refunds', 'sidebar-manage-plan-link'], ['/sign-out', 'Sign Out', 'sidebar-signout-link'], ['/delete-account', 'Delete Account', 'sidebar-delete-account-link']].forEach(function(item) {
+                                [['/app/plan', 'Manage Plan & Refunds', 'sidebar-manage-plan-link'], ['/sign-out', 'Sign Out', 'sidebar-signout-link'], ['/delete-account', 'Delete Account', 'sidebar-delete-account-link']].forEach(function(item) {
                                     var link = document.createElement('a');
                                     link.href = item[0];
                                     link.className = 'sidebar-link ' + item[2];
@@ -837,7 +904,7 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
             attributes["aria-describedby"] = "cookie-consent-message"
             div(classes = "cookiebot-desktop") {
                 div(classes = "cookiebot-content") {
-                    h4(classes = "cookiebot-title") {
+                    p(classes = "cookiebot-title") {
                         id = "cookie-consent-title"
                         attributes["data-i18n"] = "cookie.title"
                         +"Your privacy choices"
@@ -905,7 +972,12 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                         attributes["id"] = "cookiebot-ok-btn"
                         attributes["type"] = "button"
                         attributes["data-i18n"] = "cookie.accept_all"
-                        +"Allow analytics"
+                        +"Accept analytics"
+                    }
+                    button(classes = "cookiebot-btn-secondary") {
+                        attributes["id"] = "cookiebot-manage-btn"
+                        attributes["type"] = "button"
+                        +"Manage choices"
                     }
                 }
             }

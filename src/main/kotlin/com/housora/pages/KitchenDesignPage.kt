@@ -11,7 +11,7 @@ fun HTML.kitchenDesignPage() {
         heroAction = "Redesign your",
         heroElement = "Kitchen",
         heroWords = listOf("Kitchen", "Cabinets", "Worktop", "Island", "Layout", "Kitchens"),
-        heroSlides = listOf("/static/images/kitchen-after.jpg", "/static/images/gallery-sage-shaker.jpg", "/static/images/gallery-modern-oak.jpg", "/static/images/gallery-handleless.jpg"),
+        heroSlides = listOf("/static/images/tools/kitchen-design-hero-v2.jpg", "/static/images/gallery-sage-shaker.jpg", "/static/images/gallery-modern-oak.jpg", "/static/images/gallery-handleless.jpg"),
         toolName = "Kitchen Design",
         interactiveHeading = "Redesign Your Kitchen with AI",
         uploadDescription = "Upload a photo of your kitchen and redesign it instantly",

@@ -1,4 +1,5 @@
 const { spawn } = require('child_process');
+const fs = require('fs');
 const http = require('http');
 const path = require('path');
 const { defaultOrigin, port: configuredTestPort } = require('./scripts/test-config');
@@ -6,14 +7,29 @@ const { defaultOrigin, port: configuredTestPort } = require('./scripts/test-conf
 const root = __dirname;
 const isWindows = process.platform === 'win32';
 const wrapper = path.join(root, isWindows ? 'gradlew.bat' : 'gradlew');
-const port = Number(process.env.BUILD_PORT || configuredTestPort);
-const buildOrigin = process.env.BUILD_PORT ? `http://127.0.0.1:${port}` : defaultOrigin;
+
+function loadBuildEnv() {
+  const result = { ...process.env };
+  const envPath = path.join(root, '.env');
+  if (!fs.existsSync(envPath)) return result;
+  for (const line of fs.readFileSync(envPath, 'utf8').split(/\r?\n/)) {
+    const match = line.match(/^\s*([A-Z0-9_]+)\s*=\s*["']?(.*?)["']?\s*$/);
+    if (match && !line.trim().startsWith('#') && !Object.prototype.hasOwnProperty.call(result, match[1])) {
+      result[match[1]] = match[2];
+    }
+  }
+  return result;
+}
+
+const buildEnv = loadBuildEnv();
+const port = Number(buildEnv.BUILD_PORT || configuredTestPort);
+const buildOrigin = buildEnv.BUILD_PORT ? `http://127.0.0.1:${port}` : defaultOrigin;
 
 function run(command, args, options = {}) {
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, {
       cwd: root,
-      env: { ...process.env, ...options.env },
+      env: { ...buildEnv, ...options.env },
       stdio: options.stdio || 'inherit',
       shell: isWindows && command.endsWith('.bat')
     });
@@ -72,7 +88,11 @@ async function build() {
   if (shellWebsiteUrl) serverEnv.YOUR_WEBSITE_URL = shellWebsiteUrl;
   const server = spawn(executable, [], {
     cwd: root,
-    env: serverEnv,
+    env: {
+      ...buildEnv,
+      PORT: String(port),
+      YOUR_WEBSITE_URL: buildEnv.PUBLIC_SITE_URL || buildEnv.YOUR_WEBSITE_URL || ''
+    },
     stdio: 'inherit',
     shell: isWindows
   });

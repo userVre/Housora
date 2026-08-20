@@ -11,6 +11,7 @@ fun HTML.floorplanTo3DPage() {
         heroAction = "Convert",
         heroElement = "Blueprint",
         heroWords = listOf("Floorplan", "Blueprint", "Sketch", "Layout", "CAD Plan", "Drawing", "Any Plan"),
+        heroSlides = listOf("/static/images/tools/floorplan-to-3d-hero.jpg", "/static/images/floorplan-after.jpg", "/static/images/gallery-photorealistic.jpg"),
         heroLine2 = "to 3D in seconds",
         toolName = "Floorplan to 3D",
         interactiveHeading = "Convert 2D Floorplans to Photorealistic 3D",

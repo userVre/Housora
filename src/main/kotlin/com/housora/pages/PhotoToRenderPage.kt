@@ -11,6 +11,7 @@ fun HTML.photoToRenderPage() {
         heroAction = "Turn a",
         heroElement = "Photos",
         heroWords = listOf("Photo", "3D Draft", "SketchUp", "Snapshot", "Sketch"),
+        heroSlides = listOf("/static/images/tools/photo-to-render-hero-v2.jpg", "/static/images/gallery-warm-render.jpg", "/static/images/gallery-photorealistic.jpg"),
         heroLine2 = "into a photorealistic",
         heroLine3 = "render in seconds",
         toolName = "Photo to Render",
@@ -20,12 +21,9 @@ fun HTML.photoToRenderPage() {
         styles = listOf("Photorealistic" to "/static/images/s-photo-render.jpg", "Warm Interior" to "/static/images/s-warm-render.jpg", "Cool Modern" to "/static/images/s-cool-render.jpg", "Luxury" to "/static/images/s-luxury-render.jpg", "Natural Light" to "/static/images/s-natural-render.jpg", "Dramatic" to "/static/images/s-dramatic-render.jpg"),
         optionGroups = listOf(
             ToolOptionGroup("RENDER STYLE", listOf(
-                "Photorealistic" to "/static/images/s-photo-render.jpg",
-                "Cinematic" to "/static/images/s-dramatic-render.jpg",
-                "Artistic" to "/static/images/s-warm-render.jpg",
-                "Kids in Motion" to "/static/images/s-airy.jpg",
-                "Adults in Motion" to "/static/images/s-modern.jpg",
-                "Family in Motion" to "/static/images/s-warm-render.jpg"
+                "Photorealistic" to "/static/images/tools/photo-to-render-hero-v2.jpg",
+                "Cinematic" to "/static/images/gallery-cinematic.jpg",
+                "Artistic" to "/static/images/gallery-art-deco.jpg"
             ))
         ),
         textInputPlaceholder = "Describe the render style you want...",
