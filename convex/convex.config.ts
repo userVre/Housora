@@ -13,6 +13,13 @@ export default defineApp({
     WHOP_STANDARD_YEARLY_PLAN_ID: v.optional(v.string()),
     WHOP_PRO_MONTHLY_PLAN_ID: v.optional(v.string()),
     WHOP_PRO_YEARLY_PLAN_ID: v.optional(v.string()),
+    // Aliases used by the deployed checkout configuration.
+    WHOP_PLAN_STANDARD_MONTHLY: v.optional(v.string()),
+    WHOP_PLAN_STANDARD_YEARLY: v.optional(v.string()),
+    WHOP_PLAN_PRO_MONTHLY: v.optional(v.string()),
+    WHOP_PLAN_PRO_YEARLY: v.optional(v.string()),
+    WHOP_PLAN_ENTERPRISE_MONTHLY: v.optional(v.string()),
+    WHOP_PLAN_ENTERPRISE_YEARLY: v.optional(v.string()),
     WHOP_ENTREPRISE_STARTER_MONTHLY_PLAN_ID: v.optional(v.string()),
     WHOP_ENTREPRISE_STARTER_YEARLY_PLAN_ID: v.optional(v.string()),
     WHOP_ENTREPRISE_PLUS_MONTHLY_PLAN_ID: v.optional(v.string()),

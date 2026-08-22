@@ -42,16 +42,16 @@ object ClerkConfig {
             publishableKey.isEmpty() ->
                 println("[Clerk] WARN: No Clerk publishable key is set. Use EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY (or CLERK_PUBLISHABLE_KEY) and restart the server.")
             !publishableKey.startsWith("pk_") ->
-                println("[Clerk] WARN: Publishable key has invalid format (expected pk_test_ or pk_live_). Got: ${publishableKey.take(15)}...")
+                println("[Clerk] WARN: Publishable key has invalid format (expected pk_test_ or pk_live_).")
             publishableKey.startsWith("pk_test_") ->
-                println("[Clerk] OK: Publishable key loaded (test mode): ${publishableKey.take(20)}...")
+                println("[Clerk] OK: Publishable key loaded (test mode).")
             publishableKey.startsWith("pk_live_") ->
-                println("[Clerk] OK: Publishable key loaded (live mode): ${publishableKey.take(20)}...")
+                println("[Clerk] OK: Publishable key loaded (live mode).")
         }
         if (secretKey.isEmpty()) {
             println("[Clerk] WARN: CLERK_SECRET_KEY is not set. Server-side session verification will not work.")
         } else {
-            println("[Clerk] OK: Secret key loaded (${secretKey.take(8)}...)")
+            println("[Clerk] OK: Secret key loaded.")
         }
         if (jwtIssuerDomain.isEmpty()) {
             println("[Clerk] WARN: CLERK_JWT_ISSUER_DOMAIN is not set.")
@@ -62,8 +62,11 @@ object ClerkConfig {
 }
 
 object ConvexConfig {
-    private val rawUrl = EnvConfig.get("EXPO_PUBLIC_CONVEX_URL", "NEXT_PUBLIC_CONVEX_URL")
-    val siteUrl: String = EnvConfig.get("EXPO_PUBLIC_CONVEX_SITE_URL")
+    // `bunx convex dev` writes CONVEX_URL and CONVEX_SITE_URL. Retain the
+    // frontend aliases for deployed environments, but prefer the local dev
+    // deployment so Clerk and Convex always use the same development setup.
+    private val rawUrl = EnvConfig.get("CONVEX_URL", "EXPO_PUBLIC_CONVEX_URL", "NEXT_PUBLIC_CONVEX_URL")
+    val siteUrl: String = EnvConfig.get("CONVEX_SITE_URL", "EXPO_PUBLIC_CONVEX_SITE_URL")
     val deployment: String = EnvConfig.get("CONVEX_DEPLOYMENT")
     val url: String = rawUrl.trim().trimEnd('/')
     val isConfigured: Boolean = url.startsWith("https://") && url.endsWith(".convex.cloud")
@@ -72,7 +75,7 @@ object ConvexConfig {
         println("[Convex] Initializing Convex configuration...")
         when {
             url.isEmpty() ->
-                println("[Convex] WARN: EXPO_PUBLIC_CONVEX_URL is not set.")
+                println("[Convex] WARN: CONVEX_URL is not set.")
             !isConfigured ->
                 println("[Convex] WARN: Convex URL has unexpected format: $url")
             else ->
@@ -109,24 +112,62 @@ object WhopConfig {
     val productId: String = EnvConfig.get("WHOP_PRODUCT_ID").trim()
 
     // Standard
-    val standardMonthly: String = EnvConfig.get("WHOP_STANDARD_MONTHLY_PLAN_ID").trim()
-    val standardYearly: String = EnvConfig.get("WHOP_STANDARD_YEARLY_PLAN_ID").trim()
+    val standardMonthly: String = EnvConfig.get(
+        "WHOP_STANDARD_MONTHLY_PLAN_ID",
+        "WHOP_PLAN_STANDARD_MONTHLY"
+    ).trim()
+    val standardYearly: String = EnvConfig.get(
+        "WHOP_STANDARD_YEARLY_PLAN_ID",
+        "WHOP_PLAN_STANDARD_YEARLY"
+    ).trim()
 
     // Pro
-    val proMonthly: String = EnvConfig.get("WHOP_PRO_MONTHLY_PLAN_ID").trim()
-    val proYearly: String = EnvConfig.get("WHOP_PRO_YEARLY_PLAN_ID").trim()
+    val proMonthly: String = EnvConfig.get(
+        "WHOP_PRO_MONTHLY_PLAN_ID",
+        "WHOP_PLAN_PRO_MONTHLY"
+    ).trim()
+    val proYearly: String = EnvConfig.get(
+        "WHOP_PRO_YEARLY_PLAN_ID",
+        "WHOP_PLAN_PRO_YEARLY"
+    ).trim()
 
     // Enterprise - Growth
-    val enterpriseGrowthMonthly: String = EnvConfig.get("WHOP_ENTREPRISE_STARTER_MONTHLY_PLAN_ID").trim()
-    val enterpriseGrowthYearly: String = EnvConfig.get("WHOP_ENTREPRISE_STARTER_YEARLY_PLAN_ID").trim()
+    val enterpriseGrowthMonthly: String = EnvConfig.get(
+        "WHOP_ENTERPRISE_MONTHLY_PLAN_ID",
+        "WHOP_ENTERPRISE_STARTER_MONTHLY_PLAN_ID",
+        "WHOP_ENTREPRISE_STARTER_MONTHLY_PLAN_ID",
+        "WHOP_PLAN_ENTERPRISE_STARTER",
+        "WHOP_PLAN_ENTERPRISE_MONTHLY"
+    ).trim()
+    val enterpriseGrowthYearly: String = EnvConfig.get(
+        "WHOP_ENTERPRISE_YEARLY_PLAN_ID",
+        "WHOP_ENTERPRISE_STARTER_YEARLY_PLAN_ID",
+        "WHOP_ENTREPRISE_STARTER_YEARLY_PLAN_ID",
+        "WHOP_PLAN_ENTERPRISE_YEARLY"
+    ).trim()
 
     // Enterprise - Scale
-    val enterpriseScaleMonthly: String = EnvConfig.get("WHOP_ENTREPRISE_PLUS_MONTHLY_PLAN_ID").trim()
-    val enterpriseScaleYearly: String = EnvConfig.get("WHOP_ENTREPRISE_PLUS_YEARLY_PLAN_ID").trim()
+    val enterpriseScaleMonthly: String = EnvConfig.get(
+        "WHOP_ENTERPRISE_PLUS_MONTHLY_PLAN_ID",
+        "WHOP_ENTREPRISE_PLUS_MONTHLY_PLAN_ID",
+        "WHOP_PLAN_ENTERPRISE_PLUS"
+    ).trim()
+    val enterpriseScaleYearly: String = EnvConfig.get(
+        "WHOP_ENTERPRISE_PLUS_YEARLY_PLAN_ID",
+        "WHOP_ENTREPRISE_PLUS_YEARLY_PLAN_ID"
+    ).trim()
 
     // Enterprise - Unlimited
-    val enterpriseUnlimitedMonthly: String = EnvConfig.get("WHOP_ENTREPRISE_PRO_MONTHLY_PLAN_ID").trim()
-    val enterpriseUnlimitedYearly: String = EnvConfig.get("WHOP_ENTREPRISE_MAX_YEARLY_PLAN_ID").trim()
+    val enterpriseUnlimitedMonthly: String = EnvConfig.get(
+        "WHOP_ENTERPRISE_PRO_MONTHLY_PLAN_ID",
+        "WHOP_ENTREPRISE_PRO_MONTHLY_PLAN_ID",
+        "WHOP_PLAN_ENTERPRISE_PRO"
+    ).trim()
+    val enterpriseUnlimitedYearly: String = EnvConfig.get(
+        "WHOP_ENTERPRISE_MAX_YEARLY_PLAN_ID",
+        "WHOP_ENTREPRISE_MAX_YEARLY_PLAN_ID",
+        "WHOP_PLAN_ENTERPRISE_MAX"
+    ).trim()
 
     val isConfigured: Boolean = apiKey.startsWith("apik_")
 
@@ -146,7 +187,7 @@ object WhopConfig {
             !apiKey.startsWith("apik_") ->
                 println("[Whop] WARN: WHOP_API_KEY has invalid format.")
             else ->
-                println("[Whop] OK: Whop API key loaded (${apiKey.take(12)}...)")
+                println("[Whop] OK: Whop API key loaded.")
         }
         if (webhookSecret.isEmpty()) {
             println("[Whop] ERROR: WHOP_WEBHOOK_SECRET is not set. Webhook signature verification WILL FAIL.")
@@ -154,7 +195,7 @@ object WhopConfig {
             println("[Whop] ERROR: You can find this in Whop Dashboard > Settings > Webhooks.")
             println("[Whop] ERROR: Webhooks will be rejected with 500 until this is configured.")
         } else {
-            println("[Whop] OK: Webhook secret loaded (${webhookSecret.take(8)}...)")
+            println("[Whop] OK: Webhook secret loaded.")
         }
         if (validPlanIds.isEmpty()) {
             println("[Whop] WARN: No valid Whop plan IDs configured.")

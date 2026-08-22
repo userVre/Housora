@@ -137,13 +137,10 @@ async function interactionChecks(browser) {
     await trigger.click();
     return await p.locator('.lang-dropdown, .language-dropdown').first().isVisible().catch(() => false);
   });
-  await check('/', 'Theme control changes theme', async p => {
-    const trigger = p.locator('.theme-toggle').first();
-    if (!await trigger.count()) return 'missing trigger';
-    const before = await p.locator('html').getAttribute('data-theme');
-    await trigger.click();
-    const after = await p.locator('html').getAttribute('data-theme');
-    return before !== after;
+  await check('/', 'Site stays light-only without a theme control', async p => {
+    const theme = await p.locator('html').getAttribute('data-theme');
+    const toggles = await p.locator('.theme-toggle').count();
+    return theme === 'light' && toggles === 0;
   });
   await check('/pricing', 'Billing toggle changes state', async p => {
     const yearly = p.locator('#yearlyBtn');

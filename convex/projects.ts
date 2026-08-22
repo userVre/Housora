@@ -9,6 +9,7 @@ import {
   optionalBoundedString,
 } from "./lib/validation";
 import { projectSummaryValidator } from "./lib/validators";
+import { getPlanEntitlement } from "./lib/plans";
 
 const MAX_PROJECTS_RETURNED = 100;
 
@@ -45,6 +46,13 @@ export const listProjects = query({
       const afterImageUrl = project.afterImageStorageId
         ? await ctx.storage.getUrl(project.afterImageStorageId)
         : project.afterImageUrl;
+      const generatedImageUrls = await Promise.all((project.generatedImageStorageIds ?? []).map(async (storageId) => {
+        return await ctx.storage.getUrl(storageId);
+      }));
+      const imageUrls = Array.from(new Set([
+        afterImageUrl,
+        ...generatedImageUrls,
+      ].filter((url): url is string => Boolean(url))));
       return {
         _id: project._id,
         _creationTime: project._creationTime,
@@ -53,10 +61,35 @@ export const listProjects = query({
         style: project.style,
         beforeImageUrl: beforeImageUrl ?? undefined,
         afterImageUrl: afterImageUrl ?? undefined,
+        imageUrls: imageUrls.length ? imageUrls : undefined,
         createdAt: project.createdAt,
         updatedAt: project.updatedAt,
       };
     }));
+  },
+});
+
+export const appendGeneratedImage = mutation({
+  args: {
+    projectId: v.id("projects"),
+    storageId: v.id("_storage"),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const { ownerId } = await requireUser(ctx);
+    const project = await ctx.db.get("projects", args.projectId);
+    if (!project || project.userId !== ownerId) throw new Error("Project not found");
+    await requireOwnedUpload(ctx, ownerId, args.storageId);
+    const generatedImageStorageIds = Array.from(new Set([
+      ...(project.generatedImageStorageIds ?? []),
+      args.storageId,
+    ]));
+    await ctx.db.patch("projects", args.projectId, {
+      generatedImageStorageIds,
+      afterImageStorageId: args.storageId,
+      updatedAt: Date.now(),
+    });
+    return null;
   },
 });
 
@@ -71,7 +104,19 @@ export const createProject = mutation({
   },
   returns: v.id("projects"),
   handler: async (ctx, args) => {
-    const { ownerId } = await requireUser(ctx);
+    const { ownerId, user } = await requireUser(ctx);
+    const entitlement = getPlanEntitlement(user.plan);
+    if (entitlement.maxSavedProjects !== null) {
+      const existingProjects = await ctx.db
+        .query("projects")
+        .withIndex("by_userId", (q) => q.eq("userId", ownerId))
+        .take(entitlement.maxSavedProjects);
+      if (existingProjects.length >= entitlement.maxSavedProjects) {
+        throw new Error(
+          `Your current plan includes up to ${entitlement.maxSavedProjects} saved projects. Upgrade or remove a project to create another.`,
+        );
+      }
+    }
     const title = boundedString(args.title, "title", 1, 120);
     const roomType = boundedString(args.roomType, "roomType", 1, 80);
     const style = boundedString(args.style, "style", 1, 80);

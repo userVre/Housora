@@ -6,8 +6,10 @@ import com.housora.WhopConfig
 
 private data class HousoraPlan(
     val name: String,
-    val monthly: String,
-    val annualTotal: String,
+    val monthlyOriginal: String,
+    val monthlyPromo: String,
+    val annualOriginal: String,
+    val annualPromo: String,
     val annualEquivalent: String,
     val monthlyId: String,
     val yearlyId: String,
@@ -18,17 +20,20 @@ private data class HousoraPlan(
 
 fun HTML.pricingPage() {
     val plans = listOf(
-        HousoraPlan("Standard", "€14", "€149", "€12.42", WhopConfig.standardMonthly, WhopConfig.standardYearly, "standard", listOf(
-            "100 included images" to true,
-            "Access to Housora design tools" to true,
-            "Save and manage projects" to true,
-            "Standard export quality" to true,
+        HousoraPlan("Standard", "\$20", "\$9.99", "\$16.67", "\$99.99", "\$8.33", WhopConfig.standardMonthly, WhopConfig.standardYearly, "standard", listOf(
+            "100 generations per month" to true,
+            "1 variation per generation" to true,
+            "4K image exports" to true,
+            "No watermark on images" to true,
+            "Up to 10 saved projects" to true,
             "Email support" to true
         )),
-        HousoraPlan("Pro", "€29", "€299", "€24.92", WhopConfig.proMonthly, WhopConfig.proYearly, "pro", listOf(
-            "190 included images" to true,
-            "Access to Housora design tools" to true,
-            "Save and manage projects" to true,
+        HousoraPlan("Pro", "\$49", "\$24.99", "\$40.83", "\$244.99", "\$20.42", WhopConfig.proMonthly, WhopConfig.proYearly, "pro", listOf(
+            "190 generations per month" to true,
+            "Up to 4 variations per generation" to true,
+            "4K image exports" to true,
+            "No watermark on images" to true,
+            "Up to 30 saved projects" to true,
             "Priority support" to true
         ), popular = true)
     )
@@ -37,66 +42,100 @@ fun HTML.pricingPage() {
         section("pricing-section") { div("pricing-inner") {
             h1("pricing-title") { +"Plans for every project" }
             p("pricing-subtitle") { +"From one room to full-home projects, choose the plan that fits your next direction." }
-            div("billing-toggle") {
-                attributes["role"] = "group"; attributes["aria-label"] = "Billing frequency"
-                button(classes = "toggle-option active") { id = "monthlyBtn"; type = ButtonType.button; attributes["aria-pressed"] = "true"; +"Monthly Billing" }
-                button(classes = "toggle-option") { id = "yearlyBtn"; type = ButtonType.button; attributes["aria-pressed"] = "false"; +"Yearly" }
+            div("pricing-billing-shell") {
+                div("pricing-billing-copy") {
+                    p("pricing-billing-label") { +"CHOOSE YOUR BILLING" }
+                    p("save-text") { id = "billing-caption"; +"Pay monthly and cancel future renewals anytime." }
+                }
+                div("billing-toggle") {
+                    attributes["role"] = "group"; attributes["aria-label"] = "Billing frequency"
+                    button(classes = "toggle-option active") { id = "monthlyBtn"; type = ButtonType.button; attributes["aria-pressed"] = "true"; +"Monthly" }
+                    button(classes = "toggle-option") { id = "yearlyBtn"; type = ButtonType.button; attributes["aria-pressed"] = "false"; +"Yearly"; span("billing-value-note") { +"2 months free" } }
+                }
             }
-            p("save-text") { id = "billing-caption"; +"Pay monthly and cancel future renewals anytime." }
             div("checkout-legal-notice") {
-                h2 { +"Before checkout" }
-                p { +"Review the plan price, billing period, included images, renewal, cancellation, and refund information before continuing." }
-                div("checkout-legal-choice") {
-                    checkBoxInput {
-                        id = "checkout-terms-accepted"
-                        attributes["required"] = "required"
+                id = "checkout-legal-notice"
+                attributes["hidden"] = "hidden"
+                attributes["tabindex"] = "-1"
+                attributes["role"] = "dialog"
+                attributes["aria-modal"] = "true"
+                attributes["aria-labelledby"] = "checkout-legal-title"
+                div("checkout-legal-dialog") {
+                    button(classes = "checkout-legal-close") {
+                        id = "checkout-legal-close"
+                        type = ButtonType.button
+                        attributes["aria-label"] = "Close checkout confirmation"
+                        +"×"
                     }
-                    label {
-                        htmlFor = "checkout-terms-accepted"
-                        +"I have read and agree to the "
-                        a(href = "/terms", target = "_blank") { attributes["rel"] = "noopener"; +"Terms & Conditions" }
-                        +" and "
-                        a(href = "/refund-policy", target = "_blank") { attributes["rel"] = "noopener"; +"Refund & Withdrawal Policy" }
-                        +"."
+                    h2 { id = "checkout-legal-title"; +"Confirm before checkout" }
+                    p { +"You’ll review the final amount and payment method securely with Whop." }
+                    div("checkout-legal-choice") {
+                        checkBoxInput {
+                            id = "checkout-terms-accepted"
+                            attributes["required"] = "required"
+                        }
+                        label {
+                            htmlFor = "checkout-terms-accepted"
+                            +"I agree to the "
+                            a(href = "/terms", target = "_blank") { attributes["rel"] = "noopener"; +"Terms & Conditions" }
+                            +" and "
+                            a(href = "/refund-policy", target = "_blank") { attributes["rel"] = "noopener"; +"Refund & Withdrawal Policy" }
+                            +"."
+                        }
                     }
-                }
-                div("checkout-legal-choice") {
-                    checkBoxInput {
-                        id = "checkout-immediate-performance"
-                        attributes["required"] = "required"
+                    div("checkout-legal-choice") {
+                        checkBoxInput {
+                            id = "checkout-immediate-performance"
+                            attributes["required"] = "required"
+                        }
+                        label {
+                            htmlFor = "checkout-immediate-performance"
+                            +"I request immediate access to Housora. Where the law permits, I understand this can affect my withdrawal rights for digital services already supplied."
+                        }
                     }
-                    label {
-                        htmlFor = "checkout-immediate-performance"
-                        +"I expressly request immediate access to Housora during the 14-day withdrawal period. I understand that, where the law permits, I may have to pay a proportionate amount for service already supplied before I withdraw. This request does not remove rights that cannot legally be waived."
+                    p("checkout-legal-error") {
+                        id = "checkout-legal-error"
+                        attributes["role"] = "alert"
+                        attributes["aria-live"] = "polite"
+                        attributes["hidden"] = "hidden"
                     }
-                }
-                p("checkout-legal-error") {
-                    id = "checkout-legal-error"
-                    attributes["role"] = "alert"
-                    attributes["aria-live"] = "polite"
-                    attributes["hidden"] = "hidden"
+                    button(classes = "btn-primary checkout-legal-continue") {
+                        id = "checkout-legal-continue"
+                        type = ButtonType.button
+                        +"CONTINUE TO SECURE CHECKOUT"
+                    }
                 }
             }
             div("pricing-grid pricing-grid-three") {
                 plans.forEach { plan ->
-                    div(classes = if (plan.popular) "pricing-card card-popular" else "pricing-card") {
+                    div(classes = "pricing-card pricing-card--${plan.planType}${if (plan.popular) " card-popular" else ""}") {
                         if (plan.popular) div("popular-badge") { +"MOST POPULAR" }
-                        h2("plan-name") { +plan.name }
+                        div("plan-name-row") {
+                            h2("plan-name") { +plan.name }
+                            if (plan.popular) span("plan-value-badge") { +"BEST VALUE" }
+                        }
                         p("plan-description") { +(if (plan.name == "Standard") "For one room at a time" else "For whole homes and client work") }
-                        div("plan-price") {
-                            span("price-monthly") { +plan.monthly }
+                        div("plan-offer") {
+                            span("plan-offer-label") { +"50% OFF" }
+                            span { +"Launch promotion" }
+                        }
+                        div("plan-price plan-price--offer") {
+                            span("price-original price-original-monthly") { +plan.monthlyOriginal }
+                            span("price-original price-original-annual") { +plan.annualOriginal }
+                            span("price-monthly") { +plan.monthlyPromo }
                             span("price-annual") { +plan.annualEquivalent }
                             span("price-period") {
-                                attributes["data-billing-period"] = "month"
+                                attributes["data-billing-period"] = "month-equivalent"
                                 attributes["data-i18n"] = "pricing.per_month"
                                 +" / month"
                             }
                         }
                         p("annual-equivalent") {
-                            span("annual-total-label") { +"Annual total: " }
-                            span("annual-total") { +plan.annualTotal }
+                            span("monthly-billing-note") { +"Billed monthly · cancel anytime" }
+                            span("yearly-billing-note") { +"Billed yearly · ${plan.annualPromo} per year" }
                         }
                         a(href = "/pricing?plan=${plan.planType}", classes = "btn-primary btn-full whop-checkout") {
+                            attributes["aria-controls"] = "checkout-legal-notice"
                             attributes["data-plan-monthly"] = plan.monthlyId
                             attributes["data-plan-yearly"] = plan.yearlyId
                             attributes["data-plan-type"] = plan.planType
@@ -113,25 +152,46 @@ fun HTML.pricingPage() {
                         p("cancel-text") { +"Billed securely by Whop · cancel future renewals anytime" }
                     }
                 }
-                div("pricing-card pricing-card-enterprise") {
-                    div("enterprise-label") { +"CUSTOM DEAL" }
+                div("pricing-card pricing-card-enterprise pricing-card--enterprise") {
+                    div("enterprise-label") { +"FOR TEAMS" }
                     h2("plan-name") { +"Enterprise" }
                     p("plan-description") { +"For teams, agencies and developers" }
-                    div("plan-price") { span("price-current") { +"Custom" }; span("enterprise-price-suffix") { +" plans" } }
-                    p("annual-equivalent") { +"Growth, Scale, and Unlimited tiers with higher allowances." }
-                    a(href = "/enterprise", classes = "btn-primary btn-full") { +"SEE ENTERPRISE PLANS" }
-                    ul("plan-features") {
-                        li { span("check") { +"✓" }; +" Access to Housora design tools" }
-                        li { span("check") { +"✓" }; +" Support by email" }
-                        li { span("check") { +"✓" }; +" Higher included image allowances" }
+                    div("plan-offer plan-offer--enterprise") {
+                        span("plan-offer-label") { +"TEAM PLAN" }
+                        span { +"Built for client work" }
                     }
-                    p("cancel-text") { +"Talk to us about the right workspace size." }
+                    div("plan-price plan-price--offer") {
+                        span("price-monthly") { +"\$99.99" }
+                        span("price-annual") { +"\$83.33" }
+                        span("price-period") {
+                            attributes["data-billing-period"] = "month-equivalent"
+                            +" / month"
+                        }
+                    }
+                    p("annual-equivalent") {
+                        span("monthly-billing-note") { +"Billed monthly · team workspace access" }
+                        span("yearly-billing-note") { +"Billed yearly · \$999.99 per year" }
+                    }
+                    a(href = "/pricing?plan=enterprise", classes = "btn-primary btn-full whop-checkout") {
+                        attributes["aria-controls"] = "checkout-legal-notice"
+                        attributes["data-plan-monthly"] = WhopConfig.enterpriseGrowthMonthly
+                        attributes["data-plan-yearly"] = WhopConfig.enterpriseGrowthYearly
+                        attributes["data-plan-type"] = "enterprise"
+                        +"GET ENTERPRISE"
+                    }
+                    ul("plan-features") {
+                        li { span("check") { +"✓" }; +" 1,500 generations per month" }
+                        li { span("check") { +"✓" }; +" Up to 4 variations per generation" }
+                        li { span("check") { +"✓" }; +" 4K image exports" }
+                        li { span("check") { +"✓" }; +" No watermark on images" }
+                        li { span("check") { +"✓" }; +" Shared workspace access" }
+                        li { span("check") { +"✓" }; +" Unlimited saved projects" }
+                        li { span("check") { +"✓" }; +" Priority support" }
+                    }
+                    p("cancel-text") { +"Billed securely by Whop · cancel future renewals anytime" }
                 }
             }
             p("guarantee-text") { +"7-day support-backed refund review · "; a(href = "/refund-policy") { +"Refund policy" } }
-            div("plan-status-card") { id = "planStatus"; h3 { +"Your current plan" }; p { +"Sign in to see your Housora plan, remaining credits, and billing status." } }
-            div("billing-help") { id = "billing-help"; h2 { +"Manage your plan or request a refund" }; p { +"Subscriptions are processed by Whop. Use Whop's billing controls to cancel future renewals. For a refund request or billing problem, email "; a(href = "mailto:support@housora.app?subject=Housora%20billing%20or%20refund%20request") { +"support@housora.app" }; +" with your Whop receipt." } }
-
             section("pricing-output-section") {
                 h2 { +"What your plan actually produces" }
                 p("pricing-output-subtitle") { +"Explore real Housora directions before choosing your plan." }
@@ -141,11 +201,11 @@ fun HTML.pricingPage() {
                         Triple("Bedroom", "/static/images/room-bedroom.jpg", "Calm modern bedroom"),
                         Triple("Kitchen", "/static/images/kitchen-after.jpg", "Contemporary wood kitchen"),
                         Triple("Bathroom", "/static/images/bathroom-after.jpg", "Modern spa bathroom"),
-                        Triple("Home Office", "/static/images/gallery-modern.jpg", "Focused home office"),
+                        Triple("Home Office", "/static/images/room-home-office-v2.png", "Focused home office"),
                         Triple("Exterior", "/static/images/exterior-after.jpg", "Modern home exterior"),
                         Triple("Garden", "/static/images/garden-after.jpg", "Layered garden direction"),
                         Triple("Dining Room", "/static/images/room-dining.jpg", "Soft contemporary dining room"),
-                        Triple("Home Office", "/static/images/gallery-modern.jpg", "Warm minimal home office"),
+                        Triple("Reading Room", "/static/images/gallery-arched.jpg", "Warm minimal reading room"),
                         Triple("Walk-in Closet", "/static/images/gallery-dark-walnut.jpg", "Classic walnut walk-in"),
                         Triple("Stairs", "/static/images/stairs-after.jpg", "Beige hall and staircase"),
                         Triple("Balcony", "/static/images/interior-balcony.jpg", "Rattan lounge balcony")

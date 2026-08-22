@@ -1,11 +1,12 @@
 # Cloudflare Pages setup
 
-Upload the contents of `dist/` to a Cloudflare Pages project. The `functions/` folder is copied into `dist/` by `npm run build:static`, so Pages Functions are deployed with the site.
+Upload the contents of `dist/` to a Cloudflare Pages project. The `functions/` folder is copied into `dist/` by `bun run build:static`, so Pages Functions are deployed with the site.
 
 ## Required Pages configuration
 
-Set the Pages build-system variable `NODE_VERSION=22.22.0`. Wrangler and the
-repository require Node 22 or newer; Cloudflare must not fall back to Node 20.
+Set the Pages build-system variables `NODE_VERSION=22.22.0` and
+`BUN_VERSION=1.3.14`. Node remains required for the Kotlin/Gradle launcher and
+some tooling; Bun is the repository's package manager and script runner.
 
 In Pages > Settings > Environment variables, add these server-side secrets:
 
@@ -33,14 +34,14 @@ The public Clerk publishable key and Convex URL are embedded when the static bun
 From the project root, run:
 
 ```sh
-npm run deploy:pages
+bun run deploy:pages
 ```
 
 This compiles the Kotlin source, rebuilds `dist/`, verifies the exported site,
 and then deploys that exact directory to the
 Cloudflare Pages project named `housora`. If Pages is connected to Git, pushing
 the committed change can deploy automatically instead; configure Cloudflare's
-build command as `npm run build` and output directory as `dist`.
+build command as `bun run build` and output directory as `dist`.
 
 ## AI generation
 
@@ -49,6 +50,11 @@ The browser sends `{ prompt }` to `/api/generate`. The Pages Function proxies th
 ## Local Kotlin server
 
 For local generation, add `IMAGE_API_URL` and `IMAGE_API_KEY` to `.env` and restart Ktor. Without them, `/api/generate` returns a clear 503 configuration response instead of a fake success.
+
+The value of `IMAGE_API_KEY` must exactly match the bearer key configured by
+the image Worker at `IMAGE_API_URL`. A reachable Worker can still reject every
+generation with HTTP 401 when these two values come from different deployments
+or when one key has been rotated.
 
 ## Product analytics and session replay
 

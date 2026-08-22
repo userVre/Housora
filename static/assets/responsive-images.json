@@ -1,33 +1,6 @@
 {
   "schemaVersion": 1,
   "images": {
-    "/static/images/bathroom-after-640w.webp": {
-      "width": 640,
-      "height": 357,
-      "placeholder": false,
-      "sources": {
-        "avif": [
-          {
-            "path": "/static/images/bathroom-after-640w-320w.avif",
-            "width": 320
-          },
-          {
-            "path": "/static/images/bathroom-after-640w-640w.avif",
-            "width": 640
-          }
-        ],
-        "webp": [
-          {
-            "path": "/static/images/bathroom-after-640w-320w.webp",
-            "width": 320
-          },
-          {
-            "path": "/static/images/bathroom-after-640w-640w.webp",
-            "width": 640
-          }
-        ]
-      }
-    },
     "/static/images/bathroom-after.jpg": {
       "width": 1600,
       "height": 1600,
@@ -544,49 +517,6 @@
         ]
       }
     },
-    "/static/images/floor-after.jpg": {
-      "width": 1600,
-      "height": 1600,
-      "placeholder": false,
-      "sources": {
-        "avif": [
-          {
-            "path": "/static/images/floor-after-320w.avif",
-            "width": 320
-          },
-          {
-            "path": "/static/images/floor-after-640w.avif",
-            "width": 640
-          },
-          {
-            "path": "/static/images/floor-after-960w.avif",
-            "width": 960
-          },
-          {
-            "path": "/static/images/floor-after-1600w.avif",
-            "width": 1600
-          }
-        ],
-        "webp": [
-          {
-            "path": "/static/images/floor-after-320w.webp",
-            "width": 320
-          },
-          {
-            "path": "/static/images/floor-after-640w.webp",
-            "width": 640
-          },
-          {
-            "path": "/static/images/floor-after-960w.webp",
-            "width": 960
-          },
-          {
-            "path": "/static/images/floor-after-1600w.webp",
-            "width": 1600
-          }
-        ]
-      }
-    },
     "/static/images/floor-restyle-after.jpg": {
       "width": 1920,
       "height": 1280,
@@ -630,33 +560,6 @@
         ]
       }
     },
-    "/static/images/floorplan-after-640w.avif": {
-      "width": 640,
-      "height": 427,
-      "placeholder": false,
-      "sources": {
-        "avif": [
-          {
-            "path": "/static/images/floorplan-after-640w-320w.avif",
-            "width": 320
-          },
-          {
-            "path": "/static/images/floorplan-after-640w-640w.avif",
-            "width": 640
-          }
-        ],
-        "webp": [
-          {
-            "path": "/static/images/floorplan-after-640w-320w.webp",
-            "width": 320
-          },
-          {
-            "path": "/static/images/floorplan-after-640w-640w.webp",
-            "width": 640
-          }
-        ]
-      }
-    },
     "/static/images/floorplan-after.jpg": {
       "width": 1920,
       "height": 1280,
@@ -695,6 +598,49 @@
           },
           {
             "path": "/static/images/floorplan-after-1920w.webp",
+            "width": 1920
+          }
+        ]
+      }
+    },
+    "/static/images/gallery-arched.jpg": {
+      "width": 1920,
+      "height": 1280,
+      "placeholder": false,
+      "sources": {
+        "avif": [
+          {
+            "path": "/static/images/gallery-arched-320w.avif",
+            "width": 320
+          },
+          {
+            "path": "/static/images/gallery-arched-640w.avif",
+            "width": 640
+          },
+          {
+            "path": "/static/images/gallery-arched-960w.avif",
+            "width": 960
+          },
+          {
+            "path": "/static/images/gallery-arched-1920w.avif",
+            "width": 1920
+          }
+        ],
+        "webp": [
+          {
+            "path": "/static/images/gallery-arched-320w.webp",
+            "width": 320
+          },
+          {
+            "path": "/static/images/gallery-arched-640w.webp",
+            "width": 640
+          },
+          {
+            "path": "/static/images/gallery-arched-960w.webp",
+            "width": 960
+          },
+          {
+            "path": "/static/images/gallery-arched-1920w.webp",
             "width": 1920
           }
         ]
@@ -2463,25 +2409,6 @@
         ]
       }
     },
-    "/static/images/garden-after-320w.webp": {
-      "width": 320,
-      "height": 179,
-      "placeholder": false,
-      "sources": {
-        "avif": [
-          {
-            "path": "/static/images/garden-after-320w-320w.avif",
-            "width": 320
-          }
-        ],
-        "webp": [
-          {
-            "path": "/static/images/garden-after-320w-320w.webp",
-            "width": 320
-          }
-        ]
-      }
-    },
     "/static/images/garden-after.jpg": {
       "width": 1600,
       "height": 1600,
@@ -2521,49 +2448,6 @@
           {
             "path": "/static/images/garden-after-1600w.webp",
             "width": 1600
-          }
-        ]
-      }
-    },
-    "/static/images/hero-after-1376w.avif": {
-      "width": 1376,
-      "height": 768,
-      "placeholder": false,
-      "sources": {
-        "avif": [
-          {
-            "path": "/static/images/hero-after-1376w-320w.avif",
-            "width": 320
-          },
-          {
-            "path": "/static/images/hero-after-1376w-640w.avif",
-            "width": 640
-          },
-          {
-            "path": "/static/images/hero-after-1376w-960w.avif",
-            "width": 960
-          },
-          {
-            "path": "/static/images/hero-after-1376w-1376w.avif",
-            "width": 1376
-          }
-        ],
-        "webp": [
-          {
-            "path": "/static/images/hero-after-1376w-320w.webp",
-            "width": 320
-          },
-          {
-            "path": "/static/images/hero-after-1376w-640w.webp",
-            "width": 640
-          },
-          {
-            "path": "/static/images/hero-after-1376w-960w.webp",
-            "width": 960
-          },
-          {
-            "path": "/static/images/hero-after-1376w-1376w.webp",
-            "width": 1376
           }
         ]
       }
@@ -3041,49 +2925,6 @@
         ]
       }
     },
-    "/static/images/kitchen-after-1376w.avif": {
-      "width": 1376,
-      "height": 768,
-      "placeholder": false,
-      "sources": {
-        "avif": [
-          {
-            "path": "/static/images/kitchen-after-1376w-320w.avif",
-            "width": 320
-          },
-          {
-            "path": "/static/images/kitchen-after-1376w-640w.avif",
-            "width": 640
-          },
-          {
-            "path": "/static/images/kitchen-after-1376w-960w.avif",
-            "width": 960
-          },
-          {
-            "path": "/static/images/kitchen-after-1376w-1376w.avif",
-            "width": 1376
-          }
-        ],
-        "webp": [
-          {
-            "path": "/static/images/kitchen-after-1376w-320w.webp",
-            "width": 320
-          },
-          {
-            "path": "/static/images/kitchen-after-1376w-640w.webp",
-            "width": 640
-          },
-          {
-            "path": "/static/images/kitchen-after-1376w-960w.webp",
-            "width": 960
-          },
-          {
-            "path": "/static/images/kitchen-after-1376w-1376w.webp",
-            "width": 1376
-          }
-        ]
-      }
-    },
     "/static/images/kitchen-after.jpg": {
       "width": 1600,
       "height": 1600,
@@ -3166,49 +3007,6 @@
           {
             "path": "/static/images/layout-after-1600w.webp",
             "width": 1600
-          }
-        ]
-      }
-    },
-    "/static/images/render-after.jpg": {
-      "width": 1920,
-      "height": 1280,
-      "placeholder": false,
-      "sources": {
-        "avif": [
-          {
-            "path": "/static/images/room-after-640w-320w.avif",
-            "width": 320
-          },
-          {
-            "path": "/static/images/room-after-640w-640w.avif",
-            "width": 640
-          },
-          {
-            "path": "/static/images/render-after-960w.avif",
-            "width": 960
-          },
-          {
-            "path": "/static/images/render-after-1920w.avif",
-            "width": 1920
-          }
-        ],
-        "webp": [
-          {
-            "path": "/static/images/room-after-640w-320w.webp",
-            "width": 320
-          },
-          {
-            "path": "/static/images/room-after-640w-640w.webp",
-            "width": 640
-          },
-          {
-            "path": "/static/images/render-after-960w.webp",
-            "width": 960
-          },
-          {
-            "path": "/static/images/render-after-1920w.webp",
-            "width": 1920
           }
         ]
       }

@@ -24,7 +24,7 @@ Open `http://localhost:8081`.
 ## Verification
 
 ```bash
-npm test
+bun run test
 PUBLIC_SITE_URL=http://localhost:8081 node build-site.js
 ```
 

@@ -57,6 +57,7 @@ fun HTML.workspacePage(projectId: String? = null) {
                                     attributes["width"] = "300"
                                     attributes["height"] = "225"
                                     attributes["loading"] = "lazy"
+                                    attributes["data-responsive"] = "false"
                                     attributes["onerror"] = "this.style.opacity='0.3';this.alt='Image not available'"
                                 }
                                 span("image-number") { +"1 / 1" }
@@ -75,6 +76,7 @@ fun HTML.workspacePage(projectId: String? = null) {
                             img(src = "", alt = "AI-generated room redesign") { id = "workspaceResultImage" }
                             div("canvas-actions") {
                                 button(classes = "action-btn") { id = "workspaceDownloadBtn"; type = ButtonType.button; +"Download" }
+                                button(classes = "action-btn workspace-like-result") { id = "workspaceLikeBtn"; type = ButtonType.button; attributes["aria-pressed"] = "false"; +"Save to My likes" }
                                 button(classes = "action-btn") { id = "workspaceShareBtn"; type = ButtonType.button; +"Share" }
                                 button(classes = "action-btn") { id = "workspaceStartOverBtn"; type = ButtonType.button; +"Start over" }
                             }

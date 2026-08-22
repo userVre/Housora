@@ -8,6 +8,7 @@ export const projectSummaryValidator = v.object({
   style: v.string(),
   beforeImageUrl: v.optional(v.string()),
   afterImageUrl: v.optional(v.string()),
+  imageUrls: v.optional(v.array(v.string())),
   createdAt: v.number(),
   updatedAt: v.number(),
 });
@@ -36,6 +37,7 @@ export const subscriptionStatusResultValidator = v.union(
       v.literal("pending"),
     )),
     subscriptionType: v.optional(v.string()),
+    subscriptionBillingInterval: v.optional(v.union(v.literal("monthly"), v.literal("yearly"))),
     subscriptionStartedAt: v.optional(v.number()),
     subscriptionEnd: v.optional(v.number()),
   }),

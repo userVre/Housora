@@ -9,6 +9,7 @@ import {
   HttpError,
   apiHeaders,
   assertCors,
+  enforceGuestRateLimit,
   enforceRateLimits,
   errorResponse,
   optionsResponse,
@@ -38,11 +39,23 @@ async function refundGeneration(env, generationId) {
 export async function onRequestPost({ request, env }) {
   let posthog = null;
   let auth = null;
+  let guestRequest = false;
   let generationId = null;
   try {
     assertCors(request, env);
-    auth = await requireClerkAuth(request, env);
-    await enforceRateLimits(request, env, auth.userId);
+    const authorization = request.headers.get('Authorization') || '';
+    guestRequest = !authorization.trim();
+    if (guestRequest) {
+      const cookies = request.headers.get('Cookie') || '';
+      if (/(?:^|;\s*)housora_guest_generation_used=1(?:;|$)/.test(cookies)) {
+        throw new HttpError(403, 'guest_trial_used', 'Your free guest design is used. Create an account to get 3 more generations.');
+      }
+      await enforceGuestRateLimit(request, env);
+      auth = { userId: 'guest', token: null, claims: null };
+    } else {
+      auth = await requireClerkAuth(request, env);
+      await enforceRateLimits(request, env, auth.userId);
+    }
     if (!env.IMAGE_API_URL || !env.IMAGE_API_KEY) {
       throw new HttpError(503, 'generation_unavailable', 'Image generation is temporarily unavailable.');
     }
@@ -65,15 +78,16 @@ export async function onRequestPost({ request, env }) {
     if (decoded.declaredType && decoded.declaredType !== imageInfo.type) {
       throw new HttpError(415, 'image_type_mismatch', 'The declared image type does not match its contents.');
     }
-    assertGenerationCallbackConfigured(env);
-
-    const credit = await deductGenerationCredit(env, auth);
-    generationId = credit?.generationId || null;
-    try {
-      await transitionGeneration(env, { generationId, transition: 'processing' });
-    } catch (error) {
-      await refundGeneration(env, generationId);
-      throw error;
+    if (!guestRequest) {
+      assertGenerationCallbackConfigured(env);
+      const credit = await deductGenerationCredit(env, auth);
+      generationId = credit?.generationId || null;
+      try {
+        await transitionGeneration(env, { generationId, transition: 'processing' });
+      } catch (error) {
+        await refundGeneration(env, generationId);
+        throw error;
+      }
     }
     posthog = createPostHogClient(env, request);
 
@@ -93,7 +107,7 @@ export async function onRequestPost({ request, env }) {
     }
     if (!upstream.ok) {
       await refundGeneration(env, generationId);
-      if (posthog) posthog.capture({ distinctId: auth.userId, event: 'image generation failed', properties: { reason: 'provider_error', provider_status: upstream.status } });
+      if (posthog && !guestRequest) posthog.capture({ distinctId: auth.userId, event: 'image generation failed', properties: { reason: 'provider_error', provider_status: upstream.status } });
       throw new HttpError(502, 'generation_failed', 'Image generation failed. Please try again.');
     }
 
@@ -106,20 +120,23 @@ export async function onRequestPost({ request, env }) {
       await refundGeneration(env, generationId);
       throw new HttpError(502, 'invalid_provider_response', 'Image generation failed. Please try again.');
     }
-    if (posthog) posthog.capture({
+    if (posthog && !guestRequest) posthog.capture({
       distinctId: auth.userId,
       event: 'image generated',
       properties: { prompt_length_bucket: prompt.length < 100 ? 'under_100' : prompt.length < 500 ? '100_to_499' : '500_plus' },
     });
 
-    try {
-      await transitionGeneration(env, { generationId, transition: 'completed' });
-    } catch (error) {
-      await refundGeneration(env, generationId);
-      throw error;
+    if (!guestRequest) {
+      try {
+        await transitionGeneration(env, { generationId, transition: 'completed' });
+      } catch (error) {
+        await refundGeneration(env, generationId);
+        throw error;
+      }
     }
     const headers = apiHeaders(request, env, { methods: 'POST, OPTIONS' });
     headers.set('Content-Type', outputInfo.type);
+    if (guestRequest) headers.append('Set-Cookie', 'housora_guest_generation_used=1; Max-Age=31536000; Path=/; Secure; HttpOnly; SameSite=Lax');
     return new Response(output, { status: 200, headers });
   } catch (error) {
     return errorResponse(request, env, error);

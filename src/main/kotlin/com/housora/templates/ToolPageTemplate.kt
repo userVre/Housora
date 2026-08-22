@@ -59,7 +59,7 @@ data class ToolPageConfig(
     val optionGroups: List<ToolOptionGroup> = emptyList(),
     val styleDisplayMode: String = "pills",
     val extraStyleGroups: List<Pair<String, List<String>>> = emptyList(),
-    val directFlow: Boolean = false,
+    val directFlow: Boolean = true,
     // Legacy fields kept for backward compatibility
     val problemHeading: String = "",
     val problemDescription: String = "",
@@ -241,15 +241,11 @@ fun HTML.toolPage(config: ToolPageConfig) {
                     h2(classes = "id-configure-title") { +"AI ${config.toolName}" }
                     p { +"Upload your image, choose your preferences, and generate a design you can review." }
                 }
-                ol(classes = "workspace-tool-steps") {
-                    attributes["aria-label"] = "Generation steps"
-                    listOf("Upload", "Preferences", "Generate").forEachIndexed { index, step ->
-                        li {
-                            span { +(index + 1).toString() }
-                            +step
-                        }
-                    }
-                }
+            }
+            div(classes = "tool-access-note") {
+                span { +"1" }
+                div { strong { +"Try one design without an account" }; p { +"Create a free Housora account after your guest design to receive 3 additional generations." } }
+                a(href = "/sign-up") { +"Create account →" }
             }
             div(classes = "id-configure-inner") {
                 div(classes = "id-configure-grid") {

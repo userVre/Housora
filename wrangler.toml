@@ -1,5 +1,5 @@
 # Cloudflare Pages configuration for the generated static build.
-# Kotlin/Ktor remains the source application; `npm run build:static`
+# Kotlin/Ktor remains the source application; `bun run build:static`
 # materializes its public pages into dist/ for Pages deployment.
 name = "housora"
 pages_build_output_dir = "./dist"

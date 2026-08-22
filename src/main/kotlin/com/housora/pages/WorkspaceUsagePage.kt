@@ -21,8 +21,8 @@ fun HTML.workspaceUsagePage() {
                 }
             }
             div("workspace-usage-summary workspace-usage-loading") { attributes["id"] = "workspaceUsageSummary"; attributes["aria-busy"] = "true"
-                div("workspace-usage-metric workspace-usage-metric-primary") { span { +"CURRENT ALLOWANCE" }; strong { span { attributes["id"] = "usage-used-value"; +"—" }; +" of "; span { attributes["id"] = "usage-allowance-value"; +"—" } }; p { +"generations used this billing period" } }
-                div("workspace-usage-metric") { span { +"REMAINING" }; strong { attributes["id"] = "usage-remaining-value"; +"—" }; p { attributes["id"] = "usage-remaining-caption"; +"Loading your allowance…" } }
+                div("workspace-usage-metric workspace-usage-metric-primary") { span { +"CURRENT ALLOWANCE" }; strong { span("workspace-value-skeleton") { attributes["id"] = "usage-used-value"; attributes["aria-label"] = "Loading used images" }; +" of "; span("workspace-value-skeleton") { attributes["id"] = "usage-allowance-value"; attributes["aria-label"] = "Loading image allowance" } }; p { +"generations used this billing period" } }
+                div("workspace-usage-metric") { span { +"REMAINING" }; strong("workspace-value-skeleton") { attributes["id"] = "usage-remaining-value"; attributes["aria-label"] = "Loading remaining images" }; p { attributes["id"] = "usage-remaining-caption"; +"Loading your allowance…" } }
             }
             div("workspace-load-error") { id = "workspaceUsageError"; attributes["hidden"] = "hidden"; attributes["role"] = "alert"; span { +"Usage is temporarily unavailable." }; button { id = "workspaceUsageRetry"; type = ButtonType.button; +"Retry" } }
             div("workspace-usage-panel") {
@@ -30,7 +30,7 @@ fun HTML.workspaceUsagePage() {
                     div { h2 { +"Image usage" }; p { +"Your allowance for the current billing cycle." } }
                     span { attributes["id"] = "usage-percent-label"; +"— used" }
                 }
-                div("workspace-usage-large-track") { span { attributes["id"] = "usage-large-progress" } }
+                div("workspace-usage-large-track") { attributes["role"] = "progressbar"; attributes["aria-label"] = "Image allowance used"; attributes["aria-valuemin"] = "0"; attributes["aria-valuemax"] = "100"; attributes["aria-valuenow"] = "0"; span { attributes["id"] = "usage-large-progress" } }
                 div("workspace-usage-legend") {
                     span { i("is-used") {}; +"Used" }
                     span { i("is-remaining") {}; +"Remaining" }

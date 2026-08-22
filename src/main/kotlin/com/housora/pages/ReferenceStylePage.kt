@@ -16,18 +16,18 @@ fun HTML.referenceStylePage(reference: String? = null) {
             section(classes = "reference-style-grid") {
                 div(classes = "reference-upload-card") {
                     h2 { attributes["data-i18n"] = "reference.reference_title"; +"1. Reference image" }
-                    p { attributes["data-i18n"] = "reference.reference_help"; +"Upload a saved JPG, PNG, or WebP inspiration image. URL import is not currently supported." }
+                    p { id = "reference-reference-help"; attributes["data-i18n"] = "reference.reference_help"; +"Upload a saved JPG, PNG, or WebP inspiration image. URL import is not currently supported." }
                     input(type = InputType.file) { attributes["id"] = "referenceFileInput"; attributes["accept"] = "image/*"; attributes["hidden"] = "hidden" }
-                    div(classes = "reference-upload-zone") { id = "referenceUploadZone"; attributes["tabindex"] = "0"; attributes["role"] = "button"; attributes["aria-label"] = "Upload reference image"
+                    label(classes = "reference-upload-zone") { htmlFor = "referenceFileInput"; id = "referenceUploadZone"; attributes["tabindex"] = "0"; attributes["role"] = "button"; attributes["aria-describedby"] = "reference-reference-help"
                         img(src = safeReference ?: emptyPreview, alt = "Selected reference") { attributes["id"] = "referencePreview"; if (safeReference == null) attributes["hidden"] = "hidden" }
                         span { attributes["data-i18n"] = "reference.choose_reference"; +"Choose a reference image" }
                     }
                 }
                 div(classes = "reference-upload-card") {
                     h2 { attributes["data-i18n"] = "reference.room_title"; +"2. Your room photo" }
-                    p { attributes["data-i18n"] = "reference.room_help"; +"Upload the room you want to redesign." }
+                    p { id = "reference-room-help"; attributes["data-i18n"] = "reference.room_help"; +"Upload the room you want to redesign." }
                     input(type = InputType.file) { attributes["id"] = "referenceRoomFileInput"; attributes["accept"] = "image/*"; attributes["hidden"] = "hidden" }
-                    div(classes = "reference-upload-zone") { id = "referenceRoomUploadZone"; attributes["tabindex"] = "0"; attributes["role"] = "button"; attributes["aria-label"] = "Upload room photo"
+                    label(classes = "reference-upload-zone") { htmlFor = "referenceRoomFileInput"; id = "referenceRoomUploadZone"; attributes["tabindex"] = "0"; attributes["role"] = "button"; attributes["aria-describedby"] = "reference-room-help"
                         img(src = emptyPreview, alt = "Selected room") { attributes["id"] = "referenceRoomPreview"; attributes["hidden"] = "hidden" }
                         span { attributes["data-i18n"] = "reference.choose_room"; +"Choose your room photo" }
                     }

@@ -2,13 +2,12 @@
 (function() {
     'use strict';
 
-    var RTL_LANGUAGES = ['ar'];
-    var SUPPORTED_LANGUAGES = ['en', 'de', 'fr', 'ja', 'zh', 'es', 'ar', 'nl', 'ko', 'pt'];
-    var LANGUAGE_LABELS = {
-        en: 'English', de: 'Deutsch', fr: 'Fran\u00e7ais', ja: '\u65e5\u672c\u8a9e',
-        zh: '\u4e2d\u6587', es: 'Espa\u00f1ol', ar: '\u0627\u0644\u0639\u0631\u0628\u064a\u0629',
-        nl: 'Nederlands', ko: '\ud55c\uad6d\uc5b4', pt: 'Portugu\u00eas'
-    };
+    // Page content is currently authored in English. Do not advertise a
+    // language as supported until navigation, forms, legal copy, labels and
+    // every page's visible content are localized together.
+    var RTL_LANGUAGES = [];
+    var SUPPORTED_LANGUAGES = ['en'];
+    var LANGUAGE_LABELS = { en: 'English' };
 
     var translations = {
     en: {
@@ -34,7 +33,7 @@
         'quiz.badge': 'The free 60 second style quiz', 'quiz.heading': 'WHAT\'S YOUR INTERIOR DESIGN STYLE?', 'quiz.start': 'Start the quiz',
         'creations.title': 'AI Interior Design Gallery', 'creations.subtitle': 'Real rooms redesigned by Housora users.',
         'compare.start_now': 'Start now', 'compare.comparison': 'COMPARISON \u00b7 2026',
-        'examples.title': 'Interior Design Examples for 18 Popular Styles', 'examples.subtitle': 'Explore original Housora concepts across popular styles.', 'examples.try_room': 'START INTERIOR DESIGN', 'examples.styles': 'STYLES'
+        'examples.title': '30 Interior Design Styles and Room Ideas', 'examples.subtitle': 'Compare five rooms across every Housora style direction.', 'examples.try_room': 'START INTERIOR DESIGN', 'examples.styles': 'STYLES'
     },
     de: {
         'nav.upgrade': 'Plan upgraden', 'nav.ai_tools': 'KI-Werkzeuge', 'nav.start_free': 'KOSTENLOS STARTEN', 'nav.new_design': 'Neues Design', 'nav.my_projects': 'Meine Projekte', 'nav.pricing': 'Preise', 'nav.faq': 'FAQ', 'nav.blog': 'Blog', 'nav.examples': 'Beispiele', 'nav.sign_in': 'Anmelden', 'nav.create_account': 'Konto erstellen', 'nav.sign_out': 'Abmelden', 'nav.manage_plan': 'Plan verwalten & R\u00fcckerstattungen', 'nav.delete_account': 'Konto l\u00f6schen',
@@ -568,7 +567,7 @@
     }
 
     function setLanguage(lang) {
-        if (SUPPORTED_LANGUAGES.indexOf(lang) === -1) return;
+        if (SUPPORTED_LANGUAGES.indexOf(lang) === -1) lang = 'en';
         try { localStorage.setItem('housora-lang', lang); } catch(e) {}
         document.documentElement.lang = lang;
         if (RTL_LANGUAGES.indexOf(lang) !== -1) {
@@ -785,6 +784,9 @@
     }
 
     function buildLanguageSelector() {
+        // A one-language menu is a misleading non-control. English remains
+        // persisted for consistent metadata across navigation and theme swaps.
+        if (SUPPORTED_LANGUAGES.length < 2) return;
         var existing = document.querySelector('.lang-selector');
         if (existing) return;
         var header = document.querySelector('.create-header-actions');
@@ -830,60 +832,15 @@
         updateLanguageSelector(detectLanguage());
     }
 
-    // ===== THEME ENGINE =====
-    function getStoredTheme() {
-        try { return localStorage.getItem('housora-theme'); } catch(e) { return null; }
-    }
-
-    function detectTheme() {
-        var stored = getStoredTheme();
-        if (stored === 'dark' || stored === 'light') return stored;
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
-        return 'light';
-    }
-
-    function setTheme(theme) {
-        if (theme !== 'dark' && theme !== 'light') return;
-        try { localStorage.setItem('housora-theme', theme); } catch(e) {}
-        document.documentElement.setAttribute('data-theme', theme);
-        document.body.classList.toggle('theme-dark', theme === 'dark');
-        document.body.classList.toggle('theme-light', theme === 'light');
-        updateThemeToggle(theme);
-        updateThemeMetaColor();
-    }
-
-    function toggleTheme() {
-        setTheme(detectTheme() === 'dark' ? 'light' : 'dark');
-    }
-
-    function updateThemeToggle(theme) {
-        var toggle = document.querySelector('.theme-toggle');
-        if (toggle) {
-            toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
-            toggle.classList.toggle('theme-dark', theme === 'dark');
-        }
-    }
-
-    function updateThemeMetaColor() {
+    // ===== APPEARANCE =====
+    // Housora intentionally ships one high-contrast light appearance.
+    function enforceLightTheme() {
+        try { localStorage.removeItem('housora-theme'); } catch(e) {}
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.body.classList.remove('theme-dark');
+        document.body.classList.add('theme-light');
         var meta = document.querySelector('meta[name="theme-color"]');
-        if (meta) {
-            meta.content = detectTheme() === 'dark' ? '#1a1a1a' : '#000000';
-        }
-    }
-
-    function buildThemeToggle() {
-        var existing = document.querySelector('.theme-toggle');
-        if (existing) return;
-        var header = document.querySelector('.create-header-actions');
-        if (!header) return;
-        var btn = document.createElement('button');
-        btn.className = 'theme-toggle';
-        btn.type = 'button';
-        btn.setAttribute('aria-label', detectTheme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
-        btn.innerHTML = '<svg aria-hidden="true" class="theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><svg aria-hidden="true" class="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
-        btn.addEventListener('click', toggleTheme);
-        header.insertBefore(btn, header.firstChild);
-        updateThemeToggle(detectTheme());
+        if (meta) meta.content = '#ffffff';
     }
 
     // Authentication copy follows the account-first workspace flow in every locale.
@@ -916,24 +873,17 @@
             document.documentElement.dir = 'ltr';
             document.body.classList.remove('rtl');
         }
-        var theme = detectTheme();
-        document.documentElement.setAttribute('data-theme', theme);
-        document.body.classList.add(theme === 'dark' ? 'theme-dark' : 'theme-light');
+        enforceLightTheme();
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', function() {
                 applyTranslations(lang);
                 buildLanguageSelector();
-                buildThemeToggle();
+                enforceLightTheme();
             });
         } else {
             applyTranslations(lang);
             buildLanguageSelector();
-            buildThemeToggle();
-        }
-        if (window.matchMedia) {
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-                if (!getStoredTheme()) setTheme(e.matches ? 'dark' : 'light');
-            });
+            enforceLightTheme();
         }
     }
 
@@ -942,9 +892,9 @@
         t: t,
         setLanguage: setLanguage,
         getLanguage: detectLanguage,
-        setTheme: setTheme,
-        getTheme: detectTheme,
-        toggleTheme: toggleTheme,
+        setTheme: enforceLightTheme,
+        getTheme: function() { return 'light'; },
+        toggleTheme: enforceLightTheme,
         addTranslations: function(lang, dict) {
             if (!translations[lang]) translations[lang] = {};
             Object.keys(dict).forEach(function(k) { translations[lang][k] = dict[k]; });

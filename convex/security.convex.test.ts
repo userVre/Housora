@@ -61,7 +61,7 @@ describe("Convex authorization and billing invariants", () => {
     expect(userFunctions.deductCredits.isInternal).toBe(true);
     expect(userFunctions.deductCredits.isPublic).toBeUndefined();
     await expect(alice.query(api.users.getCredits, { clerkId: "alice" }))
-      .resolves.toBe(5);
+      .resolves.toBe(3);
   });
 
   test("negative, fractional, non-finite, and excessive deductions are rejected", async () => {
@@ -75,7 +75,7 @@ describe("Convex authorization and billing invariants", () => {
       })).rejects.toThrow();
     }
     await expect(alice.query(api.users.getCredits, { clerkId: "alice" }))
-      .resolves.toBe(5);
+      .resolves.toBe(3);
   });
 
   test("another user's projects, generations, and storage are inaccessible", async () => {
@@ -142,6 +142,53 @@ describe("Convex authorization and billing invariants", () => {
     expect(events).toHaveLength(2);
   });
 
+  test("paid plans enforce their generation and saved-project entitlements", async () => {
+    const { t, alice } = await createUsers();
+    await t.mutation(internal.subscriptions.processWhopEvent, {
+      eventId: "evt_standard_entitlement",
+      eventCreatedAt: 1_700_000_000_000,
+      eventType: "payment.succeeded",
+      clerkId: "alice",
+      plan: "standard",
+      billingInterval: "monthly",
+    });
+    await expect(alice.query(api.users.getCredits, { clerkId: "alice" })).resolves.toBe(100);
+    for (let index = 0; index < 10; index += 1) {
+      await alice.mutation(api.projects.createProject, {
+        title: `Standard project ${index}`,
+        roomType: "Living Room",
+        style: "Modern",
+      });
+    }
+    await expect(alice.mutation(api.projects.createProject, {
+      title: "Over plan limit",
+      roomType: "Living Room",
+      style: "Modern",
+    })).rejects.toThrow(/up to 10 saved projects/);
+  });
+
+  test("pro and enterprise plan credits match their published allowances", async () => {
+    const { t, alice, bob } = await createUsers();
+    await t.mutation(internal.subscriptions.processWhopEvent, {
+      eventId: "evt_pro_entitlement",
+      eventCreatedAt: 1_700_000_000_000,
+      eventType: "payment.succeeded",
+      clerkId: "alice",
+      plan: "pro",
+      billingInterval: "yearly",
+    });
+    await t.mutation(internal.subscriptions.processWhopEvent, {
+      eventId: "evt_enterprise_entitlement",
+      eventCreatedAt: 1_700_000_000_000,
+      eventType: "payment.succeeded",
+      clerkId: "bob",
+      plan: "growth",
+      billingInterval: "yearly",
+    });
+    await expect(alice.query(api.users.getCredits, { clerkId: "alice" })).resolves.toBe(190);
+    await expect(bob.query(api.users.getCredits, { clerkId: "bob" })).resolves.toBe(1_500);
+  });
+
   test("clients cannot complete or refund and internal refunds happen once", async () => {
     const { t, alice } = await createUsers();
     const reservation = await t.mutation(internal.users.deductCredits, {
@@ -163,7 +210,7 @@ describe("Convex authorization and billing invariants", () => {
       reason: "provider_failure",
     });
     await expect(alice.query(api.users.getCredits, { clerkId: "alice" }))
-      .resolves.toBe(5);
+      .resolves.toBe(3);
   });
 
   test("duplicate generation reservation callbacks deduct only once", async () => {
@@ -178,7 +225,7 @@ describe("Convex authorization and billing invariants", () => {
     const duplicate = await t.mutation(internal.users.deductCredits, args);
     expect(duplicate).toEqual(first);
     await expect(alice.query(api.users.getCredits, { clerkId: "alice" }))
-      .resolves.toBe(4);
+      .resolves.toBe(2);
     const rows = await t.run(async (ctx) => ({
       generations: await ctx.db.query("generations").take(10),
       events: await ctx.db.query("generationEvents").take(10),

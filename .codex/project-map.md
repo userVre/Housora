@@ -1,6 +1,6 @@
 # Housora project map
 
-> Fast orientation map for future coding tasks. Last refreshed: 2026-08-19.
+> Fast orientation map for future coding tasks. Last refreshed: 2026-08-21.
 > Treat source files as authoritative when this map conflicts with the code.
 
 ## What this project is
@@ -46,14 +46,31 @@ Ktor layout metadata in `src/main/kotlin/com/housora/templates/Layout.kt`
 
 `src/main/kotlin/com/housora/templates/Layout.kt`
   -> persistent Library / AI tools / account sidebar for the Kotlin workspace routes
-  -> compact workspace top bar and responsive mobile drawer
+  -> header-free desktop canvas and a single floating mobile drawer button
   -> prompt-first home in `src/main/kotlin/com/housora/pages/AppHomePage.kt`
   -> recent Convex projects, credit status, Clerk profile UI, and local example likes in `static/js/main.js`.
 
-The complete workspace shell, creator, galleries, empty states, dark mode, and
-responsive rules are grouped under `HOUSORA CREATIVE WORKSPACE` at the end of
-`static/css/style.css`. The home prompt is passed to `/design?prompt=...` and
-prefilled by `initWorkspaceHandoff()`.
+The dedicated `/app/images` and `/app/likes` library screens render saved
+project outputs and user-saved favourites. `/projects` uses a named,
+empty-first creation flow before a user begins designing.
+
+The complete light-only workspace shell, creator, galleries, empty states, and
+responsive rules are grouped under `HOUSORA CREATIVE WORKSPACE` and the final
+monochrome layer in `static/css/style.css`. The home prompt is passed to
+`/design?prompt=...` and prefilled by `initWorkspaceHandoff()`.
+
+The workspace sidebar renders the full shared `aiTools` catalog directly and
+persists across every AI tool route. Tool routes remain guest-accessible, but
+signed-in users get the workspace account menu and never see guest acquisition
+copy; signed-out visitors get explicit sign-in/create-account actions. Its
+library and tool sections scroll independently above the pinned account area;
+there is no separate workspace switcher or appearance selector. The pinned
+account trigger is populated from the authenticated Clerk profile name, with
+username and email-prefix fallbacks.
+
+The sidebar footer uses one account trigger and a progressive account menu.
+Profile, plan upgrade, billing, usage, refunds, account deletion, help, and
+sign-out are disclosed there instead of appearing as persistent sidebar rows.
 
 ### Image generation and billing
 
@@ -61,6 +78,12 @@ UI/tool pages or `app/api/generate/route.ts`
   -> Convex/http or Cloudflare API functions
   -> `functions/api/generate.js`, `upload.js`, and `assets/[assetId].js`
   -> persisted project/upload data in Convex.
+
+Public tool pages now open directly at the shared upload/configuration surface.
+An unsigned visitor may complete one guest generation, tracked by a server-set
+trial cookie plus the generation IP limiter; subsequent attempts open sign-up.
+New Convex users begin with three free generation credits, after which paid
+plan credits are enforced by the existing authenticated generation flow.
 
 Whop checkout/webhook paths:
 
@@ -93,21 +116,22 @@ Whop checkout/webhook paths:
   `/enterprise`, `/blog`, `/compare/[competitor]`, `/[slug]`.
 - Legal/account: `/privacy`, `/terms`, `/cookies`, `/refund-policy`,
   `/sign-in`, `/sign-up`, `/sign-out`.
-- Workspace: `/design`, `/projects`, `/app/home`, `/app/plan`, `/app/usage`,
-  `/delete-account`.
+- Workspace: `/design`, `/projects`, `/app/home`, `/app/images`, `/app/likes`,
+  `/app/plan`, `/app/usage`, `/delete-account`.
 - API: `/api/generate`, `/api/upload`, `/api/assets/[assetId]`, Whop checkout
   and webhook endpoints.
 
 ## Build, test, and deploy
 
-- `npm run dev`: Convex development workflow.
-- `npm test`: unit/security and Kotlin tests.
-- `npm run build`: assets, site build, publish, and verification.
-- `npm run build:static`: static site output to `dist/`.
-- `npm run deploy:pages`: verify assets then deploy `dist/` to Pages.
-- `./gradlew run` or `npm start`: local Ktor server on port 8081.
+- `bun run dev`: Convex development workflow.
+- `bun run test`: unit/security and Kotlin tests.
+- `bun run build`: assets, site build, publish, and verification.
+- `bun run build:static`: static site output to `dist/`.
+- `bun run deploy:pages`: verify assets then deploy `dist/` to Pages.
+- `./gradlew run` or `bun run start`: local Ktor server on port 8081.
 
-Node is pinned to `22.22.0` in `.nvmrc` and `.node-version`.
+Node is pinned to `22.22.0` in `.nvmrc` and `.node-version`; Bun is pinned to
+`1.3.14` through the `packageManager` field and `bun.lock`.
 
 ## Working rules and caveats
 

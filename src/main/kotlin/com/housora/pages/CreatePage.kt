@@ -5,7 +5,7 @@ import com.housora.templates.baseLayout
 
 fun HTML.homePage() {
     baseLayout("Housora - AI Room Design | Upload a Photo & Redesign", bodyClass = "marketing-home") {
-        h1(classes = "sr-only") {
+        span(classes = "sr-only") {
             attributes["data-i18n"] = "create.seo_title"
             +"AI room design concepts from your own photo"
         }
@@ -289,14 +289,13 @@ fun HTML.homePage() {
                 }
             }
         }
-        section("marketing-hero") {
-        section("marketing-intro") {
+        section("marketing-hero marketing-intro") {
             div("marketing-intro-inner") {
                 span("marketing-kicker") { attributes["data-i18n"] = "create.marketing_kicker"; +"AI HOME DESIGN" }
-                h2 { attributes["data-i18n"] = "create.marketing_title"; +"Redesign your room with AI." }
+                h1 { attributes["data-i18n"] = "create.marketing_title"; +"Redesign your room with AI." }
                 p { attributes["data-i18n"] = "create.marketing_subtitle"; +"Explore Housora's AI design tools, then create an account to start designing." }
                 div("marketing-intro-actions") {
-                    a(href = "#demoPhotoBtn", classes = "btn-primary btn-large") { attributes["data-i18n"] = "create.marketing_primary"; +"CREATE YOUR FIRST DESIGN" }
+                    a(href = "/sign-in?redirect=%2Fapp%2Fhome", classes = "btn-primary btn-large") { attributes["data-i18n"] = "create.marketing_primary"; +"CREATE YOUR FIRST DESIGN" }
                     a(href = "/examples", classes = "btn-secondary btn-large") { attributes["data-i18n"] = "create.marketing_secondary"; +"EXPLORE EXAMPLES" }
                 }
             }
@@ -517,8 +516,6 @@ fun HTML.homePage() {
                 p { +"Use your own photo, compare directions, and build a visual brief you can actually discuss." }
             }
             div("demo-testimonials-grid") {}
-        }
-
         }
 
         // ===== EXPLORE AI TOOLS =====

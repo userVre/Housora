@@ -7,7 +7,7 @@ The Kotlin/Ktor application remains the source of truth. Cloudflare Pages cannot
 Run the complete cross-platform build:
 
 ```bash
-npm run build
+bun run build
 ```
 
 This compiles Ktor with the checked-in Gradle wrapper, starts a temporary
@@ -18,7 +18,7 @@ export fails.
 To run the website without exporting it:
 
 ```bash
-npm start
+bun run start
 ```
 
 The output is `dist/` and the build must finish with `0 failed` pages.
@@ -26,9 +26,9 @@ The output is `dist/` and the build must finish with `0 failed` pages.
 ## Publish to the free Pages domain
 
 ```text
-npx wrangler login
-npx wrangler pages project create housora
-npm run deploy:pages
+bunx wrangler login
+bunx wrangler pages project create housora
+bun run deploy:pages
 ```
 
 Cloudflare will provide a `housora.pages.dev` address. The repository includes `wrangler.toml` with `pages_build_output_dir = "./dist"`.

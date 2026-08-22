@@ -85,20 +85,40 @@ function normalizeTimestamp(value: unknown): number | undefined {
   return undefined;
 }
 
-function mapPlanIdToName(planId: string | undefined): PaidPlan | null {
+type PlanSelection = { plan: PaidPlan; billingInterval: "monthly" | "yearly" };
+
+// `convex codegen` updates Env after the next Convex deploy. Keep the aliases
+// typed here too so local verification works before that deployment.
+type CheckoutPlanEnvironment = typeof env & {
+  readonly WHOP_PLAN_STANDARD_MONTHLY?: string;
+  readonly WHOP_PLAN_STANDARD_YEARLY?: string;
+  readonly WHOP_PLAN_PRO_MONTHLY?: string;
+  readonly WHOP_PLAN_PRO_YEARLY?: string;
+  readonly WHOP_PLAN_ENTERPRISE_MONTHLY?: string;
+  readonly WHOP_PLAN_ENTERPRISE_YEARLY?: string;
+};
+const checkoutPlanEnvironment = env as CheckoutPlanEnvironment;
+
+function mapPlanIdToName(planId: string | undefined): PlanSelection | null {
   if (!planId) return null;
-  const configuredPlans: Array<[string | undefined, PaidPlan]> = [
-    [env.WHOP_STANDARD_MONTHLY_PLAN_ID, "standard"],
-    [env.WHOP_STANDARD_YEARLY_PLAN_ID, "standard"],
-    [env.WHOP_PRO_MONTHLY_PLAN_ID, "pro"],
-    [env.WHOP_PRO_YEARLY_PLAN_ID, "pro"],
-    [env.WHOP_ENTREPRISE_STARTER_MONTHLY_PLAN_ID, "growth"],
-    [env.WHOP_ENTREPRISE_STARTER_YEARLY_PLAN_ID, "growth"],
-    [env.WHOP_ENTREPRISE_PLUS_MONTHLY_PLAN_ID, "scale"],
-    [env.WHOP_ENTREPRISE_PLUS_YEARLY_PLAN_ID, "scale"],
-    [env.WHOP_ENTREPRISE_PRO_MONTHLY_PLAN_ID, "unlimited"],
-    [env.WHOP_ENTREPRISE_PRO_YEARLY_PLAN_ID, "unlimited"],
-    [env.WHOP_ENTREPRISE_MAX_YEARLY_PLAN_ID, "unlimited"],
+  const configuredPlans: Array<[string | undefined, PlanSelection]> = [
+    [env.WHOP_STANDARD_MONTHLY_PLAN_ID, { plan: "standard", billingInterval: "monthly" }],
+    [checkoutPlanEnvironment.WHOP_PLAN_STANDARD_MONTHLY, { plan: "standard", billingInterval: "monthly" }],
+    [env.WHOP_STANDARD_YEARLY_PLAN_ID, { plan: "standard", billingInterval: "yearly" }],
+    [checkoutPlanEnvironment.WHOP_PLAN_STANDARD_YEARLY, { plan: "standard", billingInterval: "yearly" }],
+    [env.WHOP_PRO_MONTHLY_PLAN_ID, { plan: "pro", billingInterval: "monthly" }],
+    [checkoutPlanEnvironment.WHOP_PLAN_PRO_MONTHLY, { plan: "pro", billingInterval: "monthly" }],
+    [env.WHOP_PRO_YEARLY_PLAN_ID, { plan: "pro", billingInterval: "yearly" }],
+    [checkoutPlanEnvironment.WHOP_PLAN_PRO_YEARLY, { plan: "pro", billingInterval: "yearly" }],
+    [env.WHOP_ENTREPRISE_STARTER_MONTHLY_PLAN_ID, { plan: "growth", billingInterval: "monthly" }],
+    [checkoutPlanEnvironment.WHOP_PLAN_ENTERPRISE_MONTHLY, { plan: "growth", billingInterval: "monthly" }],
+    [env.WHOP_ENTREPRISE_STARTER_YEARLY_PLAN_ID, { plan: "growth", billingInterval: "yearly" }],
+    [checkoutPlanEnvironment.WHOP_PLAN_ENTERPRISE_YEARLY, { plan: "growth", billingInterval: "yearly" }],
+    [env.WHOP_ENTREPRISE_PLUS_MONTHLY_PLAN_ID, { plan: "scale", billingInterval: "monthly" }],
+    [env.WHOP_ENTREPRISE_PLUS_YEARLY_PLAN_ID, { plan: "scale", billingInterval: "yearly" }],
+    [env.WHOP_ENTREPRISE_PRO_MONTHLY_PLAN_ID, { plan: "unlimited", billingInterval: "monthly" }],
+    [env.WHOP_ENTREPRISE_PRO_YEARLY_PLAN_ID, { plan: "unlimited", billingInterval: "yearly" }],
+    [env.WHOP_ENTREPRISE_MAX_YEARLY_PLAN_ID, { plan: "unlimited", billingInterval: "yearly" }],
   ];
   return configuredPlans.find(([configured]) => configured?.trim() === planId)?.[1] ?? null;
 }
@@ -176,7 +196,8 @@ async function processSubscriptionEvent(
     clerkId,
     email: extractEmail(data),
     name: extractName(data),
-    plan: plan ?? undefined,
+    plan: plan?.plan,
+    billingInterval: plan?.billingInterval,
     whopCustomerId: optionalString(data.customer_id),
     whopSubscriptionId: optionalString(data.subscription_id) ?? optionalString(data.id),
     subscriptionEnd: normalizeTimestamp(

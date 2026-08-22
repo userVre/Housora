@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { internalMutation } from "./_generated/server";
-import { PLAN_CREDITS } from "./lib/plans";
+import { internal } from "./_generated/api";
+import { PLAN_CREDITS, isPaidPlan } from "./lib/plans";
 import {
   boundedEmail,
   boundedString,
@@ -28,6 +29,14 @@ const paidPlan = v.union(
   v.literal("unlimited"),
 );
 
+const billingInterval = v.union(v.literal("monthly"), v.literal("yearly"));
+
+function nextMonthlyCreditReset(timestamp: number): number {
+  const date = new Date(timestamp);
+  date.setUTCMonth(date.getUTCMonth() + 1);
+  return date.getTime();
+}
+
 function isActivationEvent(eventType: string): boolean {
   return eventType === "payment.succeeded"
     || eventType === "membership.activated"
@@ -43,6 +52,7 @@ export const processWhopEvent = internalMutation({
     email: v.optional(v.string()),
     name: v.optional(v.string()),
     plan: v.optional(paidPlan),
+    billingInterval: v.optional(billingInterval),
     whopCustomerId: v.optional(v.string()),
     whopSubscriptionId: v.optional(v.string()),
     subscriptionEnd: v.optional(v.number()),
@@ -142,6 +152,10 @@ export const processWhopEvent = internalMutation({
     };
     if (isActivationEvent(args.eventType)) {
       if (!args.plan) throw new Error("A known paid plan is required for activation");
+      const subscriptionEnd = args.subscriptionEnd === undefined
+        ? undefined
+        : finiteNumberInRange(args.subscriptionEnd, "subscriptionEnd", 1, Number.MAX_SAFE_INTEGER);
+      const creditsResetAt = nextMonthlyCreditReset(eventCreatedAt);
       await ctx.db.patch("users", user._id, {
         ...eventMarker,
         plan: args.plan,
@@ -149,11 +163,18 @@ export const processWhopEvent = internalMutation({
         whopCustomerId: whopCustomerId ?? user.whopCustomerId,
         whopSubscriptionId: whopSubscriptionId ?? user.whopSubscriptionId,
         subscriptionStartedAt: eventCreatedAt,
-        subscriptionEnd: undefined,
+        subscriptionEnd,
+        subscriptionBillingInterval: args.billingInterval ?? user.subscriptionBillingInterval ?? "monthly",
         subscriptionType: "active",
         subscriptionStatus: "active",
         lastResetDate: eventCreatedAt,
+        creditsResetAt,
       });
+      await ctx.scheduler.runAfter(
+        Math.max(0, creditsResetAt - Date.now()),
+        internal.subscriptions.resetPlanCredits,
+        { clerkId, expectedResetAt: creditsResetAt },
+      );
     } else if (args.eventType === "membership.deactivated") {
       await ctx.db.patch("users", user._id, {
         ...eventMarker,
@@ -210,5 +231,32 @@ export const processWhopEvent = internalMutation({
       outcome: "applied",
     });
     return "applied" as const;
+  },
+});
+
+/** Resets monthly generation allowances while a monthly or yearly paid term is active. */
+export const resetPlanCredits = internalMutation({
+  args: { clerkId: v.string(), expectedResetAt: v.number() },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const user = await ctx.db.query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId)).unique();
+    const plan = user?.plan;
+    if (!user || !plan || !isPaidPlan(plan) || user.subscriptionStatus !== "active") return null;
+    if (user.creditsResetAt !== args.expectedResetAt) return null;
+    const now = Date.now();
+    if (user.subscriptionEnd !== undefined && user.subscriptionEnd <= now) return null;
+    const creditsResetAt = nextMonthlyCreditReset(args.expectedResetAt);
+    await ctx.db.patch("users", user._id, {
+      credits: PLAN_CREDITS[plan],
+      lastResetDate: now,
+      creditsResetAt,
+    });
+    await ctx.scheduler.runAfter(
+      Math.max(0, creditsResetAt - now),
+      internal.subscriptions.resetPlanCredits,
+      { clerkId: args.clerkId, expectedResetAt: creditsResetAt },
+    );
+    return null;
   },
 });

@@ -15,7 +15,7 @@ fun HTML.projectsPage() {
                     button(classes = "projects-new-btn") {
                         id = "newProjectBtn"
                         attributes["type"] = "button"
-                        +"Choose a tool"
+                        +"Create project"
                     }
                 }
                 p("projects-message") { id = "projectsMessage" }
@@ -41,17 +41,24 @@ fun HTML.projectsPage() {
                     id = "projectsEmpty"
                     h2 { attributes["data-i18n"] = "misc.no_projects"; +"No projects yet" }
                     p { +"Projects keep each room, its source photo, and generated directions together so you can continue later." }
-                    a(href = "/app/home#workspace-tools", classes = "projects-empty-cta btn-primary") { +"Create your first project" }
+                    button(classes = "projects-empty-cta btn-primary") { id = "projectsEmptyCreateBtn"; type = ButtonType.button; +"Create your first project" }
                 }
-            }
-        }
-        script {
-            unsafe {
-                +"""
-                window.addEventListener('DOMContentLoaded', function() {
-                    if (window.initHousoraProjects) window.initHousoraProjects();
-                });
-                """
+                div("project-dialog-backdrop") { id = "projectDialogBackdrop"; hidden = true
+                    div("project-dialog") {
+                        attributes["role"] = "dialog"; attributes["aria-modal"] = "true"; attributes["aria-labelledby"] = "projectDialogTitle"
+                        button(classes = "project-dialog-close") { id = "projectDialogClose"; type = ButtonType.button; attributes["aria-label"] = "Close create project dialog"; +"×" }
+                        span("workspace-eyebrow") { +"NEW PROJECT" }
+                        h2 { id = "projectDialogTitle"; +"Name your project" }
+                        p { +"Start with a simple name. You can add your room photo and first design next." }
+                        label { htmlFor = "projectNameInput"; +"Project name" }
+                        textInput(classes = "project-dialog-input") { id = "projectNameInput"; attributes["maxlength"] = "120"; attributes["autocomplete"] = "off"; attributes["placeholder"] = "For example, Living room refresh" }
+                        p("project-dialog-error") { id = "projectDialogError"; attributes["role"] = "alert"; attributes["aria-live"] = "polite" }
+                        div("project-dialog-actions") {
+                            button(classes = "project-dialog-cancel") { id = "projectDialogCancel"; type = ButtonType.button; +"Cancel" }
+                            button(classes = "project-dialog-submit") { id = "projectDialogSubmit"; type = ButtonType.button; +"Create project" }
+                        }
+                    }
+                }
             }
         }
     }

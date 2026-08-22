@@ -50,6 +50,7 @@ export const getSubscriptionStatus = query({
       credits: user.credits,
       subscriptionStatus: user.subscriptionStatus,
       subscriptionType: user.subscriptionType,
+      subscriptionBillingInterval: user.subscriptionBillingInterval,
       subscriptionStartedAt: user.subscriptionStartedAt,
       subscriptionEnd: user.subscriptionEnd,
     };

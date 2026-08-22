@@ -6,6 +6,7 @@ import com.housora.ClerkConfig
 import com.housora.ConvexConfig
 import com.housora.WebsiteConfig
 import com.housora.PostHogConfig
+import com.housora.ImageGenerationConfig
 
 data class AITool(val name: String, val path: String)
 
@@ -51,7 +52,7 @@ private fun inferredPath(title: String): String = when {
 private fun seoFor(path: String): SeoDefaults = when (path) {
     "/" -> SeoDefaults("Explore practical AI design concepts for your home from a photo.", organizationSchema = true, softwareSchema = true)
     "/pricing" -> SeoDefaults("See Housora plans, included image allowances, billing periods, and current checkout terms.", softwareSchema = true)
-    "/app/home", "/app/usage", "/app/plan", "/design", "/projects", "/sign-in", "/sign-up", "/sign-out", "/delete-account" -> SeoDefaults("Use Housora to explore and manage AI-assisted home design concepts.", indexable = false)
+    "/app/home", "/app/images", "/app/likes", "/app/usage", "/app/plan", "/design", "/projects", "/sign-in", "/sign-up", "/sign-out", "/delete-account" -> SeoDefaults("Use Housora to explore and manage AI-assisted home design concepts.", indexable = false)
     "/blog" -> SeoDefaults("Practical ideas for planning rooms, materials, colour, layouts, and AI-assisted home design.")
     in setOf("/interior-design", "/layout-boost", "/exterior-design", "/garden-design", "/floor-restyle", "/wall-texture", "/video-walkthrough", "/floorplan-to-3d", "/photo-to-render", "/ai-stairs-design", "/ai-doors-design", "/ai-windows-design", "/ai-kitchen-design", "/ai-bathroom-design", "/reference-style") -> SeoDefaults("Explore an AI-assisted home design workflow using your own room, exterior, or garden photo.", softwareSchema = true)
     "/enterprise" -> SeoDefaults("Higher image allowances and support options for teams exploring home design concepts.", softwareSchema = true)
@@ -78,138 +79,16 @@ val aiTools = listOf(
     AITool("Reference Style", "/reference-style")
 )
 
-private val workspacePaths = aiTools.map { it.path }.toSet() + setOf(
-    "/app/home", "/app/usage", "/app/plan", "/design", "/projects"
-)
-
-private val protectedPaths = workspacePaths + setOf("/delete-account")
-
-private fun FlowContent.workspaceIcon(name: String) {
-    val letter = name.removePrefix("AI ").firstOrNull()?.uppercase() ?: "H"
-    span(classes = "workspace-nav-icon") { attributes["aria-hidden"] = "true"; +letter }
-}
-
-private fun BODY.workspaceNavigation(currentPath: String) {
-    val toolGroups = listOf(
-        "Spaces" to setOf(
-            "/interior-design", "/layout-boost", "/exterior-design", "/garden-design",
-            "/ai-kitchen-design", "/ai-bathroom-design"
-        ),
-        "Elements" to setOf(
-            "/wall-texture", "/floor-restyle", "/ai-stairs-design", "/ai-doors-design",
-            "/ai-windows-design"
-        ),
-        "Visualize" to setOf(
-            "/video-walkthrough", "/floorplan-to-3d", "/photo-to-render", "/reference-style"
-        )
-    )
-    div(classes = "workspace-mobile-backdrop") { attributes["id"] = "workspace-mobile-backdrop" }
-    header(classes = "workspace-mobile-header") {
-        button(classes = "workspace-mobile-menu") {
-            attributes["id"] = "workspace-mobile-menu"
-            attributes["type"] = "button"
-            attributes["aria-label"] = "Open workspace navigation"
-            unsafe { +"""<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>""" }
-        }
-        a(href = "/app/home", classes = "workspace-mobile-logo") { +"HOUSORA" }
-        a(href = "/app/home#workspace-tools", classes = "workspace-mobile-new") { +"New" }
-    }
-    aside(classes = "workspace-app-sidebar") {
-        attributes["id"] = "workspace-app-sidebar"
-        attributes["aria-label"] = "Workspace navigation"
-        div(classes = "workspace-sidebar-brand") {
-            a(href = "/app/home", classes = "workspace-brand-link") {
-                span(classes = "brand-mark") { unsafe { +"""<svg width="25" height="25" viewBox="0 0 32 32" aria-hidden="true"><path d="M7 5v22M25 5v22M7 16c5-6 13-6 18 0" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>""" } }
-                span { +"HOUSORA" }
-            }
-            button(classes = "workspace-sidebar-close") {
-                attributes["id"] = "workspace-sidebar-close"
-                attributes["type"] = "button"
-                attributes["aria-label"] = "Close workspace navigation"
-                +"×"
-            }
-        }
-        nav(classes = "workspace-sidebar-scroll") {
-            div(classes = "workspace-nav-group workspace-nav-primary") {
-                listOf(
-                    Triple("Workspace Home", "/app/home", "H"),
-                    Triple("Create Design", "/app/home#workspace-tools", "+"),
-                    Triple("My Projects", "/projects", "P"),
-                    Triple("Usage", "/app/usage", "U")
-                ).forEach { (label, href, icon) ->
-                    a(href = href, classes = "workspace-nav-link${if (currentPath == href) " is-active" else ""}") {
-                        span(classes = "workspace-nav-icon") { attributes["aria-hidden"] = "true"; +icon }
-                        span { +label }
-                    }
-                }
-            }
-            p(classes = "workspace-nav-label") { +"AI TOOLS" }
-            div(classes = "workspace-tool-categories") {
-                toolGroups.forEachIndexed { index, (groupName, paths) ->
-                    val groupTools = aiTools.filter { it.path in paths }
-                    details(classes = "workspace-tool-category") {
-                        if (currentPath in paths || (currentPath == "/app/home" && index == 0)) {
-                            attributes["open"] = ""
-                        }
-                        summary {
-                            span { +groupName }
-                            span(classes = "workspace-category-chevron") { attributes["aria-hidden"] = "true"; +"⌄" }
-                        }
-                        div(classes = "workspace-nav-group workspace-tool-links") {
-                            groupTools.forEach { tool ->
-                                a(href = tool.path, classes = "workspace-nav-link${if (currentPath == tool.path) " is-active" else ""}") {
-                                    workspaceIcon(tool.name)
-                                    span { +tool.name.removePrefix("AI ") }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        div(classes = "workspace-sidebar-footer") {
-            div(classes = "workspace-usage-card") {
-                div(classes = "workspace-usage-heading") {
-                    div { a(href = "/app/usage", classes = "workspace-usage-title") { +"Usage" }; strong { attributes["id"] = "workspace-plan-name"; +"Free" } }
-                    a(href = "/app/plan") { +"Upgrade" }
-                }
-                p { attributes["id"] = "workspace-usage-count"; +"— images remaining" }
-                div(classes = "workspace-usage-track") { span { attributes["id"] = "workspace-usage-progress" } }
-            }
-            div(classes = "workspace-profile-wrap") {
-                button(classes = "workspace-profile-button") {
-                    attributes["id"] = "workspace-profile-button"
-                    attributes["type"] = "button"
-                    attributes["aria-expanded"] = "false"
-                    span(classes = "workspace-profile-avatar") { attributes["id"] = "workspace-user-avatar"; +"H" }
-                    span(classes = "workspace-profile-copy") {
-                        strong { attributes["id"] = "workspace-user-name"; +"My account" }
-                        small { attributes["id"] = "workspace-user-email"; +"Account settings" }
-                    }
-                    span(classes = "workspace-profile-chevron") { +"⌃" }
-                }
-                div(classes = "workspace-profile-menu") {
-                    attributes["id"] = "workspace-profile-menu"
-                    button(classes = "workspace-account-settings") {
-                        attributes["id"] = "workspace-account-settings"
-                        attributes["type"] = "button"
-                        +"Account settings"
-                    }
-                    a(href = "/app/plan") { +"Plan & usage" }
-                    a(href = "/pricing#billing-help") { +"Billing support" }
-                    a(href = "/sign-out") { +"Sign out" }
-                }
-            }
-        }
-    }
-}
-
 fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", structuredData: String? = null, content: DIV.() -> Unit) {
     val canonicalPath = if (path.isBlank()) inferredPath(title) else path
-    val workspacePaths = setOf("/app/home", "/app/usage", "/app/plan", "/design", "/projects")
-    val isWorkspaceSurface = canonicalPath in workspacePaths
+    val workspacePaths = setOf("/app/home", "/app/images", "/app/likes", "/app/usage", "/app/plan", "/design", "/projects", "/delete-account")
+    val toolPaths = aiTools.mapTo(mutableSetOf()) { it.path }
+    val isToolSurface = canonicalPath in toolPaths
+    val isWorkspaceSurface = canonicalPath in workspacePaths || isToolSurface
     val workspacePageLabel = when (canonicalPath) {
         "/projects" -> "Projects"
+        "/app/images" -> "My images"
+        "/app/likes" -> "My likes"
         "/app/usage" -> "Usage"
         "/app/plan" -> "Plan & billing"
         "/design" -> "Design studio"
@@ -217,9 +96,8 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
     }
     val seo = seoFor(canonicalPath)
     val canonicalUrl = WebsiteConfig.resolveUrl(canonicalPath)
-    val convexPaths = aiTools.map { it.path }.toSet() + setOf("/", "/design", "/projects", "/pricing", "/app/home", "/app/usage", "/app/plan", "/delete-account")
+    val convexPaths = aiTools.map { it.path }.toSet() + setOf("/", "/design", "/projects", "/pricing", "/app/home", "/app/images", "/app/likes", "/app/usage", "/app/plan", "/delete-account")
     val needsConvexClient = canonicalPath in convexPaths
-    val isWorkspace = canonicalPath in workspacePaths
     attributes["lang"] = "en"
     head {
         meta(charset = "utf-8")
@@ -244,7 +122,7 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
         meta(name = "twitter:description", content = seo.description)
         meta(name = "twitter:image", content = WebsiteConfig.resolveUrl(seo.image))
         meta(name = "twitter:image:alt", content = "Housora home design concepts")
-        meta(name = "theme-color", content = "#000000")
+        meta(name = "theme-color", content = "#ffffff")
         meta(name = "clerk-publishable-key", content = ClerkConfig.publishableKey)
         meta(name = "convex-url", content = ConvexConfig.url)
         if (seo.organizationSchema) script(type = "application/ld+json") {
@@ -258,15 +136,8 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
             unsafe {
                 +"""
                 (function () {
-                    try {
-                        var savedTheme = localStorage.getItem('housora-theme');
-                        var preferredTheme = savedTheme === 'dark' || savedTheme === 'light'
-                            ? savedTheme
-                            : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-                        document.documentElement.setAttribute('data-theme', preferredTheme);
-                    } catch (_) {
-                        document.documentElement.setAttribute('data-theme', 'light');
-                    }
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    try { localStorage.removeItem('housora-theme'); } catch (_) {}
                 })();
                 """
             }
@@ -342,9 +213,9 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                     });
                     // Lucide icons loaded but not used in header (inline SVGs used instead)
                     // Expose Convex URL to client JS
-                    window.CONVEX_URL = '${EnvConfig.get("EXPO_PUBLIC_CONVEX_URL")}';
-                    // AI generation status — disabled because no AI provider is configured
-                    window.__HOUSORA_AI_CONFIGURED = false;
+                    window.CONVEX_URL = '${ConvexConfig.url}';
+                    // Public capability flag only; the provider key always remains server-side.
+                    window.__HOUSORA_AI_CONFIGURED = ${ImageGenerationConfig.isConfigured};
                     // Cycle the existing rotating-word spans without replacing
                     // their markup. Replacing textContent here used to produce
                     // “Redesign Redesign Bedroom” and broke the reference layout.
@@ -378,7 +249,12 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
             }
         }
     }
-    body(classes = listOf(bodyClass, if (isWorkspaceSurface) "workspace-surface" else "").filter { it.isNotBlank() }.joinToString(" ")) {
+    body(classes = listOf(
+        bodyClass,
+        if (isWorkspaceSurface) "workspace-surface" else "",
+        if (isToolSurface) "workspace-tool-surface" else ""
+    ).filter { it.isNotBlank() }.joinToString(" ")) {
+        if (canonicalPath in workspacePaths) attributes["data-protected-route"] = "true"
         a(href = "#main-content", classes = "skip-link") { +"Skip to main content" }
         // Clerk loading overlay (hidden by default, shown by JS during init)
         if (ClerkConfig.isConfigured) {
@@ -391,8 +267,6 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                 }
             }
         }
-
-        if (isWorkspace) workspaceNavigation(canonicalPath)
 
         // Page wrapper
         div(classes = buildString {
@@ -457,7 +331,7 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                             }
                         }
                         button(classes = "browse-catalog-btn start-free-btn") {
-                            attributes["onclick"] = "window.location.href=(window.Clerk && window.Clerk.user ? '/app/home' : '/#first-design')"
+                            attributes["onclick"] = "window.location.href='/sign-in?redirect=%2Fapp%2Fhome'"
                             +"START FREE DESIGN"
                         }
                     }
@@ -487,37 +361,56 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                     unsafe { +"""<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>""" }
                 }
             }
-            // User info (hidden by default, shown by JS when signed in)
-            div(classes = "sidebar-user-info") {
-                attributes["id"] = "sidebar-user-info"
-                attributes["style"] = "display:none"
-                div(classes = "sidebar-user-avatar") {
-                    attributes["id"] = "sidebar-user-avatar"
+            // The marketing drawer keeps its compact account identity. Workspace pages
+            // use the richer account trigger/menu rendered in the sidebar footer below.
+            if (!isWorkspaceSurface) {
+                button(classes = "sidebar-user-info sidebar-public-account-trigger") {
+                    attributes["id"] = "sidebar-user-info"
+                    attributes["style"] = "display:none"
+                    attributes["type"] = "button"
+                    attributes["aria-expanded"] = "false"
+                    attributes["aria-controls"] = "sidebar-public-account-menu"
+                    div(classes = "sidebar-user-avatar") {
+                        attributes["id"] = "sidebar-user-avatar"
+                    }
+                    div(classes = "sidebar-user-details") {
+                        span(classes = "sidebar-user-name") { attributes["id"] = "sidebar-user-name"; +"" }
+                        span(classes = "sidebar-user-email") { attributes["id"] = "sidebar-user-email"; +"" }
+                    }
+                    span(classes = "sidebar-public-account-more") { +"⋯" }
                 }
-                div(classes = "sidebar-user-details") {
-                    span(classes = "sidebar-user-name") { attributes["id"] = "sidebar-user-name"; +"" }
-                    span(classes = "sidebar-user-email") { attributes["id"] = "sidebar-user-email"; +"" }
+                div(classes = "sidebar-public-account-menu") {
+                    attributes["id"] = "sidebar-public-account-menu"
+                    attributes["hidden"] = "hidden"
+                    a(href = "/app/home", classes = "sidebar-public-account-link") { +"Workspace" }
+                    a(href = "/app/plan", classes = "sidebar-public-account-link sidebar-public-account-upgrade") { +"Upgrade plan" }
+                    details(classes = "sidebar-public-settings") {
+                        summary { +"Settings" }
+                        div {
+                            a(href = "/app/plan") { +"Billing & plans" }
+                            a(href = "/app/usage") { +"Usage" }
+                            a(href = "/app/plan#billing") { +"Manage plan & refunds" }
+                            a(href = "/delete-account", classes = "is-danger") { +"Delete account" }
+                        }
+                    }
+                    a(href = "/faq", classes = "sidebar-public-account-link") { +"Help" }
+                    a(href = "/sign-out", classes = "sidebar-public-account-link sidebar-public-signout") { +"Sign out" }
                 }
             }
             if (isWorkspaceSurface) {
-                div("workspace-account-switcher") {
-                    span("workspace-switcher-mark") { +"H" }
-                    div { strong { +"Personal workspace" }; small { +"Housora Studio" } }
-                    span("workspace-switcher-chevron") { +"⌄" }
-                }
                 div("workspace-sidebar-scroll") {
                     div("sidebar-section workspace-library-nav") {
                         span("workspace-sidebar-label") { +"LIBRARY" }
                         a(href = "/app/home", classes = "sidebar-link workspace-sidebar-link ${if (canonicalPath == "/app/home") "is-active" else ""}") {
                             span("workspace-nav-glyph") { +"⌂" }; +"Home"
                         }
-                        a(href = "/app/home#my-images", classes = "sidebar-link workspace-sidebar-link") {
+                        a(href = "/app/images", classes = "sidebar-link workspace-sidebar-link ${if (canonicalPath == "/app/images") "is-active" else ""}") {
                             span("workspace-nav-glyph") { +"▧" }; +"My images"
                         }
                         a(href = "/projects", classes = "sidebar-link workspace-sidebar-link ${if (canonicalPath == "/projects") "is-active" else ""}") {
                             span("workspace-nav-glyph") { +"□" }; +"Projects"
                         }
-                        a(href = "/app/home#my-likes", classes = "sidebar-link workspace-sidebar-link") {
+                        a(href = "/app/likes", classes = "sidebar-link workspace-sidebar-link ${if (canonicalPath == "/app/likes") "is-active" else ""}") {
                             span("workspace-nav-glyph") { +"♡" }; +"My likes"
                         }
                     }
@@ -525,21 +418,58 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                         span("workspace-sidebar-label") { +"AI TOOLS" }
                         aiTools.forEach { tool ->
                             a(href = tool.path, classes = "sidebar-link workspace-sidebar-link workspace-tool-link ${if (canonicalPath == tool.path) "is-active" else ""}") {
-                                span("workspace-nav-glyph workspace-tool-glyph") { +"✦" }; +tool.name.removePrefix("AI ")
+                                span("workspace-nav-glyph workspace-tool-glyph") { +"✦" }
+                                +tool.name
                             }
                         }
                     }
                 }
                 div("workspace-sidebar-footer") {
-                    a(href = "/app/usage", classes = "sidebar-link workspace-sidebar-link ${if (canonicalPath == "/app/usage") "is-active" else ""}") {
-                        span("workspace-nav-glyph") { +"◴" }; span { +"Usage" }; small { id = "workspace-sidebar-credits"; +"View" }
-                    }
-                    a(href = "/app/plan", classes = "workspace-upgrade-link ${if (canonicalPath == "/app/plan") "is-active" else ""}") { +"UPGRADE PLAN" }
-                    button(classes = "sidebar-link workspace-sidebar-link workspace-profile-link") {
-                        attributes["id"] = "workspace-sidebar-profile"
+                    button(classes = "workspace-user-trigger") {
+                        attributes["id"] = "workspace-user-trigger"
                         attributes["type"] = "button"
-                        span("workspace-nav-glyph") { +"◎" }; +"Profile"
+                        attributes["aria-expanded"] = "false"
+                        attributes["aria-controls"] = "workspace-account-menu"
+                        span("workspace-user-avatar") { id = "workspace-user-menu-avatar"; +"H" }
+                        span("workspace-user-identity") {
+                            strong { id = "workspace-user-menu-name"; +"Account" }
+                            small { id = "workspace-user-menu-plan"; +"Free · 3 generations" }
+                        }
+                        span("workspace-user-chevron") { +"⋯" }
                     }
+                    div("workspace-account-menu") {
+                        id = "workspace-account-menu"
+                        attributes["hidden"] = "hidden"
+                        div("workspace-account-menu-head") {
+                            span("workspace-user-avatar") { id = "workspace-menu-avatar"; +"H" }
+                            div { strong { id = "workspace-menu-name"; +"Account" }; small { id = "workspace-menu-email"; +"Signed-in account" } }
+                        }
+                        a(href = "/app/plan", classes = "workspace-menu-item workspace-menu-upgrade") { span { +"✦" }; div { strong { +"Upgrade plan" }; small { +"Unlock more generations" } } }
+                        button(classes = "workspace-menu-item") { id = "workspace-open-profile"; type = ButtonType.button; span { +"◎" }; +"Profile" }
+                        button(classes = "workspace-menu-item") {
+                            id = "workspace-open-settings"
+                            type = ButtonType.button
+                            attributes["aria-expanded"] = "false"
+                            attributes["aria-controls"] = "workspace-settings-links"
+                            span { +"⚙" }; span { +"Settings" }; b { +"›" }
+                        }
+                        div("workspace-settings-links") {
+                            id = "workspace-settings-links"
+                            attributes["hidden"] = "hidden"
+                            a(href = "/app/plan") { +"Billing & plans" }
+                            a(href = "/app/usage") { +"Usage" }
+                            a(href = "/app/plan#billing") { +"Manage plan & refunds" }
+                            a(href = "/delete-account", classes = "is-danger") { +"Delete account" }
+                        }
+                        a(href = "/faq", classes = "workspace-menu-item") { span { +"?" }; +"Help" }
+                        a(href = "/sign-out", classes = "workspace-menu-item workspace-menu-signout") { span { +"↪" }; +"Sign out" }
+                    }
+                }
+                div("workspace-sidebar-guest") {
+                    strong { +"Explore with Housora" }
+                    p { +"Sign in to save designs, projects, and favourites." }
+                    a(href = "/sign-in?redirect=${canonicalPath}", classes = "workspace-guest-signin") { +"Sign in" }
+                    a(href = "/sign-up?redirect=${canonicalPath}", classes = "workspace-guest-create") { +"Create account" }
                 }
             } else {
                 div(classes = "sidebar-section") {
@@ -562,10 +492,12 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                     a(href = "/examples", classes = "sidebar-link") { +"Examples" }
                 }
             }
-            div(classes = "sidebar-section sidebar-auth-section") {
-                attributes["id"] = "sidebar-auth-section"
-                a(href = "/sign-in", classes = "sidebar-link sidebar-signin-link") { +"Sign In" }
-                a(href = "/sign-up", classes = "sidebar-link sidebar-signup-link") { +"Create Account" }
+            if (!isWorkspaceSurface) {
+                div(classes = "sidebar-section sidebar-auth-section") {
+                    attributes["id"] = "sidebar-auth-section"
+                    a(href = "/sign-in", classes = "sidebar-link sidebar-signin-link") { +"Sign In" }
+                    a(href = "/sign-up", classes = "sidebar-link sidebar-signup-link") { +"Create Account" }
+                }
             }
         }
 
@@ -751,29 +683,61 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                         }
                         try {
                             hideLoading();
+                            // clerk-bootstrap is the sole source of the ready event and
+                            // auth state. This bridge only wires its ready client to this shell.
                             window.ClerkReady = true;
-                            window.dispatchEvent(new CustomEvent('clerk:ready', { detail: { clerk: Clerk } }));
                             updateSidebarAuth(Clerk);
                         } catch(e) {
                             console.error('[Clerk] Init failed:', e);
                             showError('Authentication initialization failed. ' + (e.message || 'Please try again.'));
                         }
 
-                        if (window.convex && convexUrl) {
+                        if (window.convex && convexUrl && !window.convexClient) {
                             try {
                                 window.convexClient = new window.convex.ConvexClient(convexUrl);
-                                // Wire up Clerk JWT so ctx.auth.getUserIdentity() works in Convex
+                                // One client and one Clerk listener own the auth bridge for this
+                                // document. Clerk exposes JWT retrieval on its active session.
+                                function publishConvexAuthState(status, error) {
+                                    var previous = window.housoraConvexAuthState || {};
+                                    window.housoraConvexAuthState = { status: status, error: error || null };
+                                    if (previous.status === status && previous.error === window.housoraConvexAuthState.error) return;
+                                    window.dispatchEvent(new CustomEvent('housora:convex-auth-state', { detail: window.housoraConvexAuthState }));
+                                }
+                                function tokenGetter() {
+                                    var session = Clerk.session;
+                                    if (!session || typeof session.getToken !== 'function') {
+                                        var missingSession = new Error('Your sign-in session is unavailable. Please sign in again.');
+                                        publishConvexAuthState('session-missing', missingSession.message);
+                                        return Promise.reject(missingSession);
+                                    }
+                                    return Promise.resolve().then(function() {
+                                        // `convex/auth.config.ts` identifies Clerk with the
+                                        // application ID "convex", so this must request the
+                                        // matching Clerk JWT template rather than the default
+                                        // session token.
+                                        return session.getToken({ template: 'convex' });
+                                    }).then(function(token) {
+                                        if (!token) throw new Error('Your sign-in session did not provide an access token. Please sign in again.');
+                                        publishConvexAuthState('ready');
+                                        return token;
+                                    }).catch(function(error) {
+                                        publishConvexAuthState('token-failure', error && error.message ? error.message : 'Your sign-in token could not be refreshed.');
+                                        throw error;
+                                    });
+                                }
                                 Clerk.addListener(function(state) {
-                                    if (state.user) {
-                                        window.convexClient.setAuth(function() {
-                                            return state.user.getToken();
-                                        });
+                                    if (state.session) {
+                                        publishConvexAuthState('loading');
+                                        window.convexClient.setAuth(tokenGetter);
                                     } else if (typeof window.convexClient.clearAuth === 'function') {
                                         window.convexClient.clearAuth();
+                                        publishConvexAuthState('signed-out');
                                     } else {
                                         // The browser ConvexClient exposes setAuth but not clearAuth.
-                                        // Returning null resets authentication without throwing on public pages.
+                                        // Returning null resets authentication without treating it as a
+                                        // token failure on signed-out public pages.
                                         window.convexClient.setAuth(function() { return Promise.resolve(null); });
+                                        publishConvexAuthState('signed-out');
                                     }
                                     updateSidebarAuth(Clerk);
                                 });
@@ -810,9 +774,27 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                         if (Clerk.user) {
                             if (window.HousoraAnalytics) window.HousoraAnalytics.identify(Clerk.user);
                             if (accountLinks) accountLinks.style.display = 'block';
+                            var primaryEmail = Clerk.user.primaryEmailAddress?.emailAddress
+                                || Clerk.user.emailAddresses?.[0]?.emailAddress
+                                || '';
+                            var directProfileName = [Clerk.user.firstName, Clerk.user.lastName].filter(Boolean).join(' ').trim();
+                            var externalProfile = Clerk.user.externalAccounts?.find(function(account) {
+                                return account && (account.firstName || account.lastName || account.username);
+                            });
+                            var externalProfileName = externalProfile
+                                ? [externalProfile.firstName, externalProfile.lastName].filter(Boolean).join(' ').trim()
+                                : '';
+                            var profileName = (Clerk.user.fullName || '').trim()
+                                || (directProfileName.indexOf(' ') > 0 ? directProfileName : '')
+                                || externalProfileName
+                                || (Clerk.user.username || '').trim()
+                                || (externalProfile?.username || '').trim()
+                                || directProfileName
+                                || primaryEmail.split('@')[0]
+                                || 'Account';
                             window.HousoraUser = {
-                                name: Clerk.user.firstName || Clerk.user.emailAddresses[0]?.emailAddress || 'User',
-                                email: Clerk.user.emailAddresses[0]?.emailAddress || '',
+                                name: profileName,
+                                email: primaryEmail,
                                 imageUrl: Clerk.user.imageUrl || ''
                             };
                             document.body.classList.add('is-authenticated', 'auth-resolved');
@@ -832,18 +814,38 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                                 }
                             }
                             window.dispatchEvent(new CustomEvent('housora:authenticated'));
+                            var workspaceAccountName = document.getElementById('workspace-account-name');
+                            var workspaceAccountAvatar = document.getElementById('workspace-account-avatar');
+                            if (workspaceAccountName) workspaceAccountName.textContent = window.HousoraUser.name;
+                            if (workspaceAccountAvatar) workspaceAccountAvatar.textContent = window.HousoraUser.name.charAt(0).toUpperCase();
+                            ['workspace-user-menu-name', 'workspace-menu-name'].forEach(function(id) {
+                                var accountName = document.getElementById(id);
+                                if (accountName) accountName.textContent = window.HousoraUser.name;
+                            });
+                            var homeName = document.getElementById('workspace-home-name');
+                            if (homeName) homeName.textContent = window.HousoraUser.name;
+                            var menuEmail = document.getElementById('workspace-menu-email');
+                            if (menuEmail) menuEmail.textContent = window.HousoraUser.email;
+                            ['workspace-user-menu-avatar', 'workspace-menu-avatar'].forEach(function(id) {
+                                var accountAvatar = document.getElementById(id);
+                                if (!accountAvatar) return;
+                                if (window.HousoraUser.imageUrl) {
+                                    var accountAvatarImage = document.createElement('img');
+                                    accountAvatarImage.src = window.HousoraUser.imageUrl;
+                                    accountAvatarImage.alt = '';
+                                    accountAvatar.replaceChildren(accountAvatarImage);
+                                } else {
+                                    accountAvatar.textContent = window.HousoraUser.name.charAt(0).toUpperCase();
+                                }
+                            });
                             // Show user info in sidebar
                             if (userInfo) {
                                 userInfo.style.display = 'flex';
                                 var nameEl = document.getElementById('sidebar-user-name');
                                 var emailEl = document.getElementById('sidebar-user-email');
                                 var avatarEl = document.getElementById('sidebar-user-avatar');
-                            if (nameEl) nameEl.textContent = window.HousoraUser.name;
-                            if (emailEl) emailEl.textContent = window.HousoraUser.email;
-                            var workspaceName = document.getElementById('workspace-account-name');
-                            var workspaceAvatar = document.getElementById('workspace-account-avatar');
-                            if (workspaceName) workspaceName.textContent = window.HousoraUser.name;
-                            if (workspaceAvatar) workspaceAvatar.textContent = window.HousoraUser.name.charAt(0).toUpperCase();
+                                if (nameEl) nameEl.textContent = window.HousoraUser.name;
+                                if (emailEl) emailEl.textContent = window.HousoraUser.email;
                                 if (avatarEl && window.HousoraUser.imageUrl) {
                                     var avatarImage = document.createElement('img');
                                     avatarImage.src = window.HousoraUser.imageUrl;
@@ -862,22 +864,17 @@ fun HTML.baseLayout(title: String, bodyClass: String = "", path: String = "", st
                             }
                             // Replace sign-in/up links with sign-out
                             if (authSection) {
-                                authSection.replaceChildren();
-                                [['/app/plan', 'Manage Plan & Refunds', 'sidebar-manage-plan-link'], ['/sign-out', 'Sign Out', 'sidebar-signout-link'], ['/delete-account', 'Delete Account', 'sidebar-delete-account-link']].forEach(function(item) {
-                                    var link = document.createElement('a');
-                                    link.href = item[0];
-                                    link.className = 'sidebar-link ' + item[2];
-                                    link.textContent = item[1];
-                                    authSection.appendChild(link);
-                                });
+                                authSection.style.display = 'none';
                             }
                         } else {
                             document.body.classList.remove('is-authenticated');
+                            document.body.classList.add('auth-resolved');
                             if (window.HousoraAnalytics) window.HousoraAnalytics.reset();
                             if (accountLinks) accountLinks.style.display = 'none';
                             if (userInfo) userInfo.style.display = 'none';
                             // Show sign-in/up links
                             if (authSection) {
+                                authSection.style.display = '';
                                 authSection.replaceChildren();
                                 [['/sign-in', 'Sign In', 'sidebar-signin-link'], ['/sign-up', 'Create Account', 'sidebar-signup-link']].forEach(function(item) {
                                     var link = document.createElement('a');

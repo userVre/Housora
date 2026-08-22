@@ -270,6 +270,8 @@ fun Application.configureRouting() {
         get("/reference-style") { call.respondHtml { referenceStylePage(call.request.queryParameters["reference"]) } }
         get("/pricing") { call.respondHtml { pricingPage() } }
         get("/app/home") { call.respondHtml { appHomePage() } }
+        get("/app/images") { call.respondHtml { workspaceImagesPage() } }
+        get("/app/likes") { call.respondHtml { workspaceLikesPage() } }
         get("/app/usage") { call.respondHtml { workspaceUsagePage() } }
         get("/app/plan") { call.respondHtml { workspacePlanPage() } }
 
@@ -517,9 +519,14 @@ Prices, taxes, renewal terms, annual billing details, and feature limits shown a
                 call.respondText("""{"error":"Generation limit reached. Please wait a minute and try again."}""", status = HttpStatusCode.TooManyRequests, contentType = ContentType.Application.Json)
                 return@post
             }
-            if (ClerkConfig.isConfigured) {
-                val token = call.request.headers[HttpHeaders.Authorization]?.removePrefix("Bearer")?.trim()
-                if (token.isNullOrBlank() || verifyClerkSession(token) == null) {
+            val token = call.request.headers[HttpHeaders.Authorization]?.removePrefix("Bearer")?.trim()
+            val guestRequest = token.isNullOrBlank()
+            if (guestRequest && call.request.cookies["housora_guest_generation_used"] == "1") {
+                call.respondText("""{"error":{"code":"guest_trial_used","message":"Your free guest design is used. Create an account to get 3 more generations."}}""", status = HttpStatusCode.Forbidden, contentType = ContentType.Application.Json)
+                return@post
+            }
+            if (ClerkConfig.isConfigured && !guestRequest) {
+                if (verifyClerkSession(token!!) == null) {
                     call.respondText("""{"error":"Authentication required. Please sign in again."}""", status = HttpStatusCode.Unauthorized, contentType = ContentType.Application.Json)
                     return@post
                 }
@@ -558,6 +565,9 @@ Prices, taxes, renewal terms, annual billing details, and feature limits shown a
                     call.respondText("""{"error":"Image generation failed. Please try again."}""", status = HttpStatusCode.BadGateway, contentType = ContentType.Application.Json)
                 } else {
                     val contentType = response.headers[HttpHeaders.ContentType]?.let { ContentType.parse(it) } ?: ContentType.Image.PNG
+                    if (guestRequest) {
+                        call.response.headers.append(HttpHeaders.SetCookie, "housora_guest_generation_used=1; Max-Age=31536000; Path=/; HttpOnly; SameSite=Lax")
+                    }
                     call.respondBytes(response.body<ByteArray>(), contentType = contentType)
                 }
             } finally {

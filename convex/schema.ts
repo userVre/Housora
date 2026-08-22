@@ -54,6 +54,8 @@ export default defineSchema({
     reviewPrompted: v.optional(v.boolean()),
     streakCount: v.optional(v.number()),
     subscriptionEnd: v.optional(v.number()),
+    subscriptionBillingInterval: v.optional(v.union(v.literal("monthly"), v.literal("yearly"))),
+    creditsResetAt: v.optional(v.number()),
     subscriptionEntitlement: v.optional(v.string()),
     subscriptionStartedAt: v.optional(v.number()),
     // Kept broad for legacy rows; all current writers use a closed enum.
@@ -77,6 +79,9 @@ export default defineSchema({
     afterImageUrl: v.optional(v.string()),
     beforeImageStorageId: v.optional(v.id("_storage")),
     afterImageStorageId: v.optional(v.id("_storage")),
+    // Keeps every completed design in a project; afterImageStorageId remains
+    // the current card preview for compatibility with existing clients.
+    generatedImageStorageIds: v.optional(v.array(v.id("_storage"))),
     prompt: v.optional(v.string()),
     budget: v.optional(v.number()),
     createdAt: v.number(),

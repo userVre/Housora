@@ -18,7 +18,7 @@ private data class WorkspacePlanOption(
 
 fun HTML.workspacePlanPage() {
     val plans = listOf(
-        WorkspacePlanOption("free", "Free", "€0", "€0", "€0", "5 images", "Try the complete Housora workflow."),
+        WorkspacePlanOption("free", "Free", "€0", "€0", "€0", "3 images", "Try the complete Housora workflow."),
         WorkspacePlanOption("standard", "Standard", "€14", "€12.42", "€149", "100 images", "For regular room and home projects.", WhopConfig.standardMonthly, WhopConfig.standardYearly),
         WorkspacePlanOption("pro", "Pro", "€29", "€24.92", "€299", "190 images", "For creators with more spaces to design.", WhopConfig.proMonthly, WhopConfig.proYearly)
     )
@@ -30,6 +30,7 @@ fun HTML.workspacePlanPage() {
                 div("workspace-plan-page-track") { span { attributes["id"] = "workspace-plan-page-progress" } }
             }
             div("workspace-billing-panel") {
+                id = "billing"
                 div("workspace-billing-heading") {
                     div { h2 { +"Billing frequency" }; p { attributes["id"] = "billing-caption"; +"Pay monthly and cancel future renewals anytime." } }
                     div("billing-toggle") {

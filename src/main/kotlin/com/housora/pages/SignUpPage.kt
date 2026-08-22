@@ -85,9 +85,9 @@ fun HTML.signUpPage() {
                     div("auth-showcase") {
                         div("auth-comparison") {
                             div("auth-comparison-img") {
-                                img(src = "/static/images/before-after-comparison.jpg", alt = "Before and after AI interior design comparison showing empty room transformed") {
-                                    attributes["width"] = "400"
-                                    attributes["height"] = "300"
+                                img(src = "/static/images/signin-before-after-v2.png", alt = "The same living room before and after a warm minimal Housora redesign") {
+                                    attributes["width"] = "1122"
+                                    attributes["height"] = "1402"
                                     attributes["loading"] = "eager"
                                     attributes["onerror"] = "this.style.opacity='0.3';this.alt='Image not available'"
                                 }
@@ -189,7 +189,9 @@ fun HTML.signUpPage() {
                     window.addEventListener('clerk:ready', function(e) {
                         var Clerk = e.detail.clerk;
                         if (Clerk.user) {
-                            window.location.href = '/';
+                            var requested = new URLSearchParams(window.location.search).get('redirect') || '/app/home';
+                            var destination = requested.startsWith('/') && !requested.startsWith('//') ? requested : '/app/home';
+                            window.location.href = destination;
                             return;
                         }
                         bindAuthButtons();

@@ -143,10 +143,20 @@ before(async () => {
   publicJwk.alg = 'RS256';
 });
 
-test('generation requires authentication and fails closed without Clerk configuration', async () => {
+test('guest generation fails closed without request protection and repeat guests are rejected', async () => {
   const missing = await generate({ request: request('https://api.test/api/generate', null, { method: 'POST' }), env: {} });
-  assert.equal(missing.status, 401);
-  assert.equal((await missing.json()).error.code, 'authentication_required');
+  assert.equal(missing.status, 503);
+  assert.equal((await missing.json()).error.code, 'rate_limit_unavailable');
+
+  const repeat = await generate({
+    request: request('https://api.test/api/generate', null, {
+      method: 'POST',
+      headers: { Cookie: 'housora_guest_generation_used=1' },
+    }),
+    env: {},
+  });
+  assert.equal(repeat.status, 403);
+  assert.equal((await repeat.json()).error.code, 'guest_trial_used');
 
   const token = await tokenFor('user-1');
   const unconfigured = await generate({ request: request('https://api.test/api/generate', token, { method: 'POST' }), env: {} });
@@ -197,6 +207,31 @@ test('generation rate limits are enforced', async () => {
   });
   assert.equal(response.status, 429);
   assert.equal((await response.json()).error.code, 'rate_limited');
+});
+
+test('one guest generation reaches only the image provider and marks the trial used', async () => {
+  const originalFetch = globalThis.fetch;
+  const calls = [];
+  globalThis.fetch = async (input, init) => {
+    const url = new URL(input);
+    calls.push({ url: url.toString(), init });
+    if (url.hostname === 'images.test') return new Response(png(), { headers: { 'Content-Type': 'image/png' } });
+    throw new Error('Unexpected fetch');
+  };
+  try {
+    const response = await generate({
+      request: request('https://api.test/api/generate', null, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: jsonBody(),
+      }),
+      env: rateEnv({ IMAGE_API_URL: 'https://images.test/generate', IMAGE_API_KEY: 'private' }),
+    });
+    assert.equal(response.status, 200);
+    assert.equal(calls.length, 1);
+    assert.equal(new URL(calls[0].url).hostname, 'images.test');
+    assert.match(response.headers.get('Set-Cookie') || '', /housora_guest_generation_used=1/);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });
 
 test('generation deducts once and uses signed internal state transitions', async () => {

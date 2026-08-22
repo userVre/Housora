@@ -9,11 +9,11 @@ references: 4 present and 148 missing**. The root `/og-image.png` reference was
 also missing. The baseline was measured from concrete `src`, `href`, `poster`,
 and metadata `content` attributes in `dist/**/*.html`.
 
-Run `npm run build` for the complete production flow. If the application server
+Run `bun run build` for the complete production flow. If the application server
 is already running, use the static-export entrypoint directly:
 
 ```text
-npm run build:static
+bun run build:static
 ```
 
 `assets:build` is deterministic from pinned npm packages, the checked-in Clerk
@@ -101,7 +101,7 @@ Summary:
 
 Do not replace these with stock content presented as real Housora results or
 with invented customer/property evidence. Use owned or properly licensed
-images, retain the documented aspect ratio, then run `npm run assets:build`.
+images, retain the documented aspect ratio, then run `bun run assets:build`.
 If a fallback's bytes differ from its recorded SHA-256, the generator treats it
 as a human replacement, removes it from the placeholder list, and rebuilds its
 responsive variants.

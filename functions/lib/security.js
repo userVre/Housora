@@ -290,6 +290,11 @@ export async function enforceRateLimits(request, env, userId) {
   ]);
 }
 
+export async function enforceGuestRateLimit(request, env) {
+  const ipKey = await sha256Hex(clientIp(request));
+  await applyLimit(env.GENERATION_IP_RATE_LIMITER, `guest:${ipKey}`);
+}
+
 export function getCoordinatorStub(binding, shard) {
   if (!binding) throw new HttpError(503, 'security_state_unavailable', 'Request protection is temporarily unavailable.');
   if (typeof binding.idFromName === 'function' && typeof binding.get === 'function') {

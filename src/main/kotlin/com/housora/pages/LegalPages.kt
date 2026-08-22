@@ -195,7 +195,7 @@ fun HTML.cookiePolicyPage() {
                     h2 { +"1. Strictly necessary and user-requested storage" }
                     ul {
                         li { strong { +"housora-consent-v2 (local storage): " }; +"records your analytics choice, policy version, date, and expiry for up to 6 months so the site can respect it. This storage is necessary to remember refusal as well as acceptance." }
-                        li { strong { +"housora-theme and housora-lang (local storage): " }; +"remember a theme or language after you actively choose it. They remain until you change the choice or clear browser storage." }
+                        li { strong { +"housora-lang (local storage): " }; +"remembers a language after you actively choose it. It remains until you change the choice or clear browser storage." }
                         li { strong { +"housora_first_design_options and housora_first_design_photo (session storage): " }; +"temporarily carry the image preview and options you selected into the editor and are cleared when the browser tab session ends." }
                         li { strong { +"housora_current_project (local storage): " }; +"opens the project you selected and remains until replaced, removed, or browser storage is cleared." }
                         li { strong { +"Clerk authentication cookies and storage: " }; +"Clerk may use names such as __session, __client, and __client_uat to maintain sign-in, refresh or synchronize sessions, and protect authentication. Exact duration depends on the configured session lifetime, sign-in method, and security state; session cookies can end when the browser session ends, while update markers can persist briefly." }
