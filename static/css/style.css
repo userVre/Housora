@@ -9254,3 +9254,122 @@ body.workspace-tool-surface.auth-resolved:not(.is-authenticated) .workspace-side
     .workspace-tool-surface .id-configure-section,
     .workspace-tool-surface .reference-style-page { padding-top: 76px !important; }
 }
+
+/* Final product-quality baseline — a light-only, monochrome Housora system.
+   This deliberately sits last so every marketing page and workspace view uses
+   the same contrast, focus, spacing and interaction language. */
+:root {
+    --housora-ink: #111111;
+    --housora-muted: #636363;
+    --housora-line: #dedede;
+    --housora-soft: #f6f6f4;
+    --housora-radius: 12px;
+    --housora-ease: cubic-bezier(.2, .8, .2, 1);
+}
+
+html,
+html[data-theme="dark"] {
+    color-scheme: light;
+    background: #ffffff;
+}
+
+body,
+html[data-theme="dark"] body,
+html[data-theme="dark"] .create-page,
+html[data-theme="dark"] .content-wrapper {
+    background: #ffffff !important;
+    color: var(--housora-ink) !important;
+}
+
+/* A single, visible keyboard treatment replaces the old blue focus ring and
+   keeps black-and-white pages accessible without introducing a second accent. */
+:focus-visible {
+    outline: 3px solid var(--housora-ink) !important;
+    outline-offset: 3px;
+}
+
+:is(button, a, input, select, textarea) {
+    -webkit-tap-highlight-color: transparent;
+}
+
+:is(.browse-catalog-btn, .btn-primary, .btn-secondary, .workspace-primary-action,
+    .workspace-plan-action, .projects-new-btn, .id-generate-btn, .auth-email-btn,
+    .auth-social-btn, .pricing-card > a, .whop-checkout) {
+    transition: transform 160ms var(--housora-ease), background-color 160ms var(--housora-ease),
+        border-color 160ms var(--housora-ease), color 160ms var(--housora-ease) !important;
+}
+
+@media (hover: hover) {
+    :is(.browse-catalog-btn, .btn-primary, .workspace-primary-action, .workspace-plan-action,
+        .projects-new-btn, .id-generate-btn, .auth-email-btn, .pricing-card > a, .whop-checkout):hover {
+        transform: translateY(-1px);
+    }
+}
+
+:is(.browse-catalog-btn, .btn-primary, .btn-secondary, .workspace-primary-action,
+    .workspace-plan-action, .projects-new-btn, .id-generate-btn, .auth-email-btn,
+    .auth-social-btn, .pricing-card > a, .whop-checkout):active {
+    transform: translateY(1px) scale(.99);
+}
+
+/* Workspace: keep navigation calm, scannable and anchored while content carries
+   the visual weight.  All tool routes share this shell. */
+.workspace-app-shell .sidebar-nav,
+.workspace-app-shell .workspace-sidebar-footer,
+.workspace-app-shell .workspace-account-menu {
+    background: #ffffff !important;
+    border-color: var(--housora-line) !important;
+}
+
+.workspace-app-shell .workspace-sidebar-link {
+    border-radius: 8px;
+    color: #303030 !important;
+    font-weight: 520;
+}
+
+.workspace-app-shell .workspace-sidebar-link:is(:hover, :focus-visible) {
+    background: var(--housora-soft) !important;
+    color: var(--housora-ink) !important;
+}
+
+.workspace-app-shell .workspace-sidebar-link.is-active {
+    background: var(--housora-ink) !important;
+    color: #ffffff !important;
+}
+
+.workspace-app-shell .workspace-sidebar-link.is-active .workspace-tool-glyph {
+    color: #ffffff !important;
+}
+
+.workspace-app-shell :is(.workspace-home, .projects-page, .workspace-usage-page,
+    .workspace-plan-page, .id-configure-section, .reference-style-page) {
+    background: #ffffff;
+}
+
+/* Do not let editorial type become hard to scan on small devices. */
+@media (max-width: 700px) {
+    .marketing-home .marketing-intro h1,
+    .page-pricing .pricing-title,
+    .page-examples .examples-hero-title,
+    .page-tool .workspace-tool-heading h2 {
+        letter-spacing: -.045em !important;
+        line-height: 1 !important;
+    }
+
+    .desktop-header-nav .desktop-nav-link,
+    .ai-tools-dropdown .ai-tool-link,
+    .workspace-app-shell .workspace-sidebar-link {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :is(.browse-catalog-btn, .btn-primary, .btn-secondary, .workspace-primary-action,
+        .workspace-plan-action, .projects-new-btn, .id-generate-btn, .auth-email-btn,
+        .auth-social-btn, .pricing-card > a, .whop-checkout) {
+        transition: none !important;
+        transform: none !important;
+    }
+}

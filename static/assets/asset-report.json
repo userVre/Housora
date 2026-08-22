@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-22T17:07:32.135Z",
+  "generatedAt": "2026-08-22T17:28:53.267Z",
   "scope": {
     "source": [
       "src/main/kotlin/**/*.kt",
